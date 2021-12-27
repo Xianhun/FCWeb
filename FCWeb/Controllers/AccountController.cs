@@ -53,7 +53,7 @@ namespace FCWeb.Controllers
             Logins logs = new Logins();
             string res;
             username = db.Login.Select(s => s.UserName).ToList();
-            if (!username.Exists(p => p == User_Name))
+            if (!username.Exists(p => p == User_Name)&&User_Name!=null)
             {
                 logs.UserName = User_Name;
                 logs.Password = Password;

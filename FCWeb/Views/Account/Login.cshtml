@@ -139,12 +139,12 @@
                         <input type="password" class="form-control" id="regcheckpwd" placeholder="确认密码">
                     </div>
                     <code class="check_reg_code"></code>
-                    <div class="input-group mb-3">
+                    @*<div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="手机验证码" id="code" name="code">
                         <div class="input-group-append">
                             <button type="button" class="input-group-text text-success getcode">获取验证码</button>
                         </div>
-                    </div>
+                    </div>*@
                     <button type="button" id="regist" class="btn btn-success btn-block">注册</button>
                 </form>
             </div>
@@ -372,100 +372,104 @@
                     pwd1,
                     pwd2
                 })
-            })
-
-            //获取验证码
-            $('.getcode').click(function () {
-                // console.log(123)
-                let phone = $('#regphone').val()
-                //启用按钮
-                $('.getcode').prop('disabled', false)
-
-                var time = 60
-                if (phoneFlag) {
-                    $.ajax({
-                        type: 'get',
-                        url: '',
-                        data: { phone },
-                        dataType: 'json',
-                        success: (res) => {
-                            console.log(res)
-                            let code = res.code
-                            let content = res.msg
-                            // 倒计时
-                            if (code == "OK") {
-                                var interval = setInterval(function () {
-                                    time--;
-                                    if (time <= 0) {
-                                        clearInterval(interval);
-                                        var html = '获取验证码';
-                                        $('.getcode').prop('disabled', false);
-                                    } else {
-                                        var html = time + ' 秒后再次获取';
-                                        $('.getcode').prop('disabled', true);
-                                    }
-                                    $('.getcode').text(html);
-                                }, 1000);
-
-                                message({
-                                    icon: 'success',
-                                    content: '短信发送成功'
-                                })
-
-                            } else {
-
-                                message({
-                                    icon: 'error',
-                                    content
-                                })
-
-                            }
-
-                        },
-                    })
-                } else {
-                    alert('请输入手机号码！')
+                if (checkpwd2 = true) {
+                    $("#regist").removeAttr('disabled');
                 }
+ 
             })
 
-            //短信验证码验证
-            $('#code').blur(function () {
-                let code = $('#code').val();
-                let phone = $('#regphone').val();
-                if (code == '') {
-                    $('.check_reg_code').html('验证码不能为空')
-                    regist.prop('disabled', true);
-                } else {
-                    $('.check_reg_code').html('')
-                    $.ajax({
-                        type: 'post',
-                        url: '',
-                        data: { code, phone },
-                        dataType: 'json',
-                        success: (res) => {
-                            let flag = res.code
-                            let content = res.msg
-                            // console.log(res)
-                            if (flag == 200) {
-                                //验证成功，弹窗提醒
-                                regist.prop('disabled', false);
-                                message({
-                                    icon: 'success',
-                                    content
-                                })
+            ////获取验证码
+            //$('.getcode').click(function () {
+            //    // console.log(123)
+            //    let phone = $('#regphone').val()
+            //    //启用按钮
+            //    $('.getcode').prop('disabled', false)
 
-                            } else {
-                                //验证失败，弹窗提醒
-                                message({
-                                    icon: 'error',
-                                    content
-                                })
+            //    var time = 60
+            //    if (phoneFlag) {
+            //        $.ajax({
+            //            type: 'get',
+            //            url: '',
+            //            data: { phone },
+            //            dataType: 'json',
+            //            success: (res) => {
+            //                console.log(res)
+            //                let code = res.code
+            //                let content = res.msg
+            //                // 倒计时
+            //                if (code == "OK") {
+            //                    var interval = setInterval(function () {
+            //                        time--;
+            //                        if (time <= 0) {
+            //                            clearInterval(interval);
+            //                            var html = '获取验证码';
+            //                            $('.getcode').prop('disabled', false);
+            //                        } else {
+            //                            var html = time + ' 秒后再次获取';
+            //                            $('.getcode').prop('disabled', true);
+            //                        }
+            //                        $('.getcode').text(html);
+            //                    }, 1000);
 
-                            }
-                        }
-                    })
-                }
-            })
+            //                    message({
+            //                        icon: 'success',
+            //                        content: '短信发送成功'
+            //                    })
+
+            //                } else {
+
+            //                    message({
+            //                        icon: 'error',
+            //                        content
+            //                    })
+
+            //                }
+
+            //            },
+            //        })
+            //    } else {
+            //        alert('请输入手机号码！')
+            //    }
+            //})
+
+            ////短信验证码验证
+            //$('#code').blur(function () {
+            //    let code = $('#code').val();
+            //    let phone = $('#regphone').val();
+            //    if (code == '') {
+            //        $('.check_reg_code').html('验证码不能为空')
+            //        regist.prop('disabled', true);
+            //    } else {
+            //        $('.check_reg_code').html('')
+            //        $.ajax({
+            //            type: 'post',
+            //            url: '',
+            //            data: { code, phone },
+            //            dataType: 'json',
+            //            success: (res) => {
+            //                let flag = res.code
+            //                let content = res.msg
+            //                // console.log(res)
+            //                if (flag == 200) {
+            //                    //验证成功，弹窗提醒
+            //                    regist.prop('disabled', false);
+            //                    message({
+            //                        icon: 'success',
+            //                        content
+            //                    })
+
+            //                } else {
+            //                    //验证失败，弹窗提醒
+            //                    message({
+            //                        icon: 'error',
+            //                        content
+            //                    })
+
+            //                }
+            //            }
+            //        })
+            //    }
+            //})
 
 
             //点击注册
@@ -477,13 +481,13 @@
                     let pwd = $('#regpwd').val()
                     $.ajax({
                         type: 'post',
-                        url: '',
-                        data: { phone, pwd },
+                        url: "/Account/registered_Validation",
+                        data: { User_Name: phone, Password:pwd },
                         dataType: 'json',
                         success: (res) => {
-                            let code = res.code
-                            let msg = res.msg
-                            if (code == 400) {
+                            let code = res
+                            let msg = res
+                            if (code == "注册失败") {
                                 //验证失败，手机号码存在
                                 message({
                                     icon: 'error',
@@ -497,7 +501,7 @@
                                     icon: 'success',
                                     content: msg,
                                 })
-                                setTimeout(() => { window.location.href = "{:url('index/index')}" }, 1500)
+                                setTimeout(() => { window.location.href = "https://localhost:44331/Account/Login" }, 1500)
                             }
                         }
                     })
@@ -517,20 +521,20 @@
                     login.text('登录中...')
                     $.ajax({
                         type: 'post',
-                        url: '',
-                        data: { phone, pwd },
+                        url: "/Account/Login_Validation",
+                        data: { User_Name:phone, Password:pwd },
                         dataType: 'json',
                         success: responce => {
                             login.text('登录')
-                            let code = responce.code
-                            let msg = responce.msg
-                            if (code == 200) {	//登录成功
+                            let code = responce
+                            let msg = responce
+                            if (code == "登录成功") {	//登录成功
                                 //取消登录按钮不可点击
                                 login.attr("disabled", false);
                                 setTimeout(() => {
                                     message({ icon: 'success', content: msg, })
                                 }, timeout)
-                                window.location.href = "";
+                                window.location.href = "https://localhost:44331/"
                             } else {	//登录成功
                                 login.attr("disabled", false);
                                 setTimeout(() => {
