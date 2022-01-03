@@ -1,0 +1,68 @@
+﻿@model IEnumerable<FCWeb.Models.CreateTeams>
+@{
+    ViewBag.Title = "JoinTeam";
+}
+
+<div style="height:35px;margin-top: 28px;margin-bottom: 12px;">
+    <div style="float:left;margin-top:-5px;">
+        <span style="font-size:28px;margin-right:10px;">加入一支球队</span>
+    </div>
+    <div class="btn-btn-success" style="float:right;margin-right:30px;margin-top:2px;">
+        @Html.ActionLink("创建一支球队", "CreateTeam", new {  }, new { @class= "btn btn-primary", style = "font-size:16px;" })
+    </div>
+
+</div>
+
+
+<table class="table" style="font-size:16px;letter-spacing:1px;">
+    <thead>
+        <tr>
+            <th width="20%">
+                @Html.DisplayNameFor(model => model.TeamName)
+            </th>
+            <th width="20%">
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th width="20%">
+                @Html.DisplayNameFor(model => model.Sponsors)
+            </th>
+            <th width="20%">
+                @Html.DisplayNameFor(model => model.CreateTime)
+            </th>
+            <th width="20%"></th>
+        </tr>
+        @try
+        {
+            for (int i = 0; i < Model.Count(); i++)
+            {
+                <tr>
+                    <td width="20%">
+                        @Html.DisplayFor(modelItem => Model.ElementAt(i).TeamName)
+                    </td>
+                    <td width="20%">
+                        @Html.DisplayFor(modelItem => Model.ElementAt(i).City)
+                    </td>
+                    <td width="20%">
+                        @Html.DisplayFor(modelItem => Model.ElementAt(i).Sponsors)
+                    </td>
+                    <td width="20%">
+                        @Html.DisplayFor(modelItem => Model.ElementAt(i).CreateTime)
+                    </td>
+                    <td width="20%">
+                        @Html.ActionLink("详细信息", "TeamDetails", new { id = Model.ElementAt(i).ID }) 
+                    </td>
+                </tr>
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+
+    <thead>
+</table>
+<script>
+    $(document).ready(function () {
+        $("#Join").attr("class", "nav-item active");
+    });
+</script>

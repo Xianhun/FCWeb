@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewBag.Title = "CreateTeam";
+}
+
+<div style="height:35px;margin-top: 28px;margin-bottom: 12px;">
+    <div style="float:left;margin-top:-5px;">
+        <span style="font-size:28px;margin-right:10px;">创建一支球队</span>
+    </div>
+</div>
+<form action="" class="form-horizontal" data-ajax="true" data-ajax-begin="handlerBegin" data-ajax-failure="handlerFailure" data-ajax-method="POST" data-ajax-success="handlerSuccess" id="form0" method="post">
+    <input name="__RequestVerificationToken" type="hidden" value="1" /><div class="validation-summary-valid" data-valmsg-summary="true">
+        <ul>
+            <li style="display:none"></li>
+        </ul>
+    </div>    <div class="form-group">
+        <div class="col-md-10 col-sm-9 col-xs-10">
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 col-sm-3 control-label required" for="TeamName">球队名称</label>
+        <div class="col-md-9 col-sm-9">
+            <input class="form-control" data-val="true" data-val-length="字段 球队名称 必须是一个字符串，其最小长度为 4，最大长度为 30。" data-val-length-max="30" data-val-length-min="4" data-val-regex="球队名称只能是中文字符、数字、字母和连字符和下划线" data-val-regex-pattern="^[\u4e00-\u9fa5-_\sa-zA-Z0-9]+$" data-val-required="请填写球队名称" id="TeamName" name="TeamName" placeholder="球队名称" type="text" value="" />
+            <div class="text-muted">（球队名称只能是中文字符、数字、字母和连字符和下划线，4到20个字，如果您的球队名称已经被占用，不妨前面加上城市名称）</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 col-sm-3 control-label required" for="TeamOpenType">球队公开类型</label>
+        <div class="col-md-10 col-sm-9">
+            <ul class="list-inline list-unstyled"><li><label for="id_1" class="radio inline" title=""><input data-val="true" data-val-required="请选择球队公开类型" id="TeamOpenType" name="TeamOpenType" type="radio" value="任何人可以加入" />任何人可以加入</label></li>&nbsp;&nbsp;&nbsp;<li><label for="id_2" class="radio inline" title=""><input id="TeamOpenType" name="TeamOpenType" type="radio" value="需要申请加入" />需要申请加入</label></li>&nbsp;&nbsp;&nbsp;<li><label for="id_3" class="radio inline" title=""><input id="TeamOpenType" name="TeamOpenType" type="radio" value="不能加入" />不能加入</label></li></ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 col-sm-3 control-label required" for="TeamIntroduce">球队介绍</label>
+        <div class="col-md-10 col-sm-9">
+            <textarea class="form-control" cols="20" data-val="true" data-val-required="请填写球队介绍" id="TeamIntroduce" name="TeamIntroduce" rows="5">
+</textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 col-sm-3 control-label required" for="City">城市</label>
+        <div class="col-md-10 col-sm-9">
+            <input class="form-control" data-val="true" data-val-required="城市 字段是必需的。" id="City" name="City" placeholder="城市" rows="5" type="text" value="" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10 col-sm-9 col-md-offset-2 col-sm-offset-3">
+            <button type="submit" class="btn btn-primary">创建</button>
+            <button type="button" class="btn btn-default" onclick="gobackOrClose('')"><span class="glyphicon glyphicon-remove"></span>&nbsp;取消&nbsp;&nbsp;</button>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        $("#Create").attr("class", "nav-item active");
+    });
+</script>
+

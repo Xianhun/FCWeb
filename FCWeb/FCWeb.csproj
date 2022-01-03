@@ -136,8 +136,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CreateTeams.cs" />
+    <Compile Include="Models\DbInitializer.cs" />
     <Compile Include="Models\FCDbContext.cs" />
     <Compile Include="Models\Logins.cs" />
+    <Compile Include="Models\TeamInformations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -145,32 +148,21 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Home\bootstrap.min.css" />
+    <Content Include="Content\Home\owl.carousel.min.css" />
+    <Content Include="Content\Home\owl.theme.default.min.css" />
+    <Content Include="Content\Home\pe-icon-7.css" />
+    <Content Include="Content\Home\style.min.css" />
     <Content Include="Content\Login\login.css" />
-    <Content Include="css\Home\animate.css" />
-    <Content Include="css\Home\bootstrap.min.css" />
-    <Content Include="css\Home\font-awesome.min.css" />
-    <Content Include="css\Home\simple-line-icons.css" />
-    <Content Include="css\Home\templatemo_style.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="img\Home\1.jpg" />
-    <Content Include="img\Home\2.jpg" />
-    <Content Include="img\Home\3.jpg" />
-    <Content Include="img\Home\4.jpg" />
-    <Content Include="img\Home\5.jpg" />
-    <Content Include="img\Home\6.jpg" />
-    <Content Include="img\Home\7.jpg" />
-    <Content Include="img\Home\a1.jpg" />
-    <Content Include="img\Home\a2.jpg" />
-    <Content Include="img\Home\blog-blue.jpg" />
-    <Content Include="img\Home\blog-green.jpg" />
-    <Content Include="img\Home\blog-pink.jpg" />
-    <Content Include="img\Home\offer-bg.jpg" />
-    <Content Include="img\Home\shape-1.png" />
-    <Content Include="img\Home\shape-2.png" />
-    <Content Include="img\Home\story-bg.jpg" />
+    <Content Include="img\Home\about\img-1.png" />
+    <Content Include="img\Home\about\img-2.png" />
+    <Content Include="img\Home\hero-1-bg-img.png" />
+    <Content Include="img\Home\hero-img.png" />
+    <Content Include="img\Home\logo-dark.png" />
     <Content Include="img\Logins\1.png" />
     <Content Include="img\Logins\2.png" />
     <Content Include="img\Logins\3.png" />
@@ -189,14 +181,11 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\Home\custom.min.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\Home\jquery.gmap3.min.js" />
-    <Content Include="Scripts\Home\jquery.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -205,7 +194,6 @@
     <Content Include="Scripts\Login\modal_dialog.js" />
     <Content Include="Scripts\Login\yz.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\Home\templatemo_custom.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -221,9 +209,13 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Home\CreateTeam.cshtml" />
+    <Content Include="Views\Home\JoinTeam.cshtml" />
+    <Content Include="Views\Home\TeamDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\Home\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

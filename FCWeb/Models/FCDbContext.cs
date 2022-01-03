@@ -22,6 +22,7 @@ namespace FCWeb.Models
 
         // public virtual DbSet<MyEntity> MyEntities { get; set; }
         public virtual DbSet<Logins> Login { get; set; }
+        public virtual DbSet<CreateTeams> CreateTeam { get; set; }
     }
 
     //public class MyEntity

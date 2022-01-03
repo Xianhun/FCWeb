@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "TeamDetails";
+}
+
+<div id="divHeader">
+    <div class="container">
+        <h1>
+            零点战队 <small class="hidden-xs">加入这支球队</small>
+        </h1>
+    </div>
+</div>
+<a data-type="19" data-tmpl="400x25" data-tmplid="2823" biz-url="http://www.alimama.com/?spm=0.0.0.0.tUsAVh" biz-text="足球衣服" biz-imgurl="null" data-rd="2" data-style="2" data-border="1" href="#"></a>
+<div id="divContent">
+
+
+
+    <div class="container">
+
+
+
+
+        <table class="table table-bordered">
+            <tr>
+                <td style="width: 100px;" rowspan="5">
+                    <img src="Http://www.qiulianwang.com/Content/Images/TeamLogo.png" alt="零点战队" style="width:80px;" />
+                </td>
+                <td style="width: 8em;">
+                    <label for="Captain">队长</label>
+                </td>
+                <td>
+                    黄伟华
+                </td>
+                <td style="width: 8em;">
+                    <label for="CreateDate">创建时间</label>
+                </td>
+                <td>
+                    2013年8月26日
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="PlayerCount">队员数目</label>
+                </td>
+                <td>
+                    50 人
+                </td>
+                <td>
+                    <label for="TotalMatchCount">球队比赛数目</label>
+                </td>
+                <td>
+                    423 次
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="PublicType">球队公开类型</label>
+                </td>
+                <td>
+                    需要申请加入
+                </td>
+                <td>
+                    <label for="QQGroup">QQ群</label>
+                </td>
+                <td>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="City">城市</label>
+                </td>
+                <td>
+                    宁波市
+                </td>
+                <td>
+                    <label for="Score">球队积分</label>
+                </td>
+                <td>
+                    7292
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Responsor">赞助商名称</label>
+                </td>
+                <td colspan="3">
+                    <a href="">万凤珠宝</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <span class="glyphicon glyphicon-flag text-info"></span> <label for="Description">球队介绍</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <pre class="no-style">
+零点战队, 欢迎加入
+            </pre>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <span class="glyphicon glyphicon-eye-open"></span> <label for="Rules">球队规章制度</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <pre class="no-style">
+1.	每位队员提前缴纳场地费100元，当个人费用只剩下20时候，请在下一次踢球充值；
+2.	出勤率必须高于25%（长期伤停除外）,低于25%将请出球队，退还剩余充值金额；
+3.	报名但未参加比赛者（鸽子），扣双倍费用；
+4.	已经报名队员必须提前24小时请假；如果在24小时内请假，请假人必须指定候补人员顶替，场地费照扣；
+5.	未报名参加比赛者（强插），扣双倍场地费；
+6.	由于天气原因等未能正常比赛，除非场地费退还，否则由全队平摊场地费；
+7.	因故迟到早退者，场地费按正常标准扣除；
+8.	队员之间必须互相尊重，禁止互相谩骂埋怨，发现一次警告，第二次开除；
+9.	比赛时必须遵守教练和队长安排，应以球队成绩作为优先前提；
+10.   充值支付宝账号：13867804056
+            </pre>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <span class="glyphicon glyphicon-picture"></span> <label for="TeamPhoto">球队全家福</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+
+                    <img src="Http://www.qiulianwang.com/Upload/Images/TeamGallery/2013/11/1_allplayer_.JPG" alt="" class="img-responsive" />
+                    <br />
+                </td>
+            </tr>
+
+        </table>
+
+
+        <div class="text-center">
+            <form action="/Teams/Join" class="form-signin" data-ajax="true" data-ajax-begin="handlerBegin" data-ajax-failure="handlerFailure" data-ajax-method="POST" data-ajax-success="handlerSuccess" id="form0" method="post">
+                <input name="__RequestVerificationToken" type="hidden" value="HDtEYovZ6VdrUiPW53wBGGurd7gJhfrMelJD4CiLG3iSYuxvhiMDKdiKXkFNcb21HCkh-cpQlsfDJbtJm8lAMBHFluwGAS2cU4CXdi7N0d01" /><input data-val="true" data-val-number="The field 球队编号 must be a number." id="TeamId" name="TeamId" type="hidden" value="1" />            <input type="submit" value="申请加入" class="btn btn-primary btn-lg" />
+            </form>
+        </div>
+    </div>
+</div>
+
