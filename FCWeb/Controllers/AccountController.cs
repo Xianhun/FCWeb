@@ -35,6 +35,7 @@ namespace FCWeb.Controllers
                 if (pas == Password)
                 {
                     res = "登录成功";
+                    Session["User"] = User_Name;
                     return Json(res, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -57,6 +58,7 @@ namespace FCWeb.Controllers
             {
                 logs.UserName = User_Name;
                 logs.Password = Password;
+                logs.Access = 1;
                 db.Login.Add(logs);
                 db.SaveChanges();
                 res = "注册成功";
@@ -64,6 +66,11 @@ namespace FCWeb.Controllers
             }
             res = "注册失败";
             return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult Login_out()
+        {
+            Session["User"] = null;
+            return Json(JsonRequestBehavior.AllowGet);
         }
 
         

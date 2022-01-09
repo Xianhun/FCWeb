@@ -18,7 +18,10 @@ namespace FCWeb.Models
         public string Password { get; set; }
         [Display(Name = "登录状态")]
         public string Status { get; set; }
+        [Display(Name ="所属球队")]
         public string TeamName { get; set; }
+        [Display(Name = "权限等级")]
+        public int Access { get; set; }
 
     }
 

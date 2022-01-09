@@ -25,29 +25,19 @@
     @RenderSection("scripts", required: false)
 </head>
 <body>
-    @*<div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @Html.ActionLink("球队网", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li>@Html.ActionLink("首页", "Index", "Home")</li>
-                        <li>@Html.ActionLink("创建一支球队", "About", "Home")</li>
-                        <li>@Html.ActionLink("加入一支球队", "Contact", "Home")</li>
-                        <li>@Html.ActionLink("帮助", "Contact", "Home")</li>
-                    </ul>
-                </div>
-            </div>
-        </div>*@
     <nav class="navbar navbar-expand-lg fixed-top navbar-custom sticky sticky-dark align-items-center">
         <div class="container">
-            <!-- LOGO --><a class="logo mr-3" href="~/Home/Index"><img src="~/img/Home/logo-dark.png" alt="" class="" height="26"></a>
+            <!-- LOGO -->
+            <a class="logo mr-3" href="~/Home/Index">
+                @if (Session["User"] != null)
+                {
+                    <img src="~/img/Home/logo-dark.png" alt="" class="" height="26" style="padding-left:205px">
+                }
+                else
+                {
+                    <img src="~/img/Home/logo-dark.png" alt="" class="" height="26" style="padding-left:190px">
+                }
+            </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><i class="" data-feather="menu"></i></button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav navbar-center" id="mySidenav">
@@ -64,6 +54,35 @@
                 </ul>
             </div>
         </div>
+        @if (Session["User"] != null)
+        {
+            using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="navbar-collapse collapse" style="width:435px">
+                    <ul class="nav nav-pills">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                @Session["User"]
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("个人中心", "PersonalCenter", "Account")</li>
+                                <li>@Html.ActionLink("管理账号", "ManageAccount", "Account")</li>
+                                <li>@Html.ActionLink("更改密码", "ChangePassword", "Account")</li>
+                                <li role="presentation" class="divider"></li>
+                                <li><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit(); window.location.href ='/Account/Login'" id="loginout">退出登录</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            }
+        }
+        else
+        {
+            <ul class="nav navbar-nav navbar-right" style="width:370px">
+                <li>@Html.ActionLink("登录", "Login", "Account", routeValues: new { area = "" }, htmlAttributes: new { id = "loginLink" })</li>
+            </ul>
+        }
     </nav>
     <div class="container body-content">
         @RenderBody()
@@ -82,35 +101,42 @@
     </div>
 
 
-<script>
-    function Clock() {
-        var date = new Date();
-        this.year = date.getFullYear();
-        this.month = date.getMonth() + 1;
-        this.date = date.getDate();
-        this.day = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")[date.getDay()];
-        this.hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-        this.minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-        this.second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-        this.toString = function () {
-            return this.year + "年" + this.month + "月" + this.date + "日 " + this.hour + ":" + this.minute + ":" + this.second + " " + this.day;
-        };
+    <script>
+        $(document).ready(function () {
+            $("#loginout").click(function () {
+                $.ajax({
+                    type: 'post',
+                    url: "/Account/Login_out",
+                })
+            })
+        })
+        function Clock() {
+            var date = new Date();
+            this.year = date.getFullYear();
+            this.month = date.getMonth() + 1;
+            this.date = date.getDate();
+            this.day = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六")[date.getDay()];
+            this.hour = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+            this.minute = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+            this.second = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+            this.toString = function () {
+                return this.year + "年" + this.month + "月" + this.date + "日 " + this.hour + ":" + this.minute + ":" + this.second + " " + this.day;
+            };
 
-        this.toSimpleDate = function () {
-            return this.year + "-" + this.month + "-" + this.date;
-        };
+            this.toSimpleDate = function () {
+                return this.year + "-" + this.month + "-" + this.date;
+            };
 
-        this.toDetailDate = function () {
-            return this.year + "-" + this.month + "-" + this.date + " " + this.hour + ":" + this.minute + ":" + this.second;
-        };
-        this.display = function (ele) {
-            var clock = new Clock();
-            ele.innerHTML = clock.toString();
-            window.setTimeout(function () { clock.display(ele); }, 1000);
-        };
-    }
-    var clock = new Clock();
-    clock.display(document.getElementById("clock"));
-</script>
+            this.toDetailDate = function () {
+                return this.year + "-" + this.month + "-" + this.date + " " + this.hour + ":" + this.minute + ":" + this.second;
+            };
+            this.display = function (ele) {
+                var clock = new Clock();
+                ele.innerHTML = clock.toString();
+                window.setTimeout(function () { clock.display(ele); }, 1000);
+            };
+        }
+        var clock = new Clock();
+    </script>
 </body>
 </html>

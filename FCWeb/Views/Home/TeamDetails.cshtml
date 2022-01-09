@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<FCWeb.Models.CreateTeams>
 @{
     ViewBag.Title = "TeamDetails";
 }
@@ -6,7 +6,7 @@
 <div id="divHeader">
     <div class="container">
         <h1>
-            零点战队 <small class="hidden-xs">加入这支球队</small>
+            @Html.DisplayFor(modelItem => Model.ElementAt(0).TeamName) <small class="hidden-xs">加入这支球队</small>
         </h1>
     </div>
 </div>
@@ -23,19 +23,19 @@
         <table class="table table-bordered">
             <tr>
                 <td style="width: 100px;" rowspan="5">
-                    <img src="Http://www.qiulianwang.com/Content/Images/TeamLogo.png" alt="零点战队" style="width:80px;" />
+                    <img src="Http://www.qiulianwang.com/Content/Images/TeamLogo.png" alt="@Html.DisplayFor(modelItem => Model.ElementAt(0).TeamName)" style="width:80px;" />
                 </td>
                 <td style="width: 8em;">
                     <label for="Captain">队长</label>
                 </td>
                 <td>
-                    黄伟华
+                    @Html.DisplayFor(modelItem => Model.ElementAt(0).TeamcCptain)
                 </td>
                 <td style="width: 8em;">
                     <label for="CreateDate">创建时间</label>
                 </td>
                 <td>
-                    2013年8月26日
+                    @Html.DisplayFor(modelItem => Model.ElementAt(0).CreateTime)
                 </td>
             </tr>
             <tr>
@@ -43,7 +43,7 @@
                     <label for="PlayerCount">队员数目</label>
                 </td>
                 <td>
-                    50 人
+                    @ViewBag.Count 人
                 </td>
                 <td>
                     <label for="TotalMatchCount">球队比赛数目</label>
@@ -57,7 +57,7 @@
                     <label for="PublicType">球队公开类型</label>
                 </td>
                 <td>
-                    需要申请加入
+                    @Html.DisplayFor(modelItem => Model.ElementAt(0).TeamOpenType)
                 </td>
                 <td>
                     <label for="QQGroup">QQ群</label>
@@ -70,7 +70,7 @@
                     <label for="City">城市</label>
                 </td>
                 <td>
-                    宁波市
+                    @Html.DisplayFor(modelItem => Model.ElementAt(0).City)
                 </td>
                 <td>
                     <label for="Score">球队积分</label>
@@ -84,7 +84,7 @@
                     <label for="Responsor">赞助商名称</label>
                 </td>
                 <td colspan="3">
-                    <a href="">万凤珠宝</a>
+                    <a href="">@Html.DisplayFor(modelItem => Model.ElementAt(0).Sponsors)</a>
                 </td>
             </tr>
             <tr>
@@ -95,7 +95,7 @@
             <tr>
                 <td colspan="5">
                     <pre class="no-style">
-零点战队, 欢迎加入
+@Html.DisplayFor(modelItem => Model.ElementAt(0).TeamIntroduce)
             </pre>
                 </td>
             </tr>
@@ -137,7 +137,7 @@
 
 
         <div class="text-center">
-            <form action="/Teams/Join" class="form-signin" data-ajax="true" data-ajax-begin="handlerBegin" data-ajax-failure="handlerFailure" data-ajax-method="POST" data-ajax-success="handlerSuccess" id="form0" method="post">
+            <form action="" class="form-signin" data-ajax="true" data-ajax-begin="handlerBegin" data-ajax-failure="handlerFailure" data-ajax-method="POST" data-ajax-success="handlerSuccess" id="form0" method="post">
                 <input name="__RequestVerificationToken" type="hidden" value="HDtEYovZ6VdrUiPW53wBGGurd7gJhfrMelJD4CiLG3iSYuxvhiMDKdiKXkFNcb21HCkh-cpQlsfDJbtJm8lAMBHFluwGAS2cU4CXdi7N0d01" /><input data-val="true" data-val-number="The field 球队编号 must be a number." id="TeamId" name="TeamId" type="hidden" value="1" />            <input type="submit" value="申请加入" class="btn btn-primary btn-lg" />
             </form>
         </div>
