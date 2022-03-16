@@ -1,0 +1,146 @@
+﻿@model IEnumerable<FCWeb.Models.Schedules>
+@{
+    ViewBag.Title = "MatchInformation";
+    Layout = null;
+}
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Premium Bootstrap 4 Landing Page Template" />
+    <meta name="keywords" content="bootstrap 4, premium, marketing, multipurpose" />
+    <meta content="Themesdesign" name="author" />
+    <title>@ViewBag.Title - 球队管理系统</title>
+    <!-- favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <!-- Pe-7 icon -->
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <!--Slider-->
+    <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
+    <!-- css -->
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<div id="divHeader">
+    <div class="container">
+        <h1>
+            @Model.ElementAt(0).TeamName<small class="hidden-xs">赛程信息</small>
+        </h1>
+    </div>
+</div>
+
+<div id="divContent">
+    <div class="container">
+        <table class="table table-bordered">
+            <tr>
+                @*<td style="width: 100px;" rowspan="5">
+
+            </td>*@
+                <td style="width: 8em;">
+                    <label for="MatchType">比赛类型</label>
+                </td>
+                <td>
+                    @Model.ElementAt(0).MatchType
+                </td>
+                <td style="width: 8em;">
+                    <label for="CreateDate">比赛时间</label>
+                </td>
+                <td>
+                    @Model.ElementAt(0).SdulsTime
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="PlayerCount">比赛地点</label>
+                </td>
+                <td>
+                    @Model.ElementAt(0).Place
+                </td>
+                <td>
+                    <label for="TotalMatchCount">比赛对手</label>
+                </td>
+                <td>
+                    @Model.ElementAt(0).Rival
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="PublicType">赛事费用</label>
+                </td>
+                <td>
+                    &#165;@Model.ElementAt(0).SduFees
+                </td>
+                <td>
+                    <label for="QQGroup">每人费用</label>
+                </td>
+                <td>
+                    &#165;@Model.ElementAt(0).PersonFees
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="Responsor">赛事状态</label>
+                </td>
+                <td>
+                    <a>@Model.ElementAt(0).Status</a>
+                </td>
+                <td>
+                    <label for="Responsor">比赛结果</label>
+                </td>
+                <td>
+                    <a>@Model.ElementAt(0).Result</a>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <span class="glyphicon glyphicon-flag text-info"></span> <label for="Description">报名人数： @Model.ElementAt(0).Participate/@Model.ElementAt(0).LimitNum</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <pre class="no-style">
+@foreach (KeyValuePair<int, List<string>> d in ViewBag.bm)
+{
+    if (d.Key == Model.ElementAt(0).ID)
+    {
+        foreach (string k in d.Value)
+        {
+            @k<br>
+        }
+    }
+}
+
+            </pre>
+                </>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <span class="glyphicon glyphicon-eye-open"></span> <label for="Rules">备注</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+                    <pre class="no-style">
+@Model.ElementAt(0).Note
+            </pre>
+                </td>
+            </tr>
+
+        </table>
+
+
+        <div class="text-center">
+            <form action="" class="form-signin" data-ajax="true" data-ajax-begin="handlerBegin" data-ajax-failure="handlerFailure" data-ajax-method="POST" data-ajax-success="handlerSuccess" id="form0" method="post">
+                <input type="submit" value="报名参加" class="btn btn-primary btn-lg">
+            </form>
+        </div>
+    </div>
+</div>
+
+

@@ -5,17 +5,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FCWeb.Models
 {
-    public class Logins
+    public class Users
     {
         [Key]
         public int ID { get; set; }
         [Required]
-        [Display(Name = "用户名")]
-        public string UserName { get; set; }
+        [Display(Name = "账号")]
+        public string Account { get; set; }
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "密码")]
         public string Password { get; set; }
+        [Display(Name ="用户名")]
+        public string UserName { get; set; }
+        [Display(Name = "位置")]
+        public string Location { get; set; }
+        [Display(Name = "年龄")]
+        public int Age { get; set; }
+        [Display(Name = "性别")]
+        public string Sex { get; set; }
         [Display(Name = "登录状态")]
         public string Status { get; set; }
         [Display(Name ="所属球队")]

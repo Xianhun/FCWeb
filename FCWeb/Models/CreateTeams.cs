@@ -20,7 +20,7 @@ namespace FCWeb.Models
         [Display(Name = "城市")]
         public string City { get; set; }
         [Display(Name ="队长")]
-        public string TeamcCptain { get; set; }
+        public string TeamCptain { get; set; }
         [Display(Name = "赞助商")]
         public string Sponsors { get; set; }
         [Display(Name = "创建时间")]

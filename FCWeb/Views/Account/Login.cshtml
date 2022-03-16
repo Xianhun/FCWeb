@@ -158,7 +158,7 @@
             </div>*@
             <div class="login-login">
                 @*<span id="otherLogin">快捷登录</span>*@
-                <span id="phoneLogin">手机注册</span>
+                <span id="phoneLogin">注册</span>
                 <span id="ToLogin">返回登录</span>
             </div>
         </div>
@@ -481,8 +481,8 @@
                     let pwd = $('#regpwd').val()
                     $.ajax({
                         type: 'post',
-                        url: "/Account/registered_Validation",
-                        data: { User_Name: phone, Password:pwd },
+                        url: "/Account/Registered_Validation",
+                        data: { UserID: phone, Password:pwd },
                         dataType: 'json',
                         success: (res) => {
                             let code = res
@@ -522,7 +522,7 @@
                     $.ajax({
                         type: 'post',
                         url: "/Account/Login_Validation",
-                        data: { User_Name:phone, Password:pwd },
+                        data: { UserID:phone, Password:pwd },
                         dataType: 'json',
                         success: responce => {
                             login.text('登录')

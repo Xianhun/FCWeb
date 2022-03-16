@@ -16,20 +16,6 @@ namespace FCWeb.Controllers
         {
             return View();
         }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
         public ActionResult CreateTeam()
         {
             return View();
@@ -55,17 +41,34 @@ namespace FCWeb.Controllers
                         City = City,
                         CreateTime = Time,
                         Sponsors = "无",
-                        TeamcCptain = cptain
+                        TeamCptain = cptain
                     };
                     db.CreateTeam.Add(createTeam);
-                    string UserName = Session["User"].ToString();
-                    var result = db.Login.Where(s => s.UserName == UserName).FirstOrDefault();
+                    string Account = Session["User"].ToString();
+                    var result = db.User.Where(s => s.Account == Account).FirstOrDefault();
                     if(result.TeamName!=null)
                     {
                         throw new Exception("您已加入球队！");
                     }
                     result.TeamName = TeamName;
                     db.Entry(result).State = EntityState.Modified;
+                    db.SaveChanges();
+                    Session["TeamName"] = TeamName;
+                    TeamMembers teamMembers = new TeamMembers
+                    {
+                        TeamName = TeamName,
+                        Account = Account,
+                        UserName = cptain,
+                        Position = "队员",
+                        Location = null,//个人信息中心补充
+                        Appearance = 0,
+                        Attendance = "0%",
+                        B_Appointment = "0%",
+                        LeaveRate = "0%",
+                        LastAttendance = null,
+                        DateTimes = DateTime.Now
+                    };
+                    db.TeamMember.Add(teamMembers);
                     db.SaveChanges();
                     var script = String.Format("<script>alert('创建成功');location.href='{0}'</script>", Url.Action("Index", "Home/CreateTeam"));
                     return Content(script, "text/html");
@@ -81,7 +84,6 @@ namespace FCWeb.Controllers
                 var script = String.Format("<script>alert('请登录');location.href='{0}'</script>", Url.Action("Index", "Account/Login"));
                 return Content(script, "text/html");
             }
-            
         }
         public ActionResult JoinTeam()
         {
@@ -92,12 +94,13 @@ namespace FCWeb.Controllers
             try
             {
                 var teamName = db.CreateTeam.Where(s => s.ID == id).Select(s => s.TeamName).FirstOrDefault();
-                if(teamName==null)
+                string TeamOpenType = db.CreateTeam.Where(s => s.ID == id).Select(s => s.TeamOpenType).FirstOrDefault();
+                if (teamName==null)
                 {
                     throw new Exception("球队不存在");
                 }
                 var teamCaptain = db.CreateTeam.Where(s => s.ID == id).ToList();
-                var numberCount = db.Login.Where(s => s.TeamName == teamName).Count();
+                var numberCount = db.User.Where(s => s.TeamName == teamName).Count();
                 ViewBag.Count = numberCount;
                 return View(teamCaptain);
             }
@@ -114,21 +117,56 @@ namespace FCWeb.Controllers
             {
                 try
                 {
-                    int TeamID = db.CreateTeam.Find(id).ID;
-                    string UserName = Session["User"].ToString();
-                    string TeamName = db.CreateTeam.Where(s => s.ID == TeamID).Select(s => s.TeamName).FirstOrDefault();
-                    var result = db.Login.Where(s => s.UserName == UserName).FirstOrDefault();
+                    string Account = Session["User"].ToString();
+                    string UserName= db.User.Where(s=>s.Account==Account).Select(s=>s.UserName).FirstOrDefault();
+                    string TeamName = db.CreateTeam.Where(s => s.ID == id).Select(s => s.TeamName).FirstOrDefault();
+                    string TeamOpenType = db.CreateTeam.Where(s => s.ID == id).Select(s => s.TeamOpenType).FirstOrDefault();
+                    string Sex = db.User.Where(s => s.Account == Account).Select(s => s.Sex).FirstOrDefault();
+                    var result = db.User.Where(s => s.Account == Account).FirstOrDefault();
                     if (result.TeamName != null)
                     {
                         throw new Exception("您已加入球队！");
                     }
-                    else
+                    else if (TeamOpenType == "任何人可以加入")
                     {
                         result.TeamName = TeamName;
                         db.Entry(result).State = EntityState.Modified;
+                        TeamMembers teamMembers = new TeamMembers
+                        {
+                            TeamName = TeamName,
+                            Account = Account,
+                            UserName = Account,//UserName,
+                            Position = "队员",
+                            Location = null,//个人信息中心补充
+                            Sex=Sex,
+                            Appearance = 0,
+                            Attendance = "0%",
+                            B_Appointment = "0%",
+                            LeaveRate = "0%",
+                            LastAttendance = null,
+                            DateTimes=DateTime.Now
+                        };
+                        db.TeamMember.Add(teamMembers);
                         db.SaveChanges();
-                        var script = String.Format("<script>alert('申请成功');location.href='{0}'</script>", Url.Action("Index", "Home/JoinTeam"));
+                        Session["TeamName"] = TeamName;
+                        string script = String.Format("<script>alert('成功加入球队');location.href='{0}'</script>", Url.Action("Index", "Home/JoinTeam"));
                         return Content(script, "text/html");
+                    }
+                    else if (TeamOpenType == "需要申请加入")
+                    {
+                        ApplicationForm applicationForm = new ApplicationForm
+                        {
+                            TeamName = TeamName,
+                            UserName = UserName,
+                            ApplicationStatus = "申请中"
+                        };
+                        db.ApplicationForms.Add(applicationForm);
+                        var script = String.Format("<script>alert('申请成功，请耐心等候验证');location.href='{0}'</script>", Url.Action("Index", "Home/JoinTeam"));
+                        return Content(script, "text/html");
+                    }
+                    else
+                    {
+                        throw new Exception("球队已设置为不能加入");
                     }
                 }
                 catch(Exception ex)

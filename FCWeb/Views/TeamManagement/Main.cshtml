@@ -1,39 +1,352 @@
-﻿
+﻿@model IEnumerable<FCWeb.Models.Schedules>
 @{
     ViewBag.Title = "Main";
+    Layout = null;
 }
-
-<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>首页</title>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <link rel="stylesheet" href="../layui/css/layui.css" media="all" />
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
+    <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <!--Slider-->
+    <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
     <style type="text/css">
-
-        .home_content {
-            text-align: center;
-            padding-top: 12%;
+        .attend-item {
+            margin: 5px 5px;
+            padding: 5px;
+            width: 7em;
+            display: block;
         }
-
-            .home_content h2 {
-                padding-top: 30px;
-                font-size: 20px;
-            }
     </style>
 </head>
 <body>
-    <div class="home_content">
-        <img src="../images/cube.png" alt="" />
-        <h2>欢迎使用</h2>
-        <p>注意：需要在服务端预览，本地预览会有跨域问题</p>
+    @if (ViewBag.Check == true)
+    {
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-2 col-sm-3 hidden-xs">
+                        <div class="panel bg-default text-center bg-default">
+                            <div class="panel-body" style="background-color:#3c5868">
+                                <br class="hidden-md hidden-xs hidden-sm" />
+                                <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497" class="text-white link-none">
+                                    <strong>
+                                        @Html.DisplayFor(modelItem => Model.ElementAt(0).SdulsTime.Day)
+                                    </strong>
+                                    <br>
+                                    <span>
+                                        @{
+                                            string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
+                                        }
+                                        @strWeek
+                                    </span>
+                                    <br />
+                                    <div class="hidden-md hidden-xs hidden-sm">
+                                        <small class="text-muted">
+                                            @{
+                                                var NearHour = Model.ElementAt(0).SdulsTime - DateTime.Now;
+                                                string t = "";
+                                            }
+                                            @{ if (NearHour.Days > 0)
+                                                {
+                                                    t = @NearHour.Days.ToString() + "天" + @NearHour.Hours.ToString() + "小时后";
+                                                }
+                                                else
+                                                {
+                                                    t = NearHour.Hours + "小时后";
+                                                }
+                                            }
+                                            @t
+                                        </small>
+                                    </div>
+                                    <br />
+
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-sm-6 col-xs-12">
+                        <div>
+                            <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497" class="link-none">
+                                <strong>
+                                    @Model.ElementAt(0).SdulsTime
+                                </strong>
+                            </a>
+                            <span class="text-muted">
+                                (@t)
+                            </span>
+                        </div>
+                        <div>
+                            比赛地点： @Model.ElementAt(0).Place
+                            <span id="LocationCoordinate" class="glyphicon glyphicon-map-marker text-info cursor-hand"></span>
+                        </div>
+                        <div>
+                            参赛人数： @Model.ElementAt(0).Participate / @Model.ElementAt(0).LimitNum
+                        </div>
+                        <div>
+                            赛程费用： &#165;@Model.ElementAt(0).SduFees
+                        </div>
+                        <div>
+                            每人费用： &#165;@Model.ElementAt(0).PersonFees
+                        </div>
+                        <div>
+                            比赛对手： @Model.ElementAt(0).Rival
+                        </div>
+                        <div>
+                            比赛结果：@Model.ElementAt(0).Result
+                        </div>
+                    </div>
+                    @*<div id="divBindImg2" class="col-md-2 col-sm-3 hidden-xs">
+                            <img src="//oss.qiulianwang.com/Content/images/Loading.gif" />
+                        </div>*@
+
+                </div>
+                <hr />
+                <div class="text-center">
+
+                    <ul id="ulAttendUsers" class="list-inline">
+                        @foreach (KeyValuePair<int, List<string>> d in ViewBag.bm)
+                        {
+                            if (d.Key == Model.ElementAt(0).ID)
+                            {
+                                foreach (string k in d.Value)
+                                {
+                                    <li>
+                                        <span class="attend-item label label-default" style="background-color:darkorange" title="还有空余位置" data-toggle="tooltip">
+                                            @k
+                                        </span>
+                                    </li>
+                                }
+                            }
+                        }
+                        @{
+                            for (int i = 0; i < Model.ElementAt(0).LimitNum - Model.ElementAt(0).Participate; i++)
+                            {
+                                <li>
+                                    <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                        空
+                                    </span>
+                                </li>
+                                if (i+ Model.ElementAt(0).Participate == 10)
+                                {
+                                    <li>
+                                        <span class="attend-item label label-default" title="还有很多空余位置" data-toggle="tooltip">
+                                            ……
+                                        </span>
+                                    </li>
+                                    break;
+                                }
+                            }
+                        }
+
+                        @*<li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
+                                    空
+                                </span>
+                            </li>
+                            <li>
+                                <span class="attend-item label text-help" title="还有很多空余位置" data-toggle="tooltip">
+                                    ……
+                                </span>
+                            </li>*@
+                    </ul>
+                    <script type="text/javascript">
+                        $('#ulAttendUsers').find('[data-toggle]').tooltip();
+                    </script>
+
+                </div>
+                <hr />
+                <div class="pull-right">
+                    <span class="">
+                        <a id="aAttendLink" href="javascript:document.getElementById('attendMatch').submit()" class="" title="我要报名参加比赛" data-toggle="tooltip">
+                            <span class="glyphicon glyphicon-ok-circle text-success"></span>
+                            <span class="hidden-xs">我要</span>报名
+                        </a>
+                        |
+                    </span>
+
+                    <span class="hidden">
+                        <a href="javascript:void(0)" title="取消报名" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Match/UnAttend/42497')">
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                            取消<span class="hidden-xs">报名</span>
+                        </a>
+                        |
+                    </span>
+                    <span class="hidden">
+                        <a href="javascript:void(0)" title="我要请假" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Match/RequestLeave/42497')">
+                            <span class="glyphicon glyphicon-remove-circle"></span>
+                            <span class="hidden-xs">我要</span>请假
+                        </a>
+                        |
+                    </span>
+                    <span class="hidden-xs">
+                        <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497">
+                            <span class="glyphicon glyphicon-eye-open text-info"></span>&nbsp;查看详情
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+                <div class="center-block" style="width:200px;">
+                    <a href="/TeamManagement//MatchCreate" class="btn btn-primary btn-block" style="padding:45px;">
+                        <span class="glyphicon glyphicon-plus-sign"></span><br />
+                        添加赛程
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    }
+
+
+
+    <div class="helper-content visible-xs"></div>
+
+    @*<br />
+        <div id="divUnReadMessage">
+            <div class="panel panel-default">
+                <div class="panel-body text-center">
+                    <img src="//oss.qiulianwang.com/Content/images/Loading.gif" />
+                </div>
+            </div>
+        </div>*@
+
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-lg-4">
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;公告
+                    <a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">
+                    </a>
+                </div>
+                <div id="myModalLabel" class="panel-body text-center" style="min-height:170px;">
+                    <pre class="no-style">
+无
+</pre>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-4">
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;公告
+                    <a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">
+                    </a>
+                </div>
+                <div id="myModalLabel" class="panel-body text-center" style="min-height:170px;">
+                    <pre class="no-style">
+无
+</pre>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6 col-sm-6 col-lg-4">
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;公告
+                    <a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">
+                    </a>
+                </div>
+                <div id="myModalLabel" class="panel-body text-center" style="min-height:170px;">
+                    <pre class="no-style">
+无
+</pre>
+                </div>
+            </div>
+
+        </div>
+        @*<div id="divMVPPlayers" class="col-md-6 col-sm-6 col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                        <img src="//oss.qiulianwang.com/Content/images/Loading.gif" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 hidden-xs">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-phone"></i> 扫描二维码绑定微信
+                    </div>
+                    <div id="divBindImg" class="panel-body text-center">
+                        <img src="//oss.qiulianwang.com/Content/images/Loading.gif" />
+                    </div>
+                </div>
+            </div>*@
+
     </div>
 </body>
 </html>
+
 

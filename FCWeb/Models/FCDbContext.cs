@@ -21,8 +21,12 @@ namespace FCWeb.Models
         //的详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkId=390109。
 
         // public virtual DbSet<MyEntity> MyEntities { get; set; }
-        public virtual DbSet<Logins> Login { get; set; }
+        public virtual DbSet<Users> User { get; set; }
         public virtual DbSet<CreateTeams> CreateTeam { get; set; }
+        public virtual DbSet<Schedules> Schedule { get; set; }
+        public virtual DbSet<SignUp> SignUps { get; set; }
+        public virtual DbSet<TeamMembers> TeamMember { get; set; }
+        public virtual DbSet<ApplicationForm> ApplicationForms { get; set; }
     }
 
     //public class MyEntity

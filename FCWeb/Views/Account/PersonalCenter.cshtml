@@ -1,0 +1,232 @@
+﻿@model FCWeb.Models.Users
+@*@{
+        ViewBag.Title = "PersonalCenter";
+    }
+    <div style="height:35px;margin-top: 28px;margin-bottom: 12px;">
+        <div style="float:left;margin-top:-3px;">
+            <span style="font-size:28px;margin-right:30px;">个人中心</span>
+        </div>
+    </div>
+
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            <hr />
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserName, "用户名", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control ", @id = "UserName" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, "密码", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @id = "Password" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Location, "场上位置", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control", @id = "Location" } })
+                    @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Sex, "性别", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Sex, new { htmlAttributes = new { @class = "form-control", @id = "Sex" } })
+                    @Html.ValidationMessageFor(model => model.Sex, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Age, "年龄", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control", @id = "Age" } })
+                    @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input id="modify" class="btn btn-primary" type="button" style="font-size:16px;" value="修 改" />
+                    <input id="save" type="submit" value="保 存" class="btn btn-primary" style="font-size:16px ;" disabled />
+                </div>
+            </div>
+
+        </div>
+    }
+    <script>
+        $("#modify").click(function () {
+            document.getElementById("modify").disabled = true;
+            document.getElementById("save").disabled = false;
+            document.getElementById("username").disabled = false;
+            document.getElementById("email").disabled = false;
+            $("#email").removeAttr("readonly");
+        });
+    </script>*@
+<body class="gray-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, 微软雅黑, Tahoma, Arial, sans-serif !important;">
+    <section class="section-content">
+        <div class="row">
+            <div class="col-sm-9 about">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title ibox-title-gray dashboard-header">
+                        <h1>个人信息</h1>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#user_info" data-toggle="tab" aria-expanded="true">基本资料</a></li>
+                                <li><a href="#modify_password" data-toggle="tab" aria-expanded="false">修改密码</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <br />
+                                <!--用户信息-->
+                                <div class="tab-pane active" id="user_info">
+                                    <form class="form-horizontal" id="form-user-edit">
+                                        <!--隐藏ID-->
+                                        <input name="id" id="id" type="hidden">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.UserName, "用户名：", htmlAttributes: new { @class = "col-sm-2 control-label" })
+                                            <div class="col-sm-10">
+                                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control ", @id = "UserName" } })
+                                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.Sex, "性别：", htmlAttributes: new { @class = "col-sm-2 control-label" })
+                                            <div class="col-sm-10">
+                                                @Html.DropDownList("Sex", new SelectList(ViewBag.Sex_value, "Value", "Text"), new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Sex, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.Age, "年龄：", htmlAttributes: new { @class = "col-sm-2 control-label" })
+                                            <div class="col-sm-10">
+                                                @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control", @id = "Age" } })
+                                                @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.Location, "场上位置：", htmlAttributes: new { @class = "col-sm-2 control-label" })
+                                            <div class="col-sm-10">
+                                                @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control", @id = "Location" } })
+                                                @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        @*<div class="form-group">
+                                                <label class="col-sm-2 control-label">性别：</label>
+                                                <div class="col-sm-10">
+                                                    <div class="radio-box">
+                                                        <input type="radio" id="radio1" th:field="*{sex}" name="sex" value="0">
+                                                        <label for="radio1">男</label>
+                                                        <input type="radio" id="radio2" th:field="*{sex}" name="sex" value="1">
+                                                        <label for="radio2">女</label>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="button" class="btn btn-sm btn-primary" id="Center"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!--修改密码-->
+                                <div class="tab-pane" id="modify_password">
+                                    <form class="form-horizontal" id="form-user-resetPwd">
+                                        <br />
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">旧密码：</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" name="oldPassword"  id="oldPassword" placeholder="请输入旧密码">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">新密码：</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="请输入新密码">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">确认密码：</label>
+                                            <div class="col-sm-10">
+                                                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="请确认密码">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-2 col-sm-10">
+                                                <button type="button" class="btn btn-sm btn-primary" id="password"><i class="fa fa-check"></i>保 存</button>&nbsp;
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <th:block th:include="include :: footer" />
+</body>
+<script>
+    let center = $("#Center");
+    let password = $("#password");
+    password.click(function () {
+        let oldPassword = $("#oldPassword").val();
+        let newPassword = $("#newPassword").val();
+        let confirmPassword = $("#confirmPassword").val();
+        $.ajax({
+            type: 'post',
+            url: "/Account/Password_Validation",
+            data: { oldPassword: oldPassword, newPassword: newPassword, confirmPassword: confirmPassword },
+            dataType: 'json',
+            success: (res) => {
+                let code = res
+                if (code == "修改成功") {
+                    alert(code);
+                    $("#oldPassword").val("");
+                    $("#newPassword").val("");
+                    $("#confirmPassword").val("");
+                } else {
+                    alert(code);
+                    $("#oldPassword").val("");
+                    $("#newPassword").val("");
+                    $("#confirmPassword").val("");
+                }
+            }
+        })
+    })
+    center.click(function () {
+        let UserName = $("#UserName").val();
+        let Sex = $("#Sex").val();
+        let Age = $("#Age").val();
+        let Location = $("#Location").val();
+        $.ajax({
+            type: 'post',
+            url: "/Account/Center_Validation",
+            data: { UserName: UserName, Sex: Sex, Age: Age, Location: Location },
+            dataType: 'json',
+            success: (res) => {
+                let code = res
+                if (code == "保存成功") {
+                    alert(code);
+                } else {
+                    alert(code);
+                }
+            }
+        })
+    })
+</script>

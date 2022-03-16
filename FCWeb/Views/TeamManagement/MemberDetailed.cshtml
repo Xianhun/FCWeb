@@ -1,0 +1,82 @@
+﻿@model IEnumerable<FCWeb.Models.TeamMembers>
+@{
+    ViewBag.Title = "MemberDetailed";
+    Layout = null;
+}
+<head>
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    @*<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />*@
+    <link href="~/Content/TeamManagement/font.css" rel="stylesheet" />
+    <link href="~/Content/TeamManagement/xadmin.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <!--Slider-->
+    <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<div class="x-body">
+    <fieldset class="layui-elem-field">
+        <legend>球员信息</legend>
+        <div class="layui-field-box">
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th colspan="4" scope="col">球员昵称：@Model.ElementAt(0).UserName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th width="25%"><b>球员账号</b></th>
+                        <td width="25%"><span id="lbServerName">@Model.ElementAt(0).Account</span></td>
+                        <th width="25%"><b>职位</b></th>
+                        <td width="25%">@Model.ElementAt(0).Position</td>
+                    </tr>
+                    <tr>
+                        <td><b>年龄</b></td>
+                        <td>@Model.ElementAt(0).Age</td>
+                        <td><b>性别</b></td>
+                        <td>@Model.ElementAt(0).Sex</td>
+                    </tr>
+                    <tr>
+                        <td><b>场上位置</b></td>
+                        <td>@Model.ElementAt(0).Location</td>
+                        <td><b>出场次数</b> </td>
+                        <td>@Model.ElementAt(0).Appearance</td>
+                    </tr>
+                    <tr>
+                        <td><b>出勤率</b> </td>
+                        <td>@Model.ElementAt(0).Attendance</td>
+                        <td><b>鸽子率 </b></td>
+                        <td>@Model.ElementAt(0).B_Appointment</td>
+                    </tr>
+                    <tr>
+                        <td><b>请假率 </b></td>
+                        <td>@Model.ElementAt(0).LeaveRate</td>
+                        <td><b>上次出勤</b> </td>
+                        <td>@Model.ElementAt(0).LastAttendance</td>
+                    </tr>
+                    <tr>
+                        <td><b>加入球队时间</b> </td>
+                        <td>@Model.ElementAt(0).DateTimes</td>
+                        <td><b>所属球队</b> </td>
+                        <td>@Model.ElementAt(0).TeamName</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+    <div class="text-center">
+            <button type="submit" class="btn btn-primary" id="back">&nbsp;返回&nbsp;</button>
+    </div>
+</div>
+<script>
+    $("#back").click(function () {
+        history.back(-1);
+    });
+</script>
+
