@@ -23,6 +23,8 @@ namespace FCWeb.Models
         public string Sex { get; set; }
         [Display(Name = "场上位置")]
         public string Location { get; set; }
+        [Display(Name = "花费")]
+        public decimal Cost { get; set; }
         [Display(Name = "出场次数")]
         public int Appearance { get; set; }
         [Display(Name = "出勤率")]

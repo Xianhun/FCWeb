@@ -1,0 +1,64 @@
+﻿@model IEnumerable<FCWeb.Models.Users>
+@{
+    ViewBag.Title = "ApplicationDetailed";
+    Layout = null;
+}
+
+<head>
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    @*<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />*@
+    <link href="~/Content/TeamManagement/font.css" rel="stylesheet" />
+    <link href="~/Content/TeamManagement/xadmin.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <!--Slider-->
+    <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+@{ 
+    int id = ViewBag.ID;
+}
+<div class="x-body">
+    <fieldset class="layui-elem-field">
+        <legend>球员信息</legend>
+        <div class="layui-field-box">
+            <table class="layui-table">
+                <thead>
+                    <tr>
+                        <th colspan="4" scope="col">球员昵称：@Model.ElementAt(0).UserName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th width="25%"><b>球员账号</b></th>
+                        <td width="25%"><span id="lbServerName">@Model.ElementAt(0).Account</span></td>
+                        <th width="25%"><b>场上位置</b></th>
+                        <td width="25%">@Model.ElementAt(0).Location</td>
+                    </tr>
+                    <tr>
+                        <td><b>年龄</b></td>
+                        <td>@Model.ElementAt(0).Age</td>
+                        <td><b>性别</b></td>
+                        <td>@Model.ElementAt(0).Sex</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
+    <div class="text-center">
+        <div class="col-md-12 col-sm-12">
+            <form action="" name="form1" data-ajax-failure="handlerFailure" id="Delete" method="post">
+                <input  class="btn btn-primary" value="通过申请" type="submit" />
+                <input class="btn btn-default" value="拒绝申请" type="submit" onclick="form1.action = '../Delete/@id'; form1.submit();" />
+                @*<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span>&nbsp;通过申请&nbsp;&nbsp;</button>
+                <button type="button" class="btn btn-default" id="Delete"><span class="glyphicon glyphicon-remove"></span>&nbsp;拒绝申请&nbsp;&nbsp;</button>*@
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -45,6 +45,7 @@ namespace FCWeb.Controllers
                     };
                     db.CreateTeam.Add(createTeam);
                     string Account = Session["User"].ToString();
+                    string Location = db.User.Where(s => s.Account == Account).Select(s => s.Location).FirstOrDefault();
                     var result = db.User.Where(s => s.Account == Account).FirstOrDefault();
                     if(result.TeamName!=null)
                     {
@@ -59,13 +60,14 @@ namespace FCWeb.Controllers
                         TeamName = TeamName,
                         Account = Account,
                         UserName = cptain,
-                        Position = "队员",
-                        Location = null,//个人信息中心补充
+                        Position = "队长",
+                        Location = Location,
                         Appearance = 0,
-                        Attendance = "0%",
-                        B_Appointment = "0%",
-                        LeaveRate = "0%",
-                        LastAttendance = null,
+                        Cost = 0,
+                        Attendance = "0",
+                        B_Appointment = "0",
+                        LeaveRate = "0",
+                        LastAttendance = "无",
                         DateTimes = DateTime.Now
                     };
                     db.TeamMember.Add(teamMembers);
@@ -135,15 +137,16 @@ namespace FCWeb.Controllers
                         {
                             TeamName = TeamName,
                             Account = Account,
-                            UserName = Account,//UserName,
+                            UserName = UserName,//UserName,
                             Position = "队员",
                             Location = null,//个人信息中心补充
-                            Sex=Sex,
+                            Sex = Sex,
+                            Cost = 0,
                             Appearance = 0,
-                            Attendance = "0%",
-                            B_Appointment = "0%",
-                            LeaveRate = "0%",
-                            LastAttendance = null,
+                            Attendance = "0",
+                            B_Appointment = "0",
+                            LeaveRate = "0",
+                            LastAttendance = "无",
                             DateTimes=DateTime.Now
                         };
                         db.TeamMember.Add(teamMembers);

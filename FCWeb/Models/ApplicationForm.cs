@@ -6,6 +6,9 @@ using System.Web;
 
 namespace FCWeb.Models
 {
+    /// <summary>
+    /// 球队申请
+    /// </summary>
     public class ApplicationForm
     {
         public int ID { get; set; }

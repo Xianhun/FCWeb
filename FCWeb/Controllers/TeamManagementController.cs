@@ -224,6 +224,13 @@ namespace FCWeb.Controllers
                         //重新报名人数统计
                         pt.Participate = db.SignUps.Where(s => s.SignUpStatus == "报名中" && s.SchedulesID == id).Count();
                         db.Entry(pt).State = EntityState.Modified;
+                        var cost = db.TeamMember.Where(s => s.Account == UserID).Select(s => s.Cost).FirstOrDefault();
+                        var person_cost = db.Schedule.Where(s => s.ID == id).Select(s => s.PersonFees).FirstOrDefault();
+                        var costup = cost + person_cost;
+                        TeamMembers teamMembers = new TeamMembers();
+                        teamMembers = db.TeamMember.Where(s => s.Account == UserID && s.TeamName == TeamName).FirstOrDefault();
+                        teamMembers.Cost = costup;
+                        db.Entry(teamMembers).State = EntityState.Modified;
                         db.SaveChanges();
 
                         var script = String.Format("<script>alert('报名成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
@@ -250,10 +257,12 @@ namespace FCWeb.Controllers
             try
             {
                 string TeamName = Session["TeamName"].ToString();
+                int total_match = db.Schedule.Where(s => s.TeamName == TeamName&&s.Status=="已结束").Count();
                 List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
+                ViewBag.TM = total_match;
                 return View(teammember);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var script = String.Format("<script>alert('" + ex.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
                 return Content(script, "text/html");
@@ -265,6 +274,75 @@ namespace FCWeb.Controllers
             string TeamName = Session["TeamName"].ToString();
             List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName&&s.ID==id).ToList();
             return View(teammember);
+        }
+        public ActionResult Application()
+        {
+            string TeamName = Session["TeamName"].ToString();
+            List<ApplicationForm> applicationForms = db.ApplicationForms.Where(s => s.TeamName == TeamName && s.ApplicationStatus=="申请中").ToList();
+            List<Users> userinFormation = new List<Users>();
+            for (int i=0;i<applicationForms.Count;i++)
+            {
+                string UserName = applicationForms[i].UserName;
+                var Account= db.User.Where(s => s.UserName == UserName).Select(s => s.Account).FirstOrDefault();
+                userinFormation.Add(db.User.Where(s => s.Account == Account).FirstOrDefault());
+            }
+            return View(userinFormation);
+        }
+        public ActionResult ApplicationDetailed(int id)
+        {
+            string TeamName = Session["TeamName"].ToString();
+            List<Users> userinFormation=db.User.Where(s => s.ID == id).ToList();
+            ViewBag.ID = id;
+            return View(userinFormation);
+        }
+        [HttpPost]
+        public ActionResult ApplicationDetailed(int id, EventArgs e)
+        {
+            string TeamName = Session["TeamName"].ToString();
+            string Account = db.User.Where(s => s.ID == id).Select(s => s.Account).FirstOrDefault();
+            string UserName = db.User.Where(s => s.ID == id).Select(s => s.UserName).FirstOrDefault();
+            string Sex = db.User.Where(s => s.ID == id).Select(s => s.Sex).FirstOrDefault();
+            string Location = db.User.Where(s => s.ID == id).Select(s => s.Location).FirstOrDefault();
+            TeamMembers teamMembers = new TeamMembers
+            {
+                TeamName = TeamName,
+                Account = Account,
+                UserName = UserName,
+                Position = "队员",
+                Location = Location,
+                Sex = Sex,
+                Cost = 0,
+                Appearance = 0,
+                Attendance = "0",
+                B_Appointment = "0",
+                LeaveRate = "0",
+                LastAttendance = "无",
+                DateTimes = DateTime.Now
+            };
+            db.TeamMember.Add(teamMembers);
+            var FormID = db.ApplicationForms.Where(s => s.UserName == UserName).Select(s => s.ID).FirstOrDefault();
+            ApplicationForm Form = db.ApplicationForms.Find(FormID);
+            db.ApplicationForms.Remove(Form);
+            db.SaveChanges();
+            var script = String.Format("<script>alert('申请通过');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
+            return Content(script, "text/html");
+        }
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            ApplicationForm Form = new ApplicationForm();
+            var UserName = db.User.Where(s => s.ID == id).Select(s => s.UserName).FirstOrDefault();
+            Form = db.ApplicationForms.Where(s => s.UserName == UserName).FirstOrDefault();
+            Form.ApplicationStatus = "已拒绝";
+            db.Entry(Form).State = EntityState.Modified;
+            db.SaveChanges();
+            var script = String.Format("<script>alert('已拒绝');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
+            return Content(script, "text/html");
+        }
+        
+        public ActionResult Createplayers()
+        {
+            return View();
         }
     }
 }

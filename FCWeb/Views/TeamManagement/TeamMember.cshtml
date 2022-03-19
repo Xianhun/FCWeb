@@ -98,10 +98,10 @@
                                 <span class="glyphicon glyphicon-user"></span>
                                 <span class="hidden-xs">队员列表</span>
                             </a>
-                            <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Players/List/Requesting" class="btn btn-default ">
+                            @*<a href="/Team/%E8%8A%AC%E8%8A%B3GD/Players/List/Requesting" class="btn btn-default ">
                                 <span class="glyphicon glyphicon-transfer"></span>
                                 <span class="hidden-xs">申请中</span>
-                            </a>
+                            </a>*@
                             @*<a href="/Team/%E8%8A%AC%E8%8A%B3GD/Players/List/Locked" class="btn btn-default ">
                                     <span class="glyphicon glyphicon-lock"></span>
                                     <span class="hidden-xs">锁定中</span>
@@ -128,7 +128,7 @@
                     <th style="width: 20px;" class="hidden-xs"></th>
                     <th style="width: 3em;" class="text-right">
                         @*<a href="/Team/%E8%8A%AC%E8%8A%B3GD/Players">N.</a>
-                        <small class="glyphicon glyphicon-arrow-up"></small>*@
+                            <small class="glyphicon glyphicon-arrow-up"></small>*@
                     </th>
                     <th style="width: 1em;"></th>
                     <th class="realname-length">
@@ -186,11 +186,21 @@
                                 @i
                             </td>
                             <td class="hidden-xs">
-                                <span class="glyphicon glyphicon-cloud text-muted" style="color: #e2e2e2" title="本地球员" data-toggle="tooltip"></span>
+                                @{
+                                    if (item.Position == "队长")
+                                    {
+                                        <span class="glyphicon glyphicon-star text-muted" title="队长" data-toggle="tooltip"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="glyphicon glyphicon-cloud text-muted" style="color: #e2e2e2" title="队员" data-toggle="tooltip"></span>
+                                    }
+                                }
                             </td>
                             <td class="text-right">
                                 <a data-toggle="popover" data-placement="right" data-value="46953">
-                                    
+
+
                                 </a>
                             </td>
                             <td></td>
@@ -206,22 +216,22 @@
                                 @item.Location
                             </td>
                             <td class="text-danger text-right">
-                                &#165;0.00
+                                &#165;@item.Cost
                             </td>
                             @*<td class="text-right hidden-sm hidden-xs">
                                     僵尸
                                 </td>*@
                             <td class="text-right hidden-xs hidden-md hidden-sm">
-                                @item.Appearance
+                                @item.Appearance 
                             </td>
                             <td class="text-right">
-                                @item.Attendance 
+                                @item.Attendance%
                             </td>
                             <td class="text-right hidden-xs">
-                                @item.B_Appointment 
+                                @item.B_Appointment%
                             </td>
                             <td class="text-right hidden-xs">
-                                @item.LeaveRate 
+                                @item.LeaveRate%
                             </td>
                             <td class="text-right">
                                 0
@@ -231,7 +241,7 @@
                             </td>
                             <td></td>
                             <td class="text-right hidden-sm hidden-xs">
-                               @item.LastAttendance
+                                @item.LastAttendance
                             </td>
 
                             <td class="hidden-xs">
@@ -239,7 +249,7 @@
                         </tr>
                     }
                 }
-                <tr>
+                <!--<tr>
                     <td class="text-muted hidden-xs">
                         2.
                     </td>
@@ -248,7 +258,7 @@
                     </td>
                     <td class="text-right">
                         <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Player/46952" data-toggle="popover" data-placement="right" data-value="46952">
-                            
+
                         </a>
                     </td>
                     <td></td>
@@ -264,11 +274,11 @@
                     </td>
                     <td class="text-danger text-right">
                         &#165;0.00
-                    </td>
-                    @*<td class="text-right hidden-sm hidden-xs">
-                            不活跃
-                        </td>*@
-                    <td class="text-right hidden-xs hidden-md hidden-sm">
+                    </td>-->
+                @*<td class="text-right hidden-sm hidden-xs">
+                        不活跃
+                    </td>*@
+                <!--<td class="text-right hidden-xs hidden-md hidden-sm">
                         0
                     </td>
                     <td class="text-right">
@@ -294,7 +304,7 @@
                     <td class="hidden-xs">
                         <span class="text-muted glyphicon glyphicon-phone" data-toggle="tooltip"></span>
                     </td>
-                </tr>
+                </tr>-->
                 <tr class="hidden-xs">
                     <td></td>
                     <td></td>
@@ -303,8 +313,16 @@
                     <td class="hidden-md hidden-xs hidden-sm"></td>
                     <td colspan="3" class="text-right text-muted">
                         <small>
-                            平均余额/总余额：<br />
-                            &#165;0.00 / 0.00
+                            平均花费/总花费：<br />
+                            @{
+                                decimal total_cost = 0;//总花费
+                                foreach (var item in Model)
+                                {
+                                    total_cost += @item.Cost;
+                                }
+                                decimal average = Math.Round(total_cost / i,2);//平均花费
+                            }
+                            &#165;@average / @total_cost
                             &nbsp;&nbsp;
                         </small>
                     </td>
@@ -319,29 +337,56 @@
                     <td class="text-right text-muted hidden-xs hidden-md hidden-sm">
                         <small>
                             总数：<br />
-                            0
+                            @ViewBag.TM @*球队比赛总数*@
                             &nbsp;&nbsp;
                         </small>
                     </td>
                     <td class="text-right text-muted">
                         <small>
                             平均：<br />
-                            0.00
-                            %&nbsp;&nbsp;
+                            @{
+                                string total_Attendance = null;//出勤率
+                                int t_A =0;//计算出勤率
+                                foreach (var item in Model)
+                                {
+                                    t_A += Convert.ToInt32(@item.Attendance);
+                                }
+                                total_Attendance = (t_A/i).ToString();
+                            }
+                            @total_Attendance%
+                            &nbsp;&nbsp;
                         </small>
                     </td>
                     <td class="text-right text-muted">
                         <small>
                             平均：<br />
-                            0.00
-                            % &nbsp;&nbsp;
+                            @{
+                                string total_B_Appointment = null;//鸽子率
+                                int t_B = 0;//计算鸽子率
+                                foreach (var item in Model)
+                                {
+                                    t_B += Convert.ToInt32(@item.B_Appointment);
+                                }
+                                total_B_Appointment = (t_B / i).ToString();
+                            }
+                            @total_B_Appointment%
+                            &nbsp;&nbsp;
                         </small>
                     </td>
                     <td class="text-right text-muted">
                         <small>
                             平均：<br />
-                            0.00
-                            % &nbsp;&nbsp;
+                            @{
+                                string total_LeaveRate = null;//请假率
+                                int t_L = 0;//计算请假率
+                                foreach (var item in Model)
+                                {
+                                    t_L += Convert.ToInt32(@item.LeaveRate);
+                                }
+                                total_LeaveRate = (t_L / i).ToString();
+                            }
+                            @total_LeaveRate%
+                            &nbsp;&nbsp;
                         </small>
                     </td>
                     <td class="text-right text-muted hidden-xs hidden-md hidden-sm">
@@ -365,7 +410,7 @@
             </tbody>
         </table>
         <div class="panel-body text-right">
-            共：<b>2</b> 名队员
+            共：<b>@i</b> 名队员
         </div>
 
         <div class="clearfix"></div>
