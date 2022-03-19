@@ -13,6 +13,9 @@ namespace FCWeb.Controllers
         FCDbContext db = new FCDbContext();
         public ActionResult Home()
         {
+            var Account = Session["User"].ToString();
+            var UserName = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
+            ViewBag.US = UserName;
             return View();
         }
         /// <summary>
@@ -343,6 +346,31 @@ namespace FCWeb.Controllers
         public ActionResult Createplayers()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult Createplayers(string Name,string Location,int Age,string Sex)
+        {
+            string TeamName = Session["TeamName"].ToString();
+            TeamMembers teamMembers = new TeamMembers
+            {
+                TeamName = TeamName,
+                Account =null,
+                UserName = Name,
+                Position = "临时",
+                Location = Location,
+                Sex = Sex,
+                Cost = 0,
+                Appearance = 0,
+                Attendance = "0",
+                B_Appointment = "0",
+                LeaveRate = "0",
+                LastAttendance = "无",
+                DateTimes = DateTime.Now
+            };
+            db.TeamMember.Add(teamMembers);
+            db.SaveChanges();
+            var script = String.Format("<script>alert('添加成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
+            return Content(script, "text/html");
         }
     }
 }

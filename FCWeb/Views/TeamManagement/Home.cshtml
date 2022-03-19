@@ -22,7 +22,7 @@
 <body>
     <!-- 顶部开始 -->
     <div class="container">
-        <div class="logo"><a href="./index">芬芳GD队管理系统</a></div>
+        <div class="logo"><a href="./index">@Session["TeamName"]</a></div>
         <div class="left_open">
             <i title="展开左侧栏" class="iconfont">&#xe699;</i>
         </div>
@@ -39,7 +39,7 @@
         </ul>-->
         <ul class="layui-nav right" lay-filter="">
             <li class="layui-nav-item">
-                <a href="javascript:;">@Session["User"]</a>
+                <a href="javascript:;">@ViewBag.US</a>
                 <dl class="layui-nav-child">
                     <!-- 二级菜单 -->
                     <dd><a onclick="x_admin_show('个人信息','/Account/PersonalCenter')">个人信息</a></dd>
@@ -81,7 +81,7 @@
                 <li>
                     <a _href="TeamMember">
                         <i class="iconfont">&#xe6b8;</i>
-                        <cite>会员列表</cite>
+                        <cite>球员列表</cite>
                         <i class="iconfont nav_right">&#xe697;</i>
                     </a>
                     @*<ul class="sub-menu">

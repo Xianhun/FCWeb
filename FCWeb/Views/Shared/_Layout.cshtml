@@ -59,11 +59,11 @@
             using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
             {
                 @Html.AntiForgeryToken()
-                <div class="navbar-collapse collapse" style="width:435px">
+                <div class="navbar-collapse collapse" style="width:330px">
                     <ul class="nav nav-pills">
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                @Session["User"]
+                                @Session["UserName"]
                             </a>
                             <ul class="dropdown-menu">
                                 <li>@Html.ActionLink("个人中心", "PersonalCenter", "Account")</li>
@@ -79,7 +79,7 @@
         }
         else
         {
-            <ul class="nav navbar-nav navbar-right" style="width:370px">
+            <ul class="nav navbar-nav navbar-right" style="width:330px">
                 <li>@Html.ActionLink("登录", "Login", "Account", routeValues: new { area = "" }, htmlAttributes: new { id = "loginLink" })</li>
             </ul>
         }

@@ -4,6 +4,7 @@
     Layout = null;
 }
 <head>
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
     <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
@@ -14,7 +15,6 @@
     <!--Slider-->
     <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
     <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <style>
@@ -34,6 +34,20 @@
         }
     </style>
 </head>
+<ul id="playersIndexer" class="nav nav-tabs" style="margin-top:10px; margin-bottom:20px;">
+    <li style="margin-left:10px;">
+        <a href="/TeamManagement/TeamMember" tabindex="全部队员列表">
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="hidden-xs">全部<span class="hidden-sm hidden-xs">队员</span></span>
+        </a>
+    </li>
+    <li class="" title="添加本地队员">
+        <a href="CreatePlayers">
+            <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
+            <span class="hidden-xs">添加<span class="hidden-sm">本地队员</span></span>
+        </a>
+    </li>
+</ul>
 <div class="panel panel-default">
     <div class="page-header" style="text-align: center;">
         <h1>
@@ -48,11 +62,11 @@
                 </ul>
             </div>
             <div class="form-group">
-                <label class="col-md-3 col-sm-3 control-label required" >球员名称</label>
+                <label class="col-md-3 col-sm-3 control-label required">球员名称</label>
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="layui-icon layui-icon-username"></i></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="请输入球员名称" type="text" value="" />
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="球员名称 字段是必需的。" id="Name" name="Name" placeholder="请输入球员名称" type="text" value="" />
                     </div>
                 </div>
             </div>
@@ -60,8 +74,17 @@
                 <label class="col-md-3 col-sm-3 control-label required">场上位置</label>
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
+                        <span class="input-group-addon"><i class="layui-icon layui-icon-location"></i></span>
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="场上位置 字段是必需的。" id="Location" name="Location" placeholder="请输入球员位置" type="text" value="" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label" for="Location">年龄</label>
+                <div class="col-md-3 col-sm-4">
+                    <div class="input-group">
                         <span class="input-group-addon"><i class="layui-icon layui-icon-right"></i></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="请输入球员位置" type="text" value="" />
+                        <input class="form-control" data-val="true" data-val-number="字段 年龄 必须是一个数字。" data-val-required="年龄 字段是必需的。" placeholder="请输入球员年龄" id="Age" name="Age" type="number" value="" />
                     </div>
                 </div>
             </div>
@@ -69,61 +92,11 @@
                 <label class="col-md-3 col-sm-3 control-label required" for="Time">性别</label>
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
-                        <span class="input-group-addon"><label for="Time" class="glyphicon glyphicon-time"></label></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="请输入球员位置" type="text" value="" />
+                        <ul class="list-inline list-unstyled">
+                            <li><label for="" class="radio inline" title="男"><input data-val="true" data-val-required="性别字段是必需的" id="" name="Sex" type="radio" value="男" />男</label></li>
+                            <li><label for="" class="radio inline" title="女"><input id="" name="Sex" type="radio" value="女" />女</label></li>
+                        </ul>
                     </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 col-sm-3 control-label" for="Location">地点</label>
-                <div class="col-md-9 col-sm-9">
-                    <div class="input-group">
-                        <span class="input-group-addon"><label for="Location" class="glyphicon glyphicon-map-marker cursor-hand "></label></span>
-                        <input class="form-control" id="Location" name="Place" placeholder="赛程举办地点" type="text" value="" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 col-sm-3 control-label" for="MatchScore_OpponentTeamName">对手</label>
-                <div class="col-md-7 col-sm-7">
-                    <div class="input-group">
-                        <span class="input-group-addon"><label id="labelOpponentTeamName" for="MatchScore_OpponentTeamName" class="glyphicon glyphicon-flag"></label></span>
-                        <input class="form-control" id="MatchScore_OpponentTeamName" name="Rival" placeholder="对手" type="text" value="" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 col-sm-3 control-label required" for="TotalAmount">总消费额</label>
-                <div class="col-md-5 col-sm-6">
-                    <div class="input-group">
-                        <span class="input-group-addon"> ¥&nbsp;</span>
-                        <input Value="0.00" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 总消费额 must be a number." data-val-required="总消费额不能为空" id="TotalAmount" name="SduFees" placeholder="设置赛事消费总额" type="text" value="" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 col-sm-3 control-label" for="PerAmount">每个队员费用</label>
-                <div class="col-md-5 col-sm-6">
-                    <div class="input-group">
-                        <span class="input-group-addon"> ¥&nbsp;</span>
-                        <input Value="" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 每个队员费用 must be a number." id="PerAmount" name="PersonFees" placeholder="每个队员参加比赛所需费用" type="text" value="" />
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 col-sm-3 control-label" for="MaxAttendCount">参加人数</label>
-                <div class="col-md-5 col-sm-6">
-                    <div class="input-group">
-                        <input class="form-control" id="MaxAttendCount" name="LimitNum" placeholder="最多参加人数，空表示不限" type="text" value="" />
-                        <span class="input-group-addon">人</span>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-md-3 col-sm-3 control-label" for="Note">备注</label>
-                <div class="col-md-9 col-sm-9">
-                    <textarea class="form-control" cols="20" id="Note" name="Note" rows="5">
-</textarea>
                 </div>
             </div>
             <div class="form-group">

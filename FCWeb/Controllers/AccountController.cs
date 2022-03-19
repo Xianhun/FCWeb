@@ -37,6 +37,8 @@ namespace FCWeb.Controllers
                 {
                     res = "登录成功";
                     Session["User"] = UserID;
+                    var UserName = db.User.Where(s => s.Account == UserID).Select(s => s.UserName).FirstOrDefault();
+                    Session["UserName"] = UserName;
                     string TeamName = db.User.Where(s => s.Account == UserID).Select(s => s.TeamName).FirstOrDefault();
                     var users = db.User.Where(s => s.Account == UserID).FirstOrDefault();
                     users.Status = "在线";

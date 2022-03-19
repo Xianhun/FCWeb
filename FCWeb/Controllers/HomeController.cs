@@ -46,6 +46,7 @@ namespace FCWeb.Controllers
                     db.CreateTeam.Add(createTeam);
                     string Account = Session["User"].ToString();
                     string Location = db.User.Where(s => s.Account == Account).Select(s => s.Location).FirstOrDefault();
+                    int Age = db.User.Where(s => s.Account == Account).Select(s => s.Age).FirstOrDefault();
                     var result = db.User.Where(s => s.Account == Account).FirstOrDefault();
                     if(result.TeamName!=null)
                     {
@@ -62,6 +63,7 @@ namespace FCWeb.Controllers
                         UserName = cptain,
                         Position = "队长",
                         Location = Location,
+                        Age= Age,
                         Appearance = 0,
                         Cost = 0,
                         Attendance = "0",
@@ -124,6 +126,8 @@ namespace FCWeb.Controllers
                     string TeamName = db.CreateTeam.Where(s => s.ID == id).Select(s => s.TeamName).FirstOrDefault();
                     string TeamOpenType = db.CreateTeam.Where(s => s.ID == id).Select(s => s.TeamOpenType).FirstOrDefault();
                     string Sex = db.User.Where(s => s.Account == Account).Select(s => s.Sex).FirstOrDefault();
+                    string Location = db.User.Where(s => s.Account == Account).Select(s => s.Location).FirstOrDefault();
+                    int Age = db.User.Where(s => s.Account == Account).Select(s => s.Age).FirstOrDefault();
                     var result = db.User.Where(s => s.Account == Account).FirstOrDefault();
                     if (result.TeamName != null)
                     {
@@ -139,7 +143,8 @@ namespace FCWeb.Controllers
                             Account = Account,
                             UserName = UserName,//UserName,
                             Position = "队员",
-                            Location = null,//个人信息中心补充
+                            Location = Location,//个人信息中心补充
+                            Age = Age,
                             Sex = Sex,
                             Cost = 0,
                             Appearance = 0,
