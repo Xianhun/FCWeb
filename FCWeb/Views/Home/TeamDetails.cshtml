@@ -22,8 +22,8 @@
 
         <table class="table table-bordered">
             <tr>
-                <td style="width: 100px;" rowspan="5">
-                    <img src="Http://www.qiulianwang.com/Content/Images/TeamLogo.png" alt="@Html.DisplayFor(modelItem => Model.ElementAt(0).TeamName)" style="width:80px;" />
+                <td style="width: 100px;" rowspan="4">
+                    <img src="~/img/Logins/1.png" alt="@Html.DisplayFor(modelItem => Model.ElementAt(0).TeamName)" style="width:80px;" />
                 </td>
                 <td style="width: 8em;">
                     <label for="Captain">队长</label>
@@ -60,23 +60,10 @@
                     @Html.DisplayFor(modelItem => Model.ElementAt(0).TeamOpenType)
                 </td>
                 <td>
-                    <label for="QQGroup">QQ群</label>
-                </td>
-                <td>
-                </td>
-            </tr>
-            <tr>
-                <td>
                     <label for="City">城市</label>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => Model.ElementAt(0).City)
-                </td>
-                <td>
-                    <label for="Score">球队积分</label>
-                </td>
-                <td>
-                    7292
                 </td>
             </tr>
             <tr>
@@ -120,7 +107,7 @@
             </pre>
                 </td>
             </tr>
-            <tr>
+            @*<tr>
                 <td colspan="5">
                     <span class="glyphicon glyphicon-picture"></span> <label for="TeamPhoto">球队全家福</label>
                 </td>
@@ -131,7 +118,7 @@
                     <img src="Http://www.qiulianwang.com/Upload/Images/TeamGallery/2013/11/1_allplayer_.JPG" alt="" class="img-responsive" />
                     <br />
                 </td>
-            </tr>
+            </tr>*@
 
         </table>
 

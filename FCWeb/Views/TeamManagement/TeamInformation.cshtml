@@ -1,0 +1,169 @@
+﻿@model IEnumerable<FCWeb.Models.CreateTeams>
+@{
+    ViewBag.Title = "TeamInformation";
+    Layout = null;
+}
+<head>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+        <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" /> 
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+</head>
+<style type="text/css">
+    body {
+        padding: 0px;
+    }
+</style>
+<div class="panel panel-default">
+
+    <ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
+        <li style="margin-left:10px;" title="详细列表">
+            <a href="MatchSchedule">
+                <span class="glyphicon glyphicon-th-list"></span>
+                <span class="hidden-xs">球队信息</span>
+            </a>
+        </li>
+        <li class="" title="添加赛程">
+            <a href="MatchCreate">
+                <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
+                <span class="hidden-xs">修改<span class="hidden-sm">球队信息</span></span>
+            </a>
+        </li>
+    </ul>
+    <script type="text/javascript">
+            $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '球队信息'; }).parent().addClass('active');
+    </script>
+    <div id="divHeader">
+        <div class="container">
+            <h1>
+                @Html.DisplayFor(modelItem => Model.ElementAt(0).TeamName) <small class="hidden-xs">加入这支球队</small>
+            </h1>
+        </div>
+    </div>
+    <a data-type="19" data-tmpl="400x25" data-tmplid="2823" biz-url="http://www.alimama.com/?spm=0.0.0.0.tUsAVh" biz-text="足球衣服" biz-imgurl="null" data-rd="2" data-style="2" data-border="1" href="#"></a>
+    <div id="divContent">
+
+
+
+        <div class="container">
+
+
+
+
+            <table class="table table-bordered">
+                <tr>
+                    <td style="width: 100px;" rowspan="4">
+                        <img src="~/img/Logins/1.png" alt="@Html.DisplayFor(modelItem => Model.ElementAt(0).TeamName)" style="width:80px;" />
+                    </td>
+                    <td style="width: 8em;">
+                        <label for="Captain">队长</label>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.ElementAt(0).TeamCptain)
+                    </td>
+                    <td style="width: 8em;">
+                        <label for="CreateDate">创建时间</label>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.ElementAt(0).CreateTime)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="PlayerCount">队员数目</label>
+                    </td>
+                    <td>
+                        @ViewBag.Count 人
+                    </td>
+                    <td>
+                        <label for="TotalMatchCount">球队比赛数目</label>
+                    </td>
+                    <td>
+                        423 次
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="PublicType">球队公开类型</label>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.ElementAt(0).TeamOpenType)
+                    </td>
+                    <td>
+                        <label for="City">城市</label>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => Model.ElementAt(0).City)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="Responsor">赞助商名称</label>
+                    </td>
+                    <td colspan="3">
+                        <a href="">@Html.DisplayFor(modelItem => Model.ElementAt(0).Sponsors)</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <span class="glyphicon glyphicon-flag text-info"></span> <label for="Description">球队介绍</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <pre class="no-style">
+@Html.DisplayFor(modelItem => Model.ElementAt(0).TeamIntroduce)
+            </pre>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <span class="glyphicon glyphicon-eye-open"></span> <label for="Rules">球队规章制度</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        <pre class="no-style">
+1.	每位队员提前缴纳场地费100元，当个人费用只剩下20时候，请在下一次踢球充值；
+2.	出勤率必须高于25%（长期伤停除外）,低于25%将请出球队，退还剩余充值金额；
+3.	报名但未参加比赛者（鸽子），扣双倍费用；
+4.	已经报名队员必须提前24小时请假；如果在24小时内请假，请假人必须指定候补人员顶替，场地费照扣；
+5.	未报名参加比赛者（强插），扣双倍场地费；
+6.	由于天气原因等未能正常比赛，除非场地费退还，否则由全队平摊场地费；
+7.	因故迟到早退者，场地费按正常标准扣除；
+8.	队员之间必须互相尊重，禁止互相谩骂埋怨，发现一次警告，第二次开除；
+9.	比赛时必须遵守教练和队长安排，应以球队成绩作为优先前提；
+10.   充值支付宝账号：13867804056
+            </pre>
+                    </td>
+                </tr>
+                @*<tr>
+                        <td colspan="5">
+                            <span class="glyphicon glyphicon-picture"></span> <label for="TeamPhoto">球队全家福</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+
+                            <img src="Http://www.qiulianwang.com/Upload/Images/TeamGallery/2013/11/1_allplayer_.JPG" alt="" class="img-responsive" />
+                            <br />
+                        </td>
+                    </tr>*@
+
+            </table>
+
+
+            <div class="text-center">
+                <form action="" class="form-signin" data-ajax="true" data-ajax-begin="handlerBegin" data-ajax-failure="handlerFailure" data-ajax-method="POST" data-ajax-success="handlerSuccess" id="form0" method="post">
+                    <input name="__RequestVerificationToken" type="hidden" value="HDtEYovZ6VdrUiPW53wBGGurd7gJhfrMelJD4CiLG3iSYuxvhiMDKdiKXkFNcb21HCkh-cpQlsfDJbtJm8lAMBHFluwGAS2cU4CXdi7N0d01" /><input data-val="true" data-val-number="The field 球队编号 must be a number." id="TeamId" name="TeamId" type="hidden" value="1" />            <input type="submit" value="申请加入" class="btn btn-primary btn-lg" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

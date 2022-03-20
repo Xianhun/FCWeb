@@ -31,7 +31,8 @@ namespace FCWeb.Controllers
                     {
                         throw new Exception("数据输入不完整!");
                     }
-                    var cptain = Session["User"].ToString();
+                    string Account = Session["User"].ToString();
+                    string cptain = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
                     DateTime Time = DateTime.Now;
                     CreateTeams createTeam = new CreateTeams
                     {
@@ -44,7 +45,6 @@ namespace FCWeb.Controllers
                         TeamCptain = cptain
                     };
                     db.CreateTeam.Add(createTeam);
-                    string Account = Session["User"].ToString();
                     string Location = db.User.Where(s => s.Account == Account).Select(s => s.Location).FirstOrDefault();
                     int Age = db.User.Where(s => s.Account == Account).Select(s => s.Age).FirstOrDefault();
                     var result = db.User.Where(s => s.Account == Account).FirstOrDefault();

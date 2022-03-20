@@ -372,5 +372,11 @@ namespace FCWeb.Controllers
             var script = String.Format("<script>alert('添加成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
             return Content(script, "text/html");
         }
+        public ActionResult TeamInformation()
+        {
+            string TeamName = Session["TeamName"].ToString();
+            var TeamInformation = db.CreateTeam.Where(s => s.TeamName == TeamName).ToList();
+            return View(TeamInformation);
+        }
     }
 }
