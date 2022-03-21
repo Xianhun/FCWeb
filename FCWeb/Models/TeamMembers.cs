@@ -37,6 +37,10 @@ namespace FCWeb.Models
         public string LastAttendance { get; set; }
         [Display(Name ="加入时间")]
         public DateTime DateTimes { get; set; }
+        [Display(Name = "离队时间")]
+        public DateTime LeaveTimes { get; set; }
+        [Display(Name = "成员状态")]
+        public string Status { get; set; }
 
 
     }

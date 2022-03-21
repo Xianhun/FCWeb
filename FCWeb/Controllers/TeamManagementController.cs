@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -320,7 +321,10 @@ namespace FCWeb.Controllers
                 B_Appointment = "0",
                 LeaveRate = "0",
                 LastAttendance = "无",
-                DateTimes = DateTime.Now
+                Status = null,
+                DateTimes = DateTime.Now,
+                LeaveTimes = DateTime.Now
+
             };
             db.TeamMember.Add(teamMembers);
             var FormID = db.ApplicationForms.Where(s => s.UserName == UserName).Select(s => s.ID).FirstOrDefault();
@@ -365,7 +369,10 @@ namespace FCWeb.Controllers
                 B_Appointment = "0",
                 LeaveRate = "0",
                 LastAttendance = "无",
-                DateTimes = DateTime.Now
+                Status = null,
+                DateTimes = DateTime.Now,
+                LeaveTimes=DateTime.Now
+                
             };
             db.TeamMember.Add(teamMembers);
             db.SaveChanges();
@@ -408,6 +415,66 @@ namespace FCWeb.Controllers
             db.SaveChanges();
             var script = String.Format("<script>alert('修改成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/TeamInformation"));
             return Content(script, "text/html");
+        }
+
+        public ActionResult MemberDelete()
+        {
+            try
+            {
+                string TeamName = Session["TeamName"].ToString();
+                List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
+                return View(teammember);
+            }
+            catch (Exception ex)
+            {
+                var script = String.Format("<script>alert('" + ex.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
+                return Content(script, "text/html");
+            }
+        }
+        public ActionResult DeleteMember(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            try
+            {
+                var TeamName=Session["TeamName"].ToString();
+                TeamMembers members = db.TeamMember.Find(id);
+                members.Status = "删除中";
+                members.LeaveTimes = DateTime.Now;
+                db.Entry(members).State = EntityState.Modified;
+                db.SaveChanges();
+                var script = String.Format("<script>alert('一个小时内自动删除，期间可撤销删除');location.href='{0}'</script>", Url.Action("Index", "DeleteMember"));
+                return Content(script, "text/html");
+            }
+            catch (Exception ee)
+            {
+                var script = String.Format("<script>alert('删除失败" + ee.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "DeleteMember"));
+                return Content(script, "text/html");
+            }
+        }
+        public ActionResult Undo(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            try
+            {
+                var TeamName = Session["TeamName"].ToString();
+                TeamMembers members = db.TeamMember.Find(id);
+                members.Status = null;
+                db.Entry(members).State = EntityState.Modified;
+                db.SaveChanges();
+                var script = String.Format("<script>alert('撤销成功');location.href='{0}'</script>", Url.Action("Index", "DeleteMember"));
+                return Content(script, "text/html");
+            }
+            catch(Exception ee)
+            {
+                var script = String.Format("<script>alert('撤销失败" + ee.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "DeleteMember"));
+                return Content(script, "text/html");
+            }
         }
     }
 }

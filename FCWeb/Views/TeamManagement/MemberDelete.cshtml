@@ -1,6 +1,6 @@
-﻿@model IEnumerable<FCWeb.Models.Users>
+﻿@model IEnumerable<FCWeb.Models.TeamMembers>
 @{
-    ViewBag.Title = "Application";
+    ViewBag.Title = "MemberDelete";
     Layout = null;
 }
 <head>
@@ -49,7 +49,7 @@
             </li>
         </ul>
         <script type="text/javascript">
-                $('#playersIndexer').find('a').filter(function () { return $(this).text().trim() == '全部队员'; }).parent().addClass('active');
+            $('#playersIndexer').find('a').filter(function () { return $(this).text().trim() == '全部队员'; }).parent().addClass('active');
         </script>
         <div class="panel-margin">
 
@@ -62,11 +62,11 @@
                                 <span class="glyphicon glyphicon-user"></span>
                                 <span class="hidden-xs">队员列表</span>
                             </a>
-                            <a href="/TeamManagement/Application" class="btn btn-default active">
+                            <a href="/TeamManagement/Application" class="btn btn-default">
                                 <span class="glyphicon glyphicon-transfer"></span>
                                 <span class="hidden-xs">申请中</span>
                             </a>
-                            <a href="/TeamManagement/MemberDelete" class="btn btn-default">
+                            <a href="/TeamManagement/MemberDelete" class="btn btn-default active">
                                 <span><i class="layui-icon layui-icon-delete"></i></span>
                                 <span class="hidden-xs">移除队员</span>
                             </a>
@@ -86,15 +86,15 @@
                     <th style="width: 20px;" class="hidden-xs"></th>
                     <th style="width: 3em;" class="text-right">
                         @*<a href="/Team/%E8%8A%AC%E8%8A%B3GD/Players">N.</a>
-                        <small class="glyphicon glyphicon-arrow-up"></small>*@
+            <small class="glyphicon glyphicon-arrow-up"></small>*@
                     </th>
                     <th style="width: 1em;"></th>
                     <th class="realname-length">
                         姓名
                     </th>
                     @*<th style="width: 4.5em;" class="hidden-md hidden-xs hidden-sm">
-                        <a>职位</a>
-                    </th>*@
+            <a>职位</a>
+        </th>*@
                     <th class="hidden-md hidden-xs hidden-sm">
                         位置
                     </th>
@@ -104,6 +104,9 @@
                     <th class="hidden-md hidden-xs hidden-sm">
                         年龄
                     </th>
+                    <th class="hidden-md hidden-xs hidden-sm">
+                        操作
+                    </th>
                     <th style="width: 20px;" class="hidden-xs"></th>
                 </tr>
             </thead>
@@ -112,39 +115,57 @@
                     var i = 0;
                     foreach (var item in Model)
                     {
-                        <tr>
-                            <td class="text-muted hidden-xs">
-                                @{
-                                    i++;
-                                }
-                                @i
-                            </td>
-                            <td class="hidden-xs">
-                                <span class="glyphicon glyphicon-cloud text-muted" style="color: #e2e2e2" title="申请球员" data-toggle="tooltip"></span>
-                            </td>
-                            <td class="text-right">
-                                <a data-toggle="popover" data-placement="right" data-value="46953">
+                                <tr>
+                                    <td class="text-muted hidden-xs">
+                                        @{
+                                            i++;
+                                        }
+                                        @i
+                                    </td>
+                                    <td class="hidden-xs">
+                                        <span class="glyphicon glyphicon-cloud text-muted" style="color: #e2e2e2" title="申请球员" data-toggle="tooltip"></span>
+                                    </td>
+                                    <td class="text-right">
+                                        <a data-toggle="popover" data-placement="right" data-value="46953">
 
-                                </a>
-                            </td>
-                            <td></td>
-                            <td>
-                                <a href="/TeamManagement/ApplicationDetailed/@item.ID" data-toggle="popover" data-placement="right" data-value="46953">
-                                    @item.UserName
-                                </a>
-                            </td>
-                            <td class="hidden-md hidden-xs hidden-sm">
-                                @item.Location
-                            </td>
-                            <td class="hidden-md hidden-xs hidden-sm">
-                                @item.Sex
-                            </td>
-                            <td class="hidden-md hidden-xs hidden-sm">
-                                @item.Age
-                            </td>
-                            <td class="hidden-xs">
-                            </td>
-                        </tr>
+                                        </a>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        @item.UserName
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @item.Location
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @item.Sex
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @item.Age
+                                    </td>
+                                    @{
+                                        if (item.Status == null && item.Position != "队长")
+                                        {
+                                            <td class="hidden-md hidden-xs hidden-sm">
+                                                @Html.ActionLink("删除", "DeleteMember", new { id = item.ID }, new { onclick = "return confirm('你确认删除吗？')" })
+                                            </td>
+                                        }
+                                        else if (item.Status == "删除中")
+                                        {
+                                            <td class="hidden-md hidden-xs hidden-sm">
+                                                @Html.ActionLink("撤销删除", "Undo", new { id = item.ID }, new { onclick = "return confirm('你确认撤销吗？')" })
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="hidden-md hidden-xs hidden-sm">
+                                                
+                                            </td>
+                                        }
+                                    }
+                                    <td class="hidden-xs">
+                                    </td>
+                                </tr>
                     }
                 }
             </tbody>
@@ -156,7 +177,4 @@
         <div class="clearfix"></div>
     </div>
 </body>
-
-
-
 

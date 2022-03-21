@@ -345,6 +345,7 @@
     <Content Include="Views\TeamManagement\Createplayers.cshtml" />
     <Content Include="Views\TeamManagement\TeamInformation.cshtml" />
     <Content Include="Views\TeamManagement\ModifyInformation.cshtml" />
+    <Content Include="Views\TeamManagement\MemberDelete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -14,6 +14,24 @@ namespace FCWeb.Controllers
         FCDbContext db = new FCDbContext();
         public ActionResult Index()
         {
+            DateTime Now = DateTime.Now;
+            TimeSpan Difference = new TimeSpan();
+            List<TeamMembers> teamMembers = db.TeamMember.Where(s => s.Status == "删除中" && s.LeaveTimes < Now).ToList();
+            TeamMembers D_members = new TeamMembers();
+            if (teamMembers.Count != 0)
+            {
+                for (int i = 0; i < teamMembers.Count; i++)
+                {
+                    Difference= Now-teamMembers[i].LeaveTimes;
+                    if(Difference.TotalSeconds>=3600)
+                    {
+                        int id = teamMembers[i].ID;
+                        D_members=db.TeamMember.Find(id);
+                        db.TeamMember.Remove(D_members);
+                    }
+                }
+                db.SaveChanges();
+            }
             return View();
         }
         public ActionResult CreateTeam()
@@ -63,26 +81,27 @@ namespace FCWeb.Controllers
                         UserName = cptain,
                         Position = "队长",
                         Location = Location,
-                        Age= Age,
+                        Age = Age,
                         Appearance = 0,
                         Cost = 0,
                         Attendance = "0",
                         B_Appointment = "0",
                         LeaveRate = "0",
                         LastAttendance = "无",
-                        DateTimes = DateTime.Now
+                        DateTimes = DateTime.Now,
+                        LeaveTimes = DateTime.Now
                     };
                     db.TeamMember.Add(teamMembers);
                     db.SaveChanges();
                     var script = String.Format("<script>alert('创建成功');location.href='{0}'</script>", Url.Action("Index", "Home/CreateTeam"));
                     return Content(script, "text/html");
-                }
-                catch (Exception ex)
-                {
-                    var script = String.Format("<script>alert('"+ex.Message.ToString()+"');location.href='{0}'</script>", Url.Action("Index", "Home/CreateTeam"));
-                    return Content(script, "text/html");
-                }
             }
+                catch (Exception ex)
+            {
+                var script = String.Format("<script>alert('" + ex.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "Home/CreateTeam"));
+                return Content(script, "text/html");
+            }
+        }
             else
             {
                 var script = String.Format("<script>alert('请登录');location.href='{0}'</script>", Url.Action("Index", "Account/Login"));
@@ -154,7 +173,8 @@ namespace FCWeb.Controllers
                             B_Appointment = "0",
                             LeaveRate = "0",
                             LastAttendance = "无",
-                            DateTimes=DateTime.Now
+                            DateTimes=DateTime.Now,
+                            LeaveTimes = DateTime.Now
                         };
                         db.TeamMember.Add(teamMembers);
                         db.SaveChanges();
