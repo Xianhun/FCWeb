@@ -1,0 +1,133 @@
+﻿@model FCWeb.Models.CreateTeams
+@{
+    ViewBag.Title = "ModifyInformation";
+    Layout = null;
+}
+<head>
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
+    <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <!--Slider-->
+    <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <style>
+        .ui-autocomplete {
+            max-height: 250px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .input-group-addon {
+            width: 50px;
+        }
+
+        .radio {
+            padding-left: 5px;
+            padding-left: 22px;
+        }
+    </style>
+</head>
+<ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
+    <li style="margin-left:10px;" title="球队信息">
+        <a href="TeamInformation">
+            <span class="glyphicon glyphicon-th-list"></span>
+            <span class="hidden-xs">球队信息</span>
+        </a>
+    </li>
+    <li class="" title="修改球队信息">
+        <a href="ModifyInformation">
+            <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
+            <span class="hidden-xs">修改<span class="hidden-sm">球队信息</span></span>
+        </a>
+    </li>
+</ul>
+<script type="text/javascript">
+    $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '修改球队信息'; }).parent().addClass('active');
+</script>
+<div class="panel panel-default">
+    <div class="page-header" style="text-align: center;">
+        <h2>
+            修改球队信息
+        </h2>
+    </div>
+    <div class="panel-body">
+        <form action=" " class="form-horizontal" data-ajax="true" data-ajax-begin="handlerBegin" data-ajax-failure="handlerFailure" data-ajax-method="POST" data-ajax-success="handlerSuccess" id="form0" method="post">
+            <div class="validation-summary-valid" data-valmsg-summary="true">
+                <ul>
+                    <li style="display:none"></li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label required" for="open">球队公开类型：</label>
+                <div class="col-md-5 col-sm-6">
+                    <div class="input-group">
+                        <ul class="list-inline list-unstyled">
+                            <li><label for="" class="radio inline" title="任何人可以加入"><input data-val="true" data-val-required="公开类型字段是必需的" id="任何人可以加入" name="Open" type="radio" value="任何人可以加入" checked="checked" />任何人可以加入</label></li>
+                            <li><label for="" class="radio inline" title="需要申请加入"><input id="需要申请加入" name="Open" type="radio" value="需要申请加入" />需要申请加入</label></li>
+                            <li><label for="" class="radio inline" title="不能加入"><input id="不能加入" name="Open" type="radio" value="不能加入" />不能加入</label></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label required">城市：</label>
+                <div class="col-md-3 col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="layui-icon layui-icon-location"></i></span>
+                        @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control ", @id = "City" } })
+                        @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label required">赞助商：</label>
+                <div class="col-md-3 col-sm-4">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="layui-icon layui-icon-diamond"></i></span>
+                        @Html.EditorFor(model => model.Sponsors, new { htmlAttributes = new { @class = "form-control ", @id = "Sponsors" } })
+                        @Html.ValidationMessageFor(model => model.Sponsors, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label" for="Location">球队简介：</label>
+                <div class="col-md-7 col-sm-8">
+                    <div class="input-group">
+                        @Html.TextAreaFor(model => model.TeamIntroduce, 5 , 150 ,new { @class = "form-control ", @id = "TeamIntroduce" } )
+                        @Html.ValidationMessageFor(model => model.TeamIntroduce, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label" for="Location">规章制度：</label>
+                <div class="col-md-7 col-sm-8">
+                    <div class="input-group">
+                        @Html.TextAreaFor(model => model.Rule ,5,150,new { @class = "form-control ", @id = "Rule" } )
+                        @Html.ValidationMessageFor(model => model.Rule, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label" for="">
+                </label>
+                <div class="col-md-9 col-sm-9">
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span>&nbsp;修改&nbsp;&nbsp;</button>
+                    <button type="button" class="btn btn-default" id="back"><span class="glyphicon glyphicon-remove"></span>&nbsp;取消&nbsp;&nbsp;</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $("#back").click(function () {
+        history.back(-1);
+    });
+</script>
+

@@ -105,7 +105,9 @@ namespace FCWeb.Controllers
                 }
                 var teamCaptain = db.CreateTeam.Where(s => s.ID == id).ToList();
                 var numberCount = db.User.Where(s => s.TeamName == teamName).Count();
+                var matchCount = db.Schedule.Where(s => s.TeamName == teamName && s.Status == "已结束").Count();
                 ViewBag.Count = numberCount;
+                ViewBag.M_Count = matchCount;
                 return View(teamCaptain);
             }
             catch(Exception ex)
@@ -169,6 +171,7 @@ namespace FCWeb.Controllers
                             ApplicationStatus = "申请中"
                         };
                         db.ApplicationForms.Add(applicationForm);
+                        db.SaveChanges();
                         var script = String.Format("<script>alert('申请成功，请耐心等候验证');location.href='{0}'</script>", Url.Action("Index", "Home/JoinTeam"));
                         return Content(script, "text/html");
                     }

@@ -122,6 +122,7 @@ namespace FCWeb.Controllers
                     db.Entry(teamMember).State = EntityState.Modified;
                     db.SaveChanges();
                 }
+                Session["UserName"] = UserName;
                 return Json(res, JsonRequestBehavior.AllowGet);
             }
             catch(Exception){

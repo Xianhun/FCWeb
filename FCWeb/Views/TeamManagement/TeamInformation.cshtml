@@ -23,14 +23,14 @@
 <div class="panel panel-default">
 
     <ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
-        <li style="margin-left:10px;" title="详细列表">
-            <a href="MatchSchedule">
+        <li style="margin-left:10px;" title="球队信息">
+            <a href="TeamInformation">
                 <span class="glyphicon glyphicon-th-list"></span>
                 <span class="hidden-xs">球队信息</span>
             </a>
         </li>
-        <li class="" title="添加赛程">
-            <a href="MatchCreate">
+        <li class="" title="修改球队信息">
+            <a href="ModifyInformation">
                 <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
                 <span class="hidden-xs">修改<span class="hidden-sm">球队信息</span></span>
             </a>
@@ -85,7 +85,7 @@
                         <label for="TotalMatchCount">球队比赛数目</label>
                     </td>
                     <td>
-                        423 次
+                        @ViewBag.M_Count 次
                     </td>
                 </tr>
                 <tr>
@@ -130,16 +130,7 @@
                 <tr>
                     <td colspan="5">
                         <pre class="no-style">
-1.	每位队员提前缴纳场地费100元，当个人费用只剩下20时候，请在下一次踢球充值；
-2.	出勤率必须高于25%（长期伤停除外）,低于25%将请出球队，退还剩余充值金额；
-3.	报名但未参加比赛者（鸽子），扣双倍费用；
-4.	已经报名队员必须提前24小时请假；如果在24小时内请假，请假人必须指定候补人员顶替，场地费照扣；
-5.	未报名参加比赛者（强插），扣双倍场地费；
-6.	由于天气原因等未能正常比赛，除非场地费退还，否则由全队平摊场地费；
-7.	因故迟到早退者，场地费按正常标准扣除；
-8.	队员之间必须互相尊重，禁止互相谩骂埋怨，发现一次警告，第二次开除；
-9.	比赛时必须遵守教练和队长安排，应以球队成绩作为优先前提；
-10.   充值支付宝账号：13867804056
+@Html.DisplayFor(modelItem => Model.ElementAt(0).Rule)
             </pre>
                     </td>
                 </tr>

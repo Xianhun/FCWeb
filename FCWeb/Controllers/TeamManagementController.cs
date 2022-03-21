@@ -376,7 +376,38 @@ namespace FCWeb.Controllers
         {
             string TeamName = Session["TeamName"].ToString();
             var TeamInformation = db.CreateTeam.Where(s => s.TeamName == TeamName).ToList();
+            var numberCount = db.User.Where(s => s.TeamName == TeamName).Count();
+            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName&&s.Status=="已结束").Count();
+            ViewBag.Count = numberCount;
+            ViewBag.M_Count = matchCount;
             return View(TeamInformation);
+        }
+
+        public ActionResult ModifyInformation()
+        {
+            string TeamName = Session["TeamName"].ToString();
+            var team_Id = db.CreateTeam.Where(s => s.TeamName == TeamName).Select(s => s.ID).FirstOrDefault();
+            CreateTeams TeamInformation = db.CreateTeam.Find(team_Id);
+            var numberCount = db.User.Where(s => s.TeamName == TeamName).Count();
+            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结束").Count();
+            ViewBag.Count = numberCount;
+            ViewBag.M_Count = matchCount;
+            return View(TeamInformation);
+        }
+        [HttpPost]
+        public ActionResult ModifyInformation(string Open,string City,string Sponsors,string TeamIntroduce, string Rule)
+        {
+            string TeamName = Session["TeamName"].ToString();
+            CreateTeams TeamInformation = db.CreateTeam.Where(s => s.TeamName == TeamName).FirstOrDefault();
+            TeamInformation.TeamOpenType = Open;
+            TeamInformation.City = City;
+            TeamInformation.Sponsors = Sponsors;
+            TeamInformation.TeamIntroduce = TeamIntroduce;
+            TeamInformation.Rule = Rule;
+            db.Entry(TeamInformation).State = EntityState.Modified;
+            db.SaveChanges();
+            var script = String.Format("<script>alert('修改成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/TeamInformation"));
+            return Content(script, "text/html");
         }
     }
 }

@@ -15,6 +15,8 @@ namespace FCWeb.Models
         public string TeamName { get; set; }
         [Display(Name = "公开类型")]
         public string TeamOpenType { get; set; }
+        [Display(Name = "规章制度")]
+        public string Rule { get; set; }
         [Display(Name = "球队简介")]
         public string TeamIntroduce { get; set; }
         [Display(Name = "城市")]
