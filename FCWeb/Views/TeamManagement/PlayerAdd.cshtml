@@ -1,0 +1,183 @@
+﻿@model IEnumerable<FCWeb.Models.Schedules>
+@{
+    ViewBag.Title = "PlayerAdd";
+    Layout = null;
+}
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
+    <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="~/Scripts/TeamManagement/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="~/Scripts/TeamManagement/xadmin.js"></script>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <style type="text/css">
+        .attend-item {
+            margin: 5px 5px;
+            padding: 5px;
+            width: 7em;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="panel panel-default">
+
+        <ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
+            <li style="margin-left:10px;" title="详细列表">
+                <a href="MatchSchedule">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    <span class="hidden-xs">赛程列表</span>
+                </a>
+            </li>
+            <li class="" title="添加赛程">
+                <a href="MatchCreate">
+                    <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
+                    <span class="hidden-xs">添加<span class="hidden-sm">赛程</span></span>
+                </a>
+            </li>
+            <li class="" title="添加赛程">
+                <a href="PlayerAdd">
+                    <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
+                    <span class="hidden-xs">赛事<span class="hidden-sm">添加球员</span></span>
+                </a>
+            </li>
+        </ul>
+
+        <script type="text/javascript">
+            $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '赛事添加球员'; }).parent().addClass('active');
+        </script>
+
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 20px;"></th>
+                    <th class="date-length">
+                    </th>
+                    <th style="width: 5em;">时间</th>
+                    <th style="width: 10em;" class="hidden-xs">地点</th>
+                    <th style="width: 7em;" class="hidden-xs">参与/总人数</th>
+                    <th class="hidden-md hidden-xs hidden-sm"></th>
+
+                    <th class="money-length hidden-sm hidden-xs">
+                        金额(元)
+                    </th>
+                    <th style="width: 4.5em;" class="hidden-sm hidden-xs"></th>
+                    <th style="width: 6em;" class="hidden-md hidden-sm hidden-xs"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var item in Model)
+                    {
+                                <tr class="">
+                                    <td>
+                                        @{
+                                            if (item.Status.ToString() == "报名中")
+                                            {
+                                                <span class="glyphicon glyphicon-flag text-warning" data-toggle="tooltip" title="报名中"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="glyphicon glyphicon-flag" data-toggle="tooltip" title="已结束"></span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="MatchInformation/@item.ID">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                            @item.SdulsTime.ToShortDateString()
+                                            @{
+                                                string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
+                                            }
+                                            @strWeek
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @item.SdulsTime.ToShortTimeString()
+                                    </td>
+                                    <td class="hidden-xs">
+                                        @item.Place
+                                    </td>
+                                    <td class="hidden-xs">
+                                        @item.Participate/@item.LimitNum
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                    </td>
+                                    <td class="hidden-sm hidden-xs">
+                                        &#165;@item.SduFees
+                                    </td>
+                                    <td class="hidden-sm hidden-xs">
+                                        <span>@item.Status</span>
+                                    </td>
+                                    @{
+                                        if (item.Status != "已结束" && item.Participate < item.LimitNum)
+                                        {
+                                            <td class="hidden-md hidden-sm hidden-xs">
+                                                <a href="#" onclick="x_admin_show('批量添加', 'BatchCreate/@item.ID',600,400)">批量添加</a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="hidden-md hidden-sm hidden-xs"></td>
+                                        }
+                                    }
+                                </tr>
+                    }
+                }
+                <tr class="text-muted hidden-xs">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="hidden-sm"></td>
+                    <td class="text-right hidden-sm">
+                        <small>
+                            当前页消费总额：
+                        </small>
+                    </td>
+                    <td class="hidden-sm">
+                        <small>
+                            &#165;@{
+                                decimal totalfees = 0;
+                                foreach (var item in Model)
+                                {
+                                    totalfees += item.SduFees;
+                                }
+                            }
+                            @totalfees
+                        </small>
+                    </td>
+                    <td class="text-right hidden-md" colspan="2">
+                        <small>
+                            共 @{
+                                int i = 0;
+                                foreach (var item in Model)
+                                {
+                                    i = Model.Count();
+                                }
+                            }
+                            @i 场
+                        </small>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="text-center">
+
+
+        </div>
+    </div>
+</body>
+

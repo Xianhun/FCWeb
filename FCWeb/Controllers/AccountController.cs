@@ -120,6 +120,12 @@ namespace FCWeb.Controllers
                     teamMember.Age = Age;
                     teamMember.Location = Location;
                     db.Entry(teamMember).State = EntityState.Modified;
+                    if(teamMember.Position=="队长")
+                    {
+                        CreateTeams createTeams = db.CreateTeam.Where(s => s.TeamName == TeamName).FirstOrDefault();
+                        createTeams.TeamCptain = UserName;
+                        db.Entry(createTeams).State = EntityState.Modified;
+                    }
                     db.SaveChanges();
                 }
                 Session["UserName"] = UserName;
