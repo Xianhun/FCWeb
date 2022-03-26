@@ -1,0 +1,139 @@
+﻿@model IEnumerable<FCWeb.Models.TeamMembers>
+@{
+    ViewBag.Title = "RoleAdd";
+    Layout = null;
+}
+<head>
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    @*<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />*@
+    <link href="~/Content/TeamManagement/font.css" rel="stylesheet" />
+    <link href="~/Content/TeamManagement/xadmin.css" rel="stylesheet" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+
+    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+    <!--Slider-->
+    <link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+    <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</head>
+<style>
+    .layui-form input[type=checkbox] {
+        display: inline;
+    }
+</style>
+<body>
+    <div class="x-body">
+        <form action="" method="post" class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>@Model.ElementAt(0).UserName
+                    <input type="hidden" name="p1" value="@Model.ElementAt(0).Permissionid">
+                </label>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">
+                    拥有权限
+                </label>
+                <table class="layui-table layui-input-block">
+                    <tbody>
+                        <tr>
+                            <td>
+                                赛程管理
+                            </td>
+                            <td>
+                                <div class="layui-input-block">
+                                    <input name="permission" id="2" type="checkbox" value="2"> 添加赛程
+                                    <input name="permission" id="3" type="checkbox" value="3"> 赛事添加球员
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                球员管理
+                            </td>
+                            <td>
+                                <div class="layui-input-block">
+                                    <input name="permission" id="4" type="checkbox" value="4"> 添加本地球员
+                                    <input name="permission" id="5" type="checkbox" value="5"> 球员申请
+                                    <input name="permission" id="6" type="checkbox" value="6"> 移除球员
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                球队管理
+                            </td>
+                            <td>
+                                <div class="layui-input-block">
+                                    <input name="permission" id="7" type="checkbox" value="7"> 修改球队信息
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn" id="Submit" lay-submit="" lay-filter="add">启用</button>
+                <button class="layui-btn layui-btn-danger" id="disable" lay-submit="" lay-filter="del">禁用</button>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    var permission = $("input[name=permission]");
+    var permission_id = $("input[name='p1']").val();
+    $(document).ready(function () {
+        var p = permission_id.split(',');
+        for (var i = 0; i < permission.length; i++) {
+            for (var j = 0; j < p.length; j++) {
+                if (permission[i].value == p[j]) {
+                    permission[i].checked = true;
+                }
+            }
+        }
+    })
+        function judge() {
+        var count_member = 0;
+        for (var i = 0; i < permission.length; i++) {
+            if (permission[i].checked) {
+                count_member++;
+            }
+        }
+        if (count_member > 0) document.getElementById("Submit").disabled = false;
+        else document.getElementById("Submit").disabled = true;
+        //
+    }
+    setInterval(judge, 100);
+    $(function () {
+        $("#Submit").click(function () {
+            var data = "";
+            var membername = document.getElementsByName("Member");
+            let i = 0;
+            console.log(membername);
+            $("input:checkbox[name='permission']:checked").each(function () {
+                data += $(this).val() + ",";
+                console.log(data);
+                i++;
+            });
+            $.post("/TeamManagement/PermissionAdd", { sel_permissionInfo: data, member_id:@Model.ElementAt(0).ID }, function (data) {
+                var result = data.split('+');
+                alert(result[0]);
+                window.location.href = "";
+            });
+        });
+    })
+    $(function () {
+        $("#disable").click(function () {
+            $.post("/TeamManagement/DisableAdd", {member_id:@Model.ElementAt(0).ID }, function (data) {
+                var result = data.split('+');
+                alert(result[0]);
+                window.location.href = "";
+            });
+        });
+    })
+
+</script>

@@ -27,6 +27,7 @@ namespace FCWeb.Models
         public virtual DbSet<SignUp> SignUps { get; set; }
         public virtual DbSet<TeamMembers> TeamMember { get; set; }
         public virtual DbSet<ApplicationForm> ApplicationForms { get; set; }
+        public virtual DbSet<Permissions> Permission { get; set; }
     }
 
     //public class MyEntity

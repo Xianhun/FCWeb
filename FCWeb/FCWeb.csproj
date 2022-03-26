@@ -151,6 +151,7 @@
     <Compile Include="Models\CreateTeams.cs" />
     <Compile Include="Models\DbInitializer.cs" />
     <Compile Include="Models\FCDbContext.cs" />
+    <Compile Include="Models\Permissions.cs" />
     <Compile Include="Models\Schedules.cs" />
     <Compile Include="Models\SignUp.cs" />
     <Compile Include="Models\TeamMembers.cs" />
@@ -348,6 +349,8 @@
     <Content Include="Views\TeamManagement\MemberDelete.cshtml" />
     <Content Include="Views\TeamManagement\BatchCreate.cshtml" />
     <Content Include="Views\TeamManagement\PlayerAdd.cshtml" />
+    <Content Include="Views\TeamManagement\Permission.cshtml" />
+    <Content Include="Views\TeamManagement\RoleAdd.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

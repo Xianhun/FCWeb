@@ -84,6 +84,9 @@ namespace FCWeb.Controllers
                         Age = Age,
                         Appearance = 0,
                         Cost = 0,
+                        Permission = "球队队长",
+                        Permissionid = "1",
+                        PermissionStatus = "启用",
                         Attendance = "0",
                         B_Appointment = "0",
                         LeaveRate = "0",
@@ -92,6 +95,11 @@ namespace FCWeb.Controllers
                         LeaveTimes = DateTime.Now
                     };
                     db.TeamMember.Add(teamMembers);
+                    db.SaveChanges();
+                    var users = db.User.Where(s => s.Account == Account).FirstOrDefault();
+                    users.Access = 1;
+                    Session["Access"] = users.Access;
+                    db.Entry(users).State = EntityState.Modified;
                     db.SaveChanges();
                     var script = String.Format("<script>alert('创建成功');location.href='{0}'</script>", Url.Action("Index", "Home/CreateTeam"));
                     return Content(script, "text/html");
@@ -162,13 +170,16 @@ namespace FCWeb.Controllers
                         {
                             TeamName = TeamName,
                             Account = Account,
-                            UserName = UserName,//UserName,
+                            UserName = UserName,
                             Position = "队员",
-                            Location = Location,//个人信息中心补充
+                            Location = Location,
                             Age = Age,
                             Sex = Sex,
                             Cost = 0,
                             Appearance = 0,
+                            Permission = null,
+                            Permissionid = null,
+                            PermissionStatus = "启用",
                             Attendance = "0",
                             B_Appointment = "0",
                             LeaveRate = "0",
@@ -179,6 +190,11 @@ namespace FCWeb.Controllers
                         db.TeamMember.Add(teamMembers);
                         db.SaveChanges();
                         Session["TeamName"] = TeamName;
+                        var users = db.User.Where(s => s.Account == Account).FirstOrDefault();
+                        users.Access = 1;
+                        Session["Access"] = users.Access;
+                        db.Entry(users).State = EntityState.Modified;
+                        db.SaveChanges();
                         string script = String.Format("<script>alert('成功加入球队');location.href='{0}'</script>", Url.Action("Index", "Home/JoinTeam"));
                         return Content(script, "text/html");
                     }

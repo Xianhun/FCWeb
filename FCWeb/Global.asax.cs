@@ -1,6 +1,8 @@
 using FCWeb.App_Start;
+using FCWeb.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
@@ -19,6 +21,8 @@ namespace FCWeb
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            //数据初始化
+            Database.SetInitializer(new DbInitializer());
         }
     }
 }

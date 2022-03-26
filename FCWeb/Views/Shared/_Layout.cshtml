@@ -67,7 +67,12 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>@Html.ActionLink("个人中心", "PersonalCenter", "Account")</li>
-                                <li>@Html.ActionLink("管理球队", "Home", "TeamManagement")</li>
+                                @{
+                                    if (Convert.ToInt32(Session["Access"]) == 1)
+                                    {
+                                        <li>@Html.ActionLink("管理球队", "Home", "TeamManagement")</li>
+                                    }
+                                }
                                 @*<li>@Html.ActionLink("更改密码", "ChangePassword", "Account")</li>*@
                                 <li role="presentation" class="divider"></li>
                                 <li><a href="javascript:sessionStorage.removeItem('accessToken');$('#logoutForm').submit(); window.location.href ='/Account/Login'" id="loginout">退出登录</a></li>

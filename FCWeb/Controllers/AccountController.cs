@@ -44,7 +44,9 @@ namespace FCWeb.Controllers
                     users.Status = "在线";
                     db.Entry(users).State = EntityState.Modified;
                     db.SaveChanges();
+                    int Access = db.User.Where(s => s.Account == UserID).Select(s => s.Access).FirstOrDefault();
                     Session["TeamName"] = TeamName;
+                    Session["Access"] = Access;
                     return Json(res, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -66,8 +68,9 @@ namespace FCWeb.Controllers
             if (!User_ID.Exists(p => p == UserID) && UserID != null)
             {
                 logs.Account = UserID;
+                logs.UserName = "普通用户";
                 logs.Password = Password;
-                logs.Access = 1;
+                logs.Access = 0;
                 logs.Sex = "男";//注册默认为男性
                 db.User.Add(logs);
                 db.SaveChanges();

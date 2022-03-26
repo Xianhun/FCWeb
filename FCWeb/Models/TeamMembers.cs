@@ -35,12 +35,19 @@ namespace FCWeb.Models
         public string LeaveRate { get; set; }
         [Display(Name = "上次出勤")]
         public string LastAttendance { get; set; }
+        [Display(Name = "球队权限")]
+        public string Permission { get; set; }
+        [Display(Name = "球队权限ID")]
+        public string Permissionid { get; set; }
+        [Display(Name = "权限状态")]
+        public string PermissionStatus { get; set; }
         [Display(Name ="加入时间")]
         public DateTime DateTimes { get; set; }
         [Display(Name = "离队时间")]
         public DateTime LeaveTimes { get; set; }
         [Display(Name = "成员状态")]
         public string Status { get; set; }
+
 
 
     }

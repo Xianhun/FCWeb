@@ -16,6 +16,15 @@ namespace FCWeb.Controllers
         {
             var Account = Session["User"].ToString();
             var UserName = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
+            string per_id = db.TeamMember.Where(s => s.Account == Account).Select(s => s.Permissionid).FirstOrDefault();
+            if (per_id == "1")
+            {
+                ViewBag.Per = "管理权限";
+            }
+            else
+            {
+                ViewBag.Per = "普通队员";
+            }
             ViewBag.US = UserName;
             return View();
         }
@@ -335,6 +344,8 @@ namespace FCWeb.Controllers
                 Sex = Sex,
                 Cost = 0,
                 Appearance = 0,
+                Permission = null,
+                Permissionid = null,
                 Attendance = "0",
                 B_Appointment = "0",
                 LeaveRate = "0",
@@ -348,6 +359,10 @@ namespace FCWeb.Controllers
             var FormID = db.ApplicationForms.Where(s => s.UserName == UserName).Select(s => s.ID).FirstOrDefault();
             ApplicationForm Form = db.ApplicationForms.Find(FormID);
             db.ApplicationForms.Remove(Form);
+            db.SaveChanges();
+            var users = db.User.Where(s => s.Account == Account).FirstOrDefault();
+            users.Access = -1;
+            db.Entry(users).State = EntityState.Modified;
             db.SaveChanges();
             var script = String.Format("<script>alert('申请通过');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
             return Content(script, "text/html");
@@ -384,6 +399,9 @@ namespace FCWeb.Controllers
                 Sex = Sex,
                 Cost = 0,
                 Appearance = 0,
+                Permission = null,
+                Permissionid=null,
+                PermissionStatus = "禁用",
                 Attendance = "0",
                 B_Appointment = "0",
                 LeaveRate = "0",
@@ -568,5 +586,52 @@ namespace FCWeb.Controllers
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult Permission()
+        {
+            string TeamName = Session["TeamName"].ToString();
+            List<TeamMembers> teammembers = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
+            return View(teammembers);
+        }
+
+        public ActionResult RoleAdd(int id)
+        {
+            string TeamName = Session["TeamName"].ToString();
+            var teammbers = db.TeamMember.Where(s => s.TeamName == TeamName && s.ID == id).ToList();
+            ViewBag.ID = teammbers.Select(s => s.Permissionid).FirstOrDefault();
+            return View(teammbers);
+        }
+
+        public JsonResult PermissionAdd(string sel_permissionInfo, int member_id)
+        {
+            TeamMembers player = db.TeamMember.Where(s => s.ID == member_id).FirstOrDefault();
+            string[] permissioninfo = sel_permissionInfo.Split(',');
+            string res = "";
+            string res_mission = "";
+            for (int i = 0; i < permissioninfo.Length - 1; i++)
+            {
+                string[] permissions = permissioninfo[i].Split('+');
+                string p = permissions[0];
+                int permissionid = Convert.ToInt32(p);
+                string qx = db.Permission.Where(s => s.ID == permissionid).Select(s => s.PermissionName).FirstOrDefault();
+                res_mission += qx+",";
+            }
+            player.Permissionid = sel_permissionInfo.TrimEnd(',');
+            player.Permission = res_mission.TrimEnd(',');
+            player.PermissionStatus = "启用";
+            db.Entry(player).State = EntityState.Modified;
+            db.SaveChanges();
+            res += "启用成功";
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult DisableAdd(int member_id)
+        {
+            TeamMembers player = db.TeamMember.Where(s => s.ID == member_id).FirstOrDefault();
+            string res = "";
+            player.PermissionStatus = "禁用";
+            db.Entry(player).State = EntityState.Modified;
+            db.SaveChanges();
+            res += "禁用成功";
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
     }
 }
