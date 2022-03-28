@@ -113,7 +113,7 @@ namespace FCWeb.Controllers
                             }
                         }
                     }
-                    var Near_Sedul = db.Schedule.Where(s => s.SdulsTime == NearTime).ToList();
+                    var Near_Sedul = db.Schedule.Where(s => s.SdulsTime == NearTime&&s.TeamName==TeamName).ToList();
                     ViewBag.Check = result;//判断最近是否有赛程
                     return View(Near_Sedul);
                 }
@@ -130,7 +130,15 @@ namespace FCWeb.Controllers
         /// <returns></returns>
         public ActionResult MatchCreate()
         {
-            return View();
+            if (Access_permissions(2) == "管理权限")
+            {
+                return View();
+            }
+            else
+            {
+                var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                return Content(script, "text/html");
+            }
         }
         [HttpPost]
         public ActionResult MatchCreate(string MatchType, DateTime Date, DateTime Time, string Place, string Rival, decimal SduFees, decimal PersonFees, int LimitNum, string Note)
@@ -317,7 +325,15 @@ namespace FCWeb.Controllers
                 var Account = db.User.Where(s => s.UserName == UserName).Select(s => s.Account).FirstOrDefault();
                 userinFormation.Add(db.User.Where(s => s.Account == Account).FirstOrDefault());
             }
-            return View(userinFormation);
+            if (Access_permissions(5) == "管理权限")
+            {
+                return View(userinFormation);
+            }
+            else
+            {
+                var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                return Content(script, "text/html");
+            }
         }
         public ActionResult ApplicationDetailed(int id)
         {
@@ -382,7 +398,15 @@ namespace FCWeb.Controllers
 
         public ActionResult Createplayers()
         {
-            return View();
+            if (Access_permissions(4) == "管理权限")
+            {
+                return View();
+            }
+            else
+            {
+                var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                return Content(script, "text/html");
+            }
         }
         [HttpPost]
         public ActionResult Createplayers(string Name, string Location, int Age, string Sex)
@@ -436,7 +460,15 @@ namespace FCWeb.Controllers
             var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结束").Count();
             ViewBag.Count = numberCount;
             ViewBag.M_Count = matchCount;
-            return View(TeamInformation);
+            if (Access_permissions(7) == "管理权限")
+            {
+                return View(TeamInformation);
+            }
+            else
+            {
+                var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                return Content(script, "text/html");
+            }
         }
         [HttpPost]
         public ActionResult ModifyInformation(string Open, string City, string Sponsors, string TeamIntroduce, string Rule)
@@ -460,7 +492,15 @@ namespace FCWeb.Controllers
             {
                 string TeamName = Session["TeamName"].ToString();
                 List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
-                return View(teammember);
+                if (Access_permissions(6) == "管理权限")
+                {
+                    return View(teammember);
+                }
+                else
+                {
+                    var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                    return Content(script, "text/html");
+                }
             }
             catch (Exception ex)
             {
@@ -518,11 +558,22 @@ namespace FCWeb.Controllers
         {
             string TeamName = Session["TeamName"].ToString();
             List<Schedules> schedules = db.Schedule.Where(s => s.TeamName == TeamName).OrderByDescending(s => s.ID).ToList();
-            if (schedules != null)
+            if (Access_permissions(3) == "管理权限")
             {
-                return View(schedules);
+                if (schedules != null)
+                {
+                    return View(schedules);
+                }
+                else
+                {
+                    return View();
+                }
             }
-            return View();
+            else
+            {
+                var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                return Content(script, "text/html");
+            }
         }
 
         public ActionResult BatchCreate(int id)
@@ -632,6 +683,28 @@ namespace FCWeb.Controllers
             db.SaveChanges();
             res += "禁用成功";
             return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
+        public string Access_permissions(int id)
+        {
+            string TeamName = Session["TeamName"].ToString();
+            string Account = Session["User"].ToString();
+            var sel_permissionInfo = db.TeamMember.Where(s => s.TeamName == TeamName && s.Account == Account&&s.PermissionStatus=="启用").Select(s => s.Permissionid).FirstOrDefault();
+            if(sel_permissionInfo!=null)
+            {
+                string[] permissioninfo = sel_permissionInfo.Split(',');
+                for (int i = 0; i < permissioninfo.Length; i++)
+                {
+                    string[] permissions = permissioninfo[i].Split('+');
+                    string p = permissions[0];
+                    int permissionid = Convert.ToInt32(p);
+                    if (id == permissionid || permissionid == 1)
+                    {
+                        return "管理权限";
+                    }
+                }
+            }
+            return "普通权限";
         }
     }
 }

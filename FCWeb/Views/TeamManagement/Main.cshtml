@@ -42,7 +42,7 @@
                         <div class="panel bg-default text-center bg-default">
                             <div class="panel-body" style="background-color:#3c5868">
                                 <br class="hidden-md hidden-xs hidden-sm" />
-                                <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497" class="text-white link-none">
+                                <a href="MatchInformation/@Model.ElementAt(0).ID" class="text-white link-none">
                                     <strong>
                                         @Html.DisplayFor(modelItem => Model.ElementAt(0).SdulsTime.Day)
                                     </strong>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="col-md-8 col-sm-6 col-xs-12">
                         <div>
-                            <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497" class="link-none">
+                            <a href="MatchInformation/@Model.ElementAt(0).ID" class="link-none">
                                 <strong>
                                     @Model.ElementAt(0).SdulsTime
                                 </strong>
@@ -216,7 +216,7 @@
                 <hr />
                 <div class="pull-right">
                     <span class="">
-                        <a id="aAttendLink" href="javascript:document.getElementById('attendMatch').submit()" class="" title="我要报名参加比赛" data-toggle="tooltip">
+                        <a id="aAttendLink" href="MatchInformation/@Model.ElementAt(0).ID" class="" title="我要报名参加比赛" data-toggle="tooltip">
                             <span class="glyphicon glyphicon-ok-circle text-success"></span>
                             <span class="hidden-xs">我要</span>报名
                         </a>
@@ -224,21 +224,21 @@
                     </span>
 
                     <span class="hidden">
-                        <a href="javascript:void(0)" title="取消报名" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Match/UnAttend/42497')">
+                        <a href="MatchInformation/@Model.ElementAt(0).ID" title="取消报名" >
                             <span class="glyphicon glyphicon-remove-circle"></span>
                             取消<span class="hidden-xs">报名</span>
                         </a>
                         |
                     </span>
                     <span class="hidden">
-                        <a href="javascript:void(0)" title="我要请假" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Match/RequestLeave/42497')">
+                        <a href="MatchInformation/@Model.ElementAt(0).ID" title="我要请假">
                             <span class="glyphicon glyphicon-remove-circle"></span>
                             <span class="hidden-xs">我要</span>请假
                         </a>
                         |
                     </span>
                     <span class="hidden-xs">
-                        <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497">
+                        <a href="MatchInformation/@Model.ElementAt(0).ID">
                             <span class="glyphicon glyphicon-eye-open text-info"></span>&nbsp;查看详情
                         </a>
                     </span>
