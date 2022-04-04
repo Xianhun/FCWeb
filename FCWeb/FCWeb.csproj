@@ -351,6 +351,7 @@
     <Content Include="Views\TeamManagement\PlayerAdd.cshtml" />
     <Content Include="Views\TeamManagement\Permission.cshtml" />
     <Content Include="Views\TeamManagement\RoleAdd.cshtml" />
+    <Content Include="Views\TeamManagement\Statistics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

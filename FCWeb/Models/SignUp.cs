@@ -13,6 +13,12 @@ namespace FCWeb.Models
         public int PlayerID { get; set; }
         [Display(Name = "赛程ID")]
         public int SchedulesID { get; set; }
+        [Display(Name = "花费")]
+        public decimal Cost { get; set; }
+        [Display(Name = "总进球")]
+        public int Goal { get; set; }
+        [Display(Name = "总助攻")]
+        public int Assists { get; set; }
         [Display(Name ="报名状态")]
         public string SignUpStatus { get; set; }
     }

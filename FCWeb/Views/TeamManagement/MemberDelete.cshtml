@@ -153,7 +153,7 @@
                                         else if (item.Status == "删除中")
                                         {
                                             <td class="hidden-md hidden-xs hidden-sm">
-                                                @Html.ActionLink("撤销删除", "Undo", new { id = item.ID }, new { onclick = "return confirm('你确认撤销吗？')" })
+                                                @Html.ActionLink("撤销", "Undo", new { id = item.ID }, new { onclick = "return confirm('你确认撤销吗？')" })
                                             </td>
                                         }
                                         else

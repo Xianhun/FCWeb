@@ -113,7 +113,7 @@ namespace FCWeb.Controllers
                             }
                         }
                     }
-                    var Near_Sedul = db.Schedule.Where(s => s.SdulsTime == NearTime&&s.TeamName==TeamName).ToList();
+                    var Near_Sedul = db.Schedule.Where(s => s.SdulsTime == NearTime && s.TeamName == TeamName).ToList();
                     ViewBag.Check = result;//判断最近是否有赛程
                     return View(Near_Sedul);
                 }
@@ -246,6 +246,7 @@ namespace FCWeb.Controllers
                 Schedules pt = db.Schedule.Where(s => s.ID == id).FirstOrDefault();
                 //人数上限
                 int LimitNum = db.Schedule.Where(s => s.ID == id).Select(s => s.LimitNum).FirstOrDefault();
+                decimal Cost = db.Schedule.Where(s => s.ID == id).Select(s => s.PersonFees).FirstOrDefault();
                 //用于判断是否重复报名
                 List<SignUp> PID = db.SignUps.Where(s => s.PlayerID == PlayerID && s.SchedulesID == id).ToList();
                 if (Participate < LimitNum)
@@ -256,6 +257,9 @@ namespace FCWeb.Controllers
                         {
                             SchedulesID = id,
                             PlayerID = PlayerID,
+                            Cost = Cost,
+                            Goal = 0,
+                            Assists = 0,
                             SignUpStatus = "报名中"
                         };
                         db.SignUps.Add(Play_Sign_Up);
@@ -359,6 +363,8 @@ namespace FCWeb.Controllers
                 Location = Location,
                 Sex = Sex,
                 Cost = 0,
+                Goal = 0,
+                Assists = 0,
                 Appearance = 0,
                 Permission = null,
                 Permissionid = null,
@@ -422,9 +428,11 @@ namespace FCWeb.Controllers
                 Age = Age,
                 Sex = Sex,
                 Cost = 0,
+                Goal = 0,
+                Assists = 0,
                 Appearance = 0,
                 Permission = null,
-                Permissionid=null,
+                Permissionid = null,
                 PermissionStatus = "禁用",
                 Attendance = "0",
                 B_Appointment = "0",
@@ -522,12 +530,12 @@ namespace FCWeb.Controllers
                 members.LeaveTimes = DateTime.Now;
                 db.Entry(members).State = EntityState.Modified;
                 db.SaveChanges();
-                var script = String.Format("<script>alert('一个小时内自动删除，期间可撤销删除');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/DeleteMember"));
+                var script = String.Format("<script>alert('一个小时内自动删除，期间可撤销删除');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MemberDelete"));
                 return Content(script, "text/html");
             }
             catch (Exception ee)
             {
-                var script = String.Format("<script>alert('删除失败" + ee.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/DeleteMember"));
+                var script = String.Format("<script>alert('删除失败" + ee.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MemberDelete"));
                 return Content(script, "text/html");
             }
         }
@@ -544,12 +552,12 @@ namespace FCWeb.Controllers
                 members.Status = null;
                 db.Entry(members).State = EntityState.Modified;
                 db.SaveChanges();
-                var script = String.Format("<script>alert('撤销成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/DeleteMember"));
+                var script = String.Format("<script>alert('撤销成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MemberDelete"));
                 return Content(script, "text/html");
             }
             catch (Exception ee)
             {
-                var script = String.Format("<script>alert('撤销失败" + ee.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/DeleteMember"));
+                var script = String.Format("<script>alert('撤销失败" + ee.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MemberDelete"));
                 return Content(script, "text/html");
             }
         }
@@ -579,8 +587,7 @@ namespace FCWeb.Controllers
         public ActionResult BatchCreate(int id)
         {
             string TeamName = Session["TeamName"].ToString();
-            List<TeamMembers> addmembers = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
-            List<string> teamMember = db.TeamMember.Where(s => s.TeamName == TeamName).Select(s=>s.UserName).ToList();
+            List<string> teamMember = db.TeamMember.Where(s => s.TeamName == TeamName).Select(s => s.UserName).ToList();
             List<Schedules> schedules = db.Schedule.Where(s => s.TeamName == TeamName && s.ID == id).ToList();
             Dictionary<int, List<string>> bm = new Dictionary<int, List<string>>();//<赛程id，List<报名球员用户名>>报名
             List<int> scid = db.Schedule.Select(s => s.ID).ToList();
@@ -592,16 +599,16 @@ namespace FCWeb.Controllers
                 List<string> bmqy = new List<string>();
                 for (int j = 0; j < teamMember.Count; j++)
                 {
-                    for(int k=0;k<bmqyid.Count;k++)
+                    for (int k = 0; k < bmqyid.Count; k++)
                     {
                         int qyid = bmqyid[k];
                         string qyNmae = db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault();
-                        if(teamMember[j]==qyNmae)
+                        if (teamMember[j] == qyNmae)
                         {
                             t = false;
                         }
                     }
-                    if(t)
+                    if (t)
                     {
                         bmqy.Add(teamMember[j]);
                     }
@@ -624,8 +631,12 @@ namespace FCWeb.Controllers
                 string[] member = memberinfo[i].Split('+');
                 string m = member[0];
                 int p_id = db.TeamMember.Where(s => s.UserName == m).Select(s => s.ID).FirstOrDefault();
+                decimal Cost = db.Schedule.Where(s => s.ID == sche_id).Select(s => s.PersonFees).FirstOrDefault();
                 signup.SchedulesID = sche_id;
                 signup.PlayerID = p_id;
+                signup.Cost = Cost;
+                signup.Goal = 0;
+                signup.Assists = 0;
                 signup.SignUpStatus = "报名中";
                 db.SignUps.Add(signup);
                 db.SaveChanges();
@@ -664,7 +675,7 @@ namespace FCWeb.Controllers
                 string p = permissions[0];
                 int permissionid = Convert.ToInt32(p);
                 string qx = db.Permission.Where(s => s.ID == permissionid).Select(s => s.PermissionName).FirstOrDefault();
-                res_mission += qx+",";
+                res_mission += qx + ",";
             }
             player.Permissionid = sel_permissionInfo.TrimEnd(',');
             player.Permission = res_mission.TrimEnd(',');
@@ -689,8 +700,8 @@ namespace FCWeb.Controllers
         {
             string TeamName = Session["TeamName"].ToString();
             string Account = Session["User"].ToString();
-            var sel_permissionInfo = db.TeamMember.Where(s => s.TeamName == TeamName && s.Account == Account&&s.PermissionStatus=="启用").Select(s => s.Permissionid).FirstOrDefault();
-            if(sel_permissionInfo!=null)
+            var sel_permissionInfo = db.TeamMember.Where(s => s.TeamName == TeamName && s.Account == Account && s.PermissionStatus == "启用").Select(s => s.Permissionid).FirstOrDefault();
+            if (sel_permissionInfo != null)
             {
                 string[] permissioninfo = sel_permissionInfo.Split(',');
                 for (int i = 0; i < permissioninfo.Length; i++)
@@ -705,6 +716,147 @@ namespace FCWeb.Controllers
                 }
             }
             return "普通权限";
+        }
+
+        public ActionResult Statistics(int id)
+        {
+            Dictionary<int, List<string>> bm = new Dictionary<int, List<string>>();//<赛程id，List<报名球员用户名>>报名
+            List<SignUp> sp = db.SignUps.Where(s => s.SchedulesID == id).ToList();
+            List<string> qy_Name = new List<string>();
+            List<string> Location = new List<string>();
+            List<int> scid = db.Schedule.Select(s => s.ID).ToList();
+            string TeamName = Session["TeamName"].ToString();
+            List<string> teamMember = db.TeamMember.Where(s => s.TeamName == TeamName).Select(s => s.UserName).ToList();
+            bool t = true;
+            for (int i = 0; i < scid.Count; i++)
+            {
+                int SID = scid[i];
+                List<int> bmqyid = db.SignUps.Where(s => s.SchedulesID == SID && s.SignUpStatus == "报名中").Select(s => s.PlayerID).ToList();
+                List<string> bmqy = new List<string>();
+                for (int j = 0; j < bmqyid.Count; j++)
+                {
+                    int qyid = bmqyid[j];
+                    bmqy.Add(db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault());
+                    qy_Name.Add(db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault());
+                    Location.Add(db.TeamMember.Where(s => s.ID == qyid).Select(s => s.Location).FirstOrDefault());
+                }
+                bm.Add(SID, bmqy);
+            }
+            //未报名球员统计
+            List<int> wbmqyid = db.SignUps.Where(s => s.SchedulesID == id && s.SignUpStatus == "报名中").Select(s => s.PlayerID).ToList();
+            List<TeamMembers> wbmqy = new List<TeamMembers>();
+            for (int j = 0; j < teamMember.Count; j++)
+            {
+                string t_Member = teamMember[j];
+                for (int k = 0; k < wbmqyid.Count; k++)
+                {
+                    int qyid = wbmqyid[k];
+                    string qyNmae = db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault();
+                    if (t_Member == qyNmae)
+                    {
+                        t = false;
+                    }
+                }
+                if (t)
+                {
+                    wbmqy.Add(db.TeamMember.Where(s => s.UserName == t_Member && s.TeamName == TeamName).FirstOrDefault()); ;
+                }
+                t = true;
+            }
+            ViewBag.wbmqy = wbmqy;
+            ViewBag.bm = bm;
+            ViewBag.sp = sp;
+            ViewBag.qy_Name = qy_Name;
+            ViewBag.Location = Location;
+            var sche = db.Schedule.Where(s => s.ID == id).ToList();
+            return View(sche);
+        }
+        public JsonResult CostChanges(int C_ID,decimal Cost)
+        {
+            var costchange = db.SignUps.Where(s => s.PlayerID == C_ID).FirstOrDefault();
+            costchange.Cost = Cost;
+            db.Entry(costchange).State = EntityState.Modified;
+            db.SaveChanges();
+            string res = "修改成功";
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GoalChanges(int G_ID, int Goal)
+        {
+            var costchange = db.SignUps.Where(s => s.PlayerID == G_ID).FirstOrDefault();
+            costchange.Goal = Goal;
+            db.Entry(costchange).State = EntityState.Modified;
+            db.SaveChanges();
+            string res = "修改成功";
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult AssistsChanges(int A_ID, int Assists)
+        {
+            var costchange = db.SignUps.Where(s => s.PlayerID == A_ID).FirstOrDefault();
+            costchange.Assists = Assists;
+            db.Entry(costchange).State = EntityState.Modified;
+            db.SaveChanges();
+            string res = "修改成功";
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AddToSchedule(int id ,int PlayerID)
+        {
+
+            try
+            {
+                string TeamName = db.TeamMember.Where(s => s.ID == PlayerID).Select(s => s.TeamName).FirstOrDefault();
+                //报名人数
+                int Participate = db.Schedule.Where(s => s.ID == id).Select(s => s.Participate).FirstOrDefault();
+                Schedules pt = db.Schedule.Where(s => s.ID == id).FirstOrDefault();
+                //人数上限
+                int LimitNum = db.Schedule.Where(s => s.ID == id).Select(s => s.LimitNum).FirstOrDefault();
+                decimal Cost = db.Schedule.Where(s => s.ID == id).Select(s => s.PersonFees).FirstOrDefault();
+                //用于判断是否重复报名
+                List<SignUp> PID = db.SignUps.Where(s => s.PlayerID == PlayerID && s.SchedulesID == id).ToList();
+                if (Participate < LimitNum)
+                {
+                    if (PID.Count == 0)
+                    {
+                        SignUp Play_Sign_Up = new SignUp
+                        {
+                            SchedulesID = id,
+                            PlayerID = PlayerID,
+                            Cost = Cost,
+                            Goal = 0,
+                            Assists = 0,
+                            SignUpStatus = "报名中"
+                        };
+                        db.SignUps.Add(Play_Sign_Up);
+                        db.SaveChanges();
+                        //重新报名人数统计
+                        pt.Participate = db.SignUps.Where(s => s.SignUpStatus == "报名中" && s.SchedulesID == id).Count();
+                        db.Entry(pt).State = EntityState.Modified;
+                        var cost = db.TeamMember.Where(s => s.ID == PlayerID).Select(s => s.Cost).FirstOrDefault();
+                        var person_cost = db.Schedule.Where(s => s.ID == id).Select(s => s.PersonFees).FirstOrDefault();
+                        var costup = cost + person_cost;
+                        TeamMembers teamMembers = new TeamMembers();
+                        teamMembers = db.TeamMember.Where(s => s.ID == PlayerID && s.TeamName == TeamName).FirstOrDefault();
+                        teamMembers.Cost = costup;
+                        db.Entry(teamMembers).State = EntityState.Modified;
+                        db.SaveChanges();
+
+                        var script = String.Format("<script>alert('添加成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Statistics/"+id));
+                        return Content(script, "text/html");
+                    }
+                    else
+                    {
+                        throw new Exception("重复报名");
+                    }
+                }
+                else
+                {
+                    throw new Exception("报名已超过人数上限");
+                }
+            }
+            catch (Exception ex)
+            {
+                var script = String.Format("<script>alert('" + ex.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Statistics/" + id));
+                return Content(script, "text/html");
+            }
         }
     }
 }

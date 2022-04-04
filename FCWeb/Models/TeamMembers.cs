@@ -41,7 +41,11 @@ namespace FCWeb.Models
         public string Permissionid { get; set; }
         [Display(Name = "权限状态")]
         public string PermissionStatus { get; set; }
-        [Display(Name ="加入时间")]
+        [Display(Name = "总进球")]
+        public int Goal { get; set; }
+        [Display(Name = "总助攻")]
+        public int Assists { get; set; }
+        [Display(Name = "加入时间")]
         public DateTime DateTimes { get; set; }
         [Display(Name = "离队时间")]
         public DateTime LeaveTimes { get; set; }
