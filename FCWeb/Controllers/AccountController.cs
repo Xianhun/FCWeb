@@ -82,7 +82,6 @@ namespace FCWeb.Controllers
         }
         public JsonResult Login_out()
         {
-            Session["User"] = null;
             return Json(JsonRequestBehavior.AllowGet);
         }
         public ActionResult PersonalCenter()

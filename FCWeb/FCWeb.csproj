@@ -141,6 +141,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="BLL\HomeBLL.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TeamManagementController.cs" />
@@ -352,6 +353,8 @@
     <Content Include="Views\TeamManagement\Permission.cshtml" />
     <Content Include="Views\TeamManagement\RoleAdd.cshtml" />
     <Content Include="Views\TeamManagement\Statistics.cshtml" />
+    <Content Include="Views\TeamManagement\LeaveAbsence.cshtml" />
+    <Content Include="Views\TeamManagement\Absence.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

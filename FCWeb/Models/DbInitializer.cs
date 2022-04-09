@@ -47,6 +47,11 @@ namespace FCWeb.Models
                     ID=7,
                     PermissionName="修改球队信息"
                 },
+                  new Permissions
+                  {
+                      ID=8,
+                      PermissionName="赛后结算"
+                  }
 
             });
             context.SaveChanges();

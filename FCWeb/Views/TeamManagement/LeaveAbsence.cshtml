@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<FCWeb.Models.Schedules>
 @{
-    ViewBag.Title = "Statistics";
+    ViewBag.Title = "LeaveAbsence";
     Layout = null;
 }
 <head>
@@ -32,30 +32,7 @@
 </head>
 <body>
     <div class="panel panel-default">
-        <ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
-            <li style="margin-left:10px;" title="详细列表">
-                <a href="../MatchSchedule">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                    <span class="hidden-xs">赛程<span class="hidden-sm">列表</span></span>
-                </a>
-            </li>
-            <li class="" title="添加赛程">
-                <a href="../MatchCreate">
-                    <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
-                    <span class="hidden-xs">添加<span class="hidden-sm">赛程</span></span>
-                </a>
-            </li>
-            <li class="" title="赛事添加球员">
-                <a href="../PlayerAdd">
-                    <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
-                    <span class="hidden-xs">赛事<span class="hidden-sm">添加球员</span></span>
-                </a>
-            </li>
-        </ul>
 
-        <script type="text/javascript">
-            $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '赛程列表'; }).parent().addClass('active');
-        </script>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-2 col-sm-3 hidden-xs">
@@ -212,7 +189,7 @@
     </div>
     <div class="helper-content visible-xs"></div>
     <div class="col-md-8 col-sm-6 col-xs-12">
-        <ul id="calendarIndex1" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
+        <ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
             <li style="margin-left:10px;" title="详细列表">
                 <a href="../Statistics/@Model.ElementAt(0).ID">
                     <span class="glyphicon glyphicon-flag"></span>
@@ -234,7 +211,7 @@
         </ul>
 
         <script type="text/javascript">
-            $('#calendarIndex1').find('a').filter(function () { return $(this).text().trim() == '参加队员'; }).parent().addClass('active');
+            $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '请假队员'; }).parent().addClass('active');
         </script>
         <table class="table table-striped table-condensed">
             <thead>
@@ -249,15 +226,6 @@
                     </th>
                     <th class="hidden-md hidden-xs hidden-sm">
                         <a>位置</a>
-                    </th>
-                    <th class="hidden-md hidden-xs hidden-sm">
-                        <a>费用</a>
-                    </th>
-                    <th class="hidden-md hidden-xs hidden-sm">
-                        <a>进球</a>
-                    </th>
-                    <th class="hidden-md hidden-xs hidden-sm">
-                        <a>助攻</a>
                     </th>
                     <th style="width: 5em;" class="hidden-md hidden-xs hidden-sm">
                         <a>操作</a>
@@ -301,15 +269,6 @@
                             <td class="hidden-md hidden-xs hidden-sm">
                                 @Location
                             </td>
-                            <td class="text-danger hidden-md hidden-xs hidden-sm" id="Cost" name="@cid">
-                                &#165;<label>@Cost</label>
-                            </td>
-                            <td class="hidden-md hidden-xs hidden-sm" id="Goal" name="@cid">
-                                @Goal
-                            </td>
-                            <td class="hidden-md hidden-xs hidden-sm" id="Assists" name="@cid">
-                                @Assists
-                            </td>
                             <td class="text-right">
                                 <li class="dropdown">
                                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" title="管理员操作">
@@ -318,7 +277,7 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li class="">
-                                            <a id="qj" name="@Model.ElementAt(0).ID" title="@cid"><span class="glyphicon  glyphicon-pencil"></span>&nbsp;记录为请假</a>
+                                            <a id="cq" name="@Model.ElementAt(0).ID" title="@cid"><span class="glyphicon  glyphicon-pencil"></span>&nbsp;记录为出勤</a>
                                         </li>
                                         <li class="">
                                             <a id="gz" name="@Model.ElementAt(0).ID" title="@cid"><span class="glyphicon glyphicon-pencil"></span>&nbsp;记录为鸽子</a>
@@ -392,14 +351,14 @@
     </div>
 </body>
 <script type="text/javascript">
-    $("#qj,#gz,#cx").click(function () {
+    $("#cq,#gz,#cx").click(function () {
         var sid = $(this).attr("name");
         var pid = $(this).attr('title');
         var stau = $(this).attr('id');
         $.ajax({
             type: 'post',
             url: "/TeamManagement/Record",
-            data: { sid: sid, pid: pid, status:stau},
+            data: { sid: sid, pid: pid, status: stau },
             dataType: 'json',
             success: (res) => {
                 let code = res
@@ -408,99 +367,5 @@
             }
         })
     })
-    $(function () {
-        $.each($("tbody tr"), function () {
-            //获取tr中的子元素
-            var td = $(this).children("td:eq(6),td:eq(7),td:eq(8)");
-            td.click(tdClick);
-        });
-    });
-    function tdClick() {
-        /*  第一步：获取点击对象 获取文本 清空对象中的内容 */
-        //获取当前对象
-        var td = $(this);
-        //获取当前点击对象的文本
-        var tdText = td.text();
-        //清空点击对象td中的内容
-        td.empty();
-
-        /* 第二步：创建一个文本框的元素 */
-        //创建一个文本框元素
-        var ipt = $("<input type='text'"+"oninput="+"this.value=this.value.replace(/[^0-9]/g,'');"+">");
-        //将获取到的对象文本设置为输入框的value
-        ipt.val(tdText);
-        //设置文本框的宽高等于输入框的宽高
-        ipt.width(50);
-        ipt.height(td.height());
-        //将创建的文本框添加到td中
-        td.append(ipt);
-        //触发选择事件,输入框的文本自动被选中
-        ipt.trigger("select");
-        //当键盘按下时
-        /* 当按下回车键时更改并提交数据 */
-        ipt.keydown(function (e) {
-            //当按下回车后 回车键键值等于13
-            if (e.keyCode == 13) {
-                var value = ipt.val();
-                var id = td.attr('name');
-                if ("Cost" == td.attr('id')) {
-                    td.text("￥" + ipt.val());
-                    $.ajax({
-                        type: 'post',
-                        url: "/TeamManagement/CostChanges",
-                        data: { C_ID: id, Cost: value },
-                        dataType: 'json',
-                        success: (res) => {
-                            let code = res
-                            if (code == "修改成功") {
-                                alert(code);
-                            } else {
-                                alert(code);
-                            }
-                        }
-                    })
-                }
-                else if ("Goal" == td.attr("id")) {
-                    td.text(ipt.val());
-                    $.ajax({
-                        type: 'post',
-                        url: "/TeamManagement/GoalChanges",
-                        data: { G_ID: id, Goal: value },
-                        dataType: 'json',
-                        success: (res) => {
-                            let code = res
-                            if (code == "修改成功") {
-                                alert(code);
-                            } else {
-                                alert(code);
-                            }
-                        }
-                    })
-                }
-                else {
-                    td.text(ipt.val());
-                    $.ajax({
-                        type: 'post',
-                        url: "/TeamManagement/AssistsChanges",
-                        data: { A_ID: id, Assists: value },
-                        dataType: 'json',
-                        success: (res) => {
-                            let code = res
-                            if (code == "修改成功") {
-                                alert(code);
-                            } else {
-                                alert(code);
-                            }
-                        }
-                    })
-                }
-                //通过ajax将数据提交给后端
-
-                //绑定点击事件
-                td.click(tdClick);
-            }
-        });
-        //当文本框出现,解绑点击事件
-        td.unbind(tdClick);
-    }
 </script>
+
