@@ -266,14 +266,9 @@ namespace FCWeb.Controllers
                         db.SaveChanges();
                         //重新报名人数统计
                         SignUpCount(id, pt);
-                        var cost = db.SignUps.Where(s => s.SchedulesID == id && s.PlayerID == PlayerID && s.SignUpStatus == "报名中").Select(s => s.Cost).Sum();
-                        TeamMembers teamMembers = new TeamMembers();
-                        teamMembers = db.TeamMember.Where(s => s.Account == UserID && s.TeamName == TeamName).FirstOrDefault();
-                        teamMembers.Cost = cost;
-                        db.Entry(teamMembers).State = EntityState.Modified;
-                        db.SaveChanges();
-
-                        var script = String.Format("<script>alert('报名成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
+                        //重新统计花费
+                        CostTotal(PlayerID);
+                         var script = String.Format("<script>alert('报名成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
                         return Content(script, "text/html");
                     }
                     else
@@ -297,8 +292,28 @@ namespace FCWeb.Controllers
             try
             {
                 string TeamName = Session["TeamName"].ToString();
-                int total_match = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结束").Count();
+                int total_match = db.Schedule.Where(s => s.TeamName == TeamName).Count();
                 List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
+                var PlayeridCount=teammember.Select(s => s.ID).ToList();
+                for(int i=0;i<PlayeridCount.Count;i++)
+                {
+                    int Playerid = PlayeridCount[i];
+                    //重新统计花费
+                    CostTotal(Playerid);
+                    //重新统计进球数
+                    GoalTotal(Playerid);
+                    //重新统计助攻数
+                    AssistsTotal(Playerid);
+                    //重新统计出勤率
+                    AttendanceTotal(Playerid);
+                    //重新统计请假率
+                    LeaveRateTotal(Playerid);
+                    //重新统计鸽子率
+                    AbsentTotal(Playerid);
+                    //重新出场次数
+                    Appearances(Playerid);
+
+                }
                 ViewBag.TM = total_match;
                 return View(teammember);
             }
@@ -450,7 +465,8 @@ namespace FCWeb.Controllers
             string TeamName = Session["TeamName"].ToString();
             var TeamInformation = db.CreateTeam.Where(s => s.TeamName == TeamName).ToList();
             var numberCount = db.User.Where(s => s.TeamName == TeamName).Count();
-            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结束").Count();
+            //出场统计
+            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName).Count();
             ViewBag.Count = numberCount;
             ViewBag.M_Count = matchCount;
             return View(TeamInformation);
@@ -725,7 +741,6 @@ namespace FCWeb.Controllers
                 List<int> scid = db.Schedule.Select(s => s.ID).ToList();
                 string TeamName = Session["TeamName"].ToString();
                 List<string> teamMember = db.TeamMember.Where(s => s.TeamName == TeamName).Select(s => s.UserName).ToList();
-                bool t = true;
                 for (int i = 0; i < scid.Count; i++)
                 {
                     int SID = scid[i];
@@ -735,7 +750,7 @@ namespace FCWeb.Controllers
                     {
                         int qyid = bmqyids[j];
                         bmqy.Add(db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault());
-                        
+
                     }
                     bm.Add(SID, bmqy);
                 }
@@ -746,26 +761,7 @@ namespace FCWeb.Controllers
                     Location.Add(db.TeamMember.Where(s => s.ID == qyid).Select(s => s.Location).FirstOrDefault());
                 }
                 //未报名球员统计
-                List<int> wbmqyid = db.SignUps.Where(s => s.SchedulesID == id).Select(s => s.PlayerID).ToList();
-                List<TeamMembers> wbmqy = new List<TeamMembers>();
-                for (int j = 0; j < teamMember.Count; j++)
-                {
-                    string t_Member = teamMember[j];
-                    for (int k = 0; k < wbmqyid.Count; k++)
-                    {
-                        int qyid = wbmqyid[k];
-                        string qyNmae = db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault();
-                        if (t_Member == qyNmae)
-                        {
-                            t = false;
-                        }
-                    }
-                    if (t)
-                    {
-                        wbmqy.Add(db.TeamMember.Where(s => s.UserName == t_Member && s.TeamName == TeamName).FirstOrDefault()); ;
-                    }
-                    t = true;
-                }
+                List<TeamMembers> wbmqy = UnSignUp(id, TeamName, teamMember);
                 ViewBag.wbmqy = wbmqy;
                 ViewBag.bm = bm;
                 ViewBag.sp = sp;
@@ -781,30 +777,64 @@ namespace FCWeb.Controllers
             }
 
         }
-        public JsonResult CostChanges(int C_ID,decimal Cost)
+
+        private List<TeamMembers> UnSignUp(int id, string TeamName, List<string> teamMember)
         {
-            var costchange = db.SignUps.Where(s => s.PlayerID == C_ID).FirstOrDefault();
+            bool t = true;
+            List<int> wbmqyid = db.SignUps.Where(s => s.SchedulesID == id).Select(s => s.PlayerID).ToList();
+            List<TeamMembers> wbmqy = new List<TeamMembers>();
+            for (int j = 0; j < teamMember.Count; j++)
+            {
+                string t_Member = teamMember[j];
+                for (int k = 0; k < wbmqyid.Count; k++)
+                {
+                    int qyid = wbmqyid[k];
+                    string qyNmae = db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault();
+                    if (t_Member == qyNmae)
+                    {
+                        t = false;
+                    }
+                }
+                if (t)
+                {
+                    wbmqy.Add(db.TeamMember.Where(s => s.UserName == t_Member && s.TeamName == TeamName).FirstOrDefault()); ;
+                }
+                t = true;
+            }
+
+            return wbmqy;
+        }
+
+        public JsonResult CostChanges(int S_ID,decimal Cost, int P_ID)
+        {
+            var costchange = db.SignUps.Where(s => s.PlayerID == P_ID&&s.SchedulesID== S_ID).FirstOrDefault();
             costchange.Cost = Cost;
             db.Entry(costchange).State = EntityState.Modified;
             db.SaveChanges();
+            //重新统计总花费
+            CostTotal(P_ID);
             string res = "修改成功";
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GoalChanges(int G_ID, int Goal)
+        public JsonResult GoalChanges(int S_ID, int Goal,int P_ID)
         {
-            var goalchange = db.SignUps.Where(s => s.PlayerID == G_ID).FirstOrDefault();
+            var goalchange = db.SignUps.Where(s => s.PlayerID == P_ID && s.SchedulesID == S_ID).FirstOrDefault();
             goalchange.Goal = Goal;
             db.Entry(goalchange).State = EntityState.Modified;
             db.SaveChanges();
+            //重新统计进球数
+            GoalTotal(P_ID);
             string res = "修改成功";
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult AssistsChanges(int A_ID, int Assists)
+        public JsonResult AssistsChanges(int S_ID, int Assists, int P_ID)
         {
-            var assistschange = db.SignUps.Where(s => s.PlayerID == A_ID).FirstOrDefault();
+            var assistschange = db.SignUps.Where(s => s.PlayerID == P_ID && s.SchedulesID == S_ID).FirstOrDefault();
             assistschange.Assists = Assists;
             db.Entry(assistschange).State = EntityState.Modified;
             db.SaveChanges();
+            //重新统计助攻数
+            AssistsTotal(P_ID);
             string res = "修改成功";
             return Json(res, JsonRequestBehavior.AllowGet);
         }
@@ -874,7 +904,6 @@ namespace FCWeb.Controllers
             List<int> scid = db.Schedule.Select(s => s.ID).ToList();
             string TeamName = Session["TeamName"].ToString();
             List<string> teamMember = db.TeamMember.Where(s => s.TeamName == TeamName).Select(s => s.UserName).ToList();
-            bool t = true;
             for (int i = 0; i < scid.Count; i++)
             {
                 int SID = scid[i];
@@ -894,26 +923,7 @@ namespace FCWeb.Controllers
                 Location.Add(db.TeamMember.Where(s => s.ID == qyid).Select(s => s.Location).FirstOrDefault());
             }
             //未报名球员统计
-            List<int> wbmqyid = db.SignUps.Where(s => s.SchedulesID == id).Select(s => s.PlayerID).ToList();
-            List<TeamMembers> wbmqy = new List<TeamMembers>();
-            for (int j = 0; j < teamMember.Count; j++)
-            {
-                string t_Member = teamMember[j];
-                for (int k = 0; k < wbmqyid.Count; k++)
-                {
-                    int qyid = wbmqyid[k];
-                    string qyNmae = db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault();
-                    if (t_Member == qyNmae)
-                    {
-                        t = false;
-                    }
-                }
-                if (t)
-                {
-                    wbmqy.Add(db.TeamMember.Where(s => s.UserName == t_Member && s.TeamName == TeamName).FirstOrDefault()); ;
-                }
-                t = true;
-            }
+            List<TeamMembers> wbmqy = UnSignUp(id, TeamName, teamMember);
             ViewBag.wbmqy = wbmqy;
             ViewBag.bm = qj;
             ViewBag.sp = sp;
@@ -952,26 +962,7 @@ namespace FCWeb.Controllers
                 Location.Add(db.TeamMember.Where(s => s.ID == qyid).Select(s => s.Location).FirstOrDefault());
             }
             //未报名球员统计
-            List<int> wbmqyid = db.SignUps.Where(s => s.SchedulesID == id).Select(s => s.PlayerID).ToList();
-            List<TeamMembers> wbmqy = new List<TeamMembers>();
-            for (int j = 0; j < teamMember.Count; j++)
-            {
-                string t_Member = teamMember[j];
-                for (int k = 0; k < wbmqyid.Count; k++)
-                {
-                    int qyid = wbmqyid[k];
-                    string qyNmae = db.TeamMember.Where(s => s.ID == qyid).Select(s => s.UserName).FirstOrDefault();
-                    if (t_Member == qyNmae)
-                    {
-                        t = false;
-                    }
-                }
-                if (t)
-                {
-                    wbmqy.Add(db.TeamMember.Where(s => s.UserName == t_Member && s.TeamName == TeamName).FirstOrDefault()); ;
-                }
-                t = true;
-            }
+            List<TeamMembers> wbmqy = UnSignUp(id, TeamName, teamMember);
             ViewBag.wbmqy = wbmqy;
             ViewBag.bm = qj;
             ViewBag.sp = sp;
@@ -1020,9 +1011,10 @@ namespace FCWeb.Controllers
             {
                 res = "记录失败";
             }
+            //报名球员统计
             SignUpCount(sid, pt);
-            var cost = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
-            CostChange(pid, cost);
+            //费用重新统计
+            CostTotal(pid);
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
@@ -1032,26 +1024,162 @@ namespace FCWeb.Controllers
             db.Entry(pt).State = EntityState.Modified;
             db.SaveChanges();
         }
-
-        private void CostChange(int pid, int cost)
+        /// <summary>
+        /// 统计球员总花费
+        /// </summary>
+        /// <param name="pid"></param>
+        private void CostTotal(int pid)
         {
-            if (cost != 0)
+            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            TeamMembers teamMembers = new TeamMembers();
+            teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
+            if (SignCount != 0)
             {
                 var costs = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Select(s => s.Cost).Sum();
-                TeamMembers teamMembers = new TeamMembers();
-                teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
                 teamMembers.Cost = costs;
-                db.Entry(teamMembers).State = EntityState.Modified;
-                db.SaveChanges();
             }
             else
             {
-                TeamMembers teamMembers = new TeamMembers();
-                teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
                 teamMembers.Cost = 0;
-                db.Entry(teamMembers).State = EntityState.Modified;
-                db.SaveChanges();
             }
+            db.Entry(teamMembers).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+        /// <summary>
+        /// 统计球员总进球
+        /// </summary>
+        /// <param name="pid"></param>
+        private void GoalTotal(int pid)
+        {
+            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            TeamMembers teamMembers = new TeamMembers();
+            teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
+            if (SignCount != 0)
+            {
+                var goal = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Select(s => s.Goal).Sum();
+                teamMembers.Goal = goal;
+            }
+            else
+            {
+                teamMembers.Goal = 0;
+            }
+            db.Entry(teamMembers).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+        /// <summary>
+        /// 统计球员总助攻
+        /// </summary>
+        /// <param name="pid"></param>
+        private void AssistsTotal(int pid)
+        {
+            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            TeamMembers teamMembers = new TeamMembers();
+            teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
+            if (SignCount != 0)
+            {
+                var assists = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Select(s => s.Assists).Sum();
+                teamMembers.Assists = assists;
+            }
+            else
+            {
+                teamMembers.Assists = 0;
+            }
+            db.Entry(teamMembers).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
+        /// <summary>
+        /// 统计球员出勤率
+        /// </summary>
+        /// <param name="pid"></param>
+        private void AttendanceTotal(int pid)
+        {
+            string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
+            double matchCount = db.Schedule.Where(s => s.TeamName == TeamName).Count();
+            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            TeamMembers teamMembers = new TeamMembers();
+            teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
+            if (SignCount != 0 && matchCount!=0)
+            {
+                var AttendanceTotal = (SignCount / matchCount * 100).ToString(); ;
+                teamMembers.Attendance = AttendanceTotal;
+            }
+            else
+            {
+                teamMembers.Attendance = "0";
+            }
+            db.Entry(teamMembers).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
+        /// <summary>
+        /// 统计球员请假率
+        /// </summary>
+        /// <param name="pid"></param>
+        private void LeaveRateTotal(int pid)
+        {
+            string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
+            double SignCount = db.SignUps.Where(s => s.PlayerID == pid).Count();
+            double LeaveRate = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "请假").Count();
+            TeamMembers teamMembers = new TeamMembers();
+            teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
+            if (SignCount != 0 && LeaveRate != 0)
+            {
+                var AttendanceTotal = (LeaveRate / SignCount * 100).ToString(); ;
+                teamMembers.LeaveRate = AttendanceTotal;
+            }
+            else
+            {
+                teamMembers.LeaveRate = "0";
+            }
+            db.Entry(teamMembers).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
+        /// <summary>
+        /// 统计球员鸽子率
+        /// </summary>
+        /// <param name="pid"></param>
+        private void AbsentTotal(int pid)
+        {
+            string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
+            double SignCount = db.SignUps.Where(s => s.PlayerID == pid).Count();
+            double Absent = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "鸽子").Count();
+            TeamMembers teamMembers = new TeamMembers();
+            teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
+            if (SignCount != 0 && Absent != 0)
+            {
+                var AttendanceTotal = ((Absent / SignCount) * 100).ToString(); ;
+                teamMembers.B_Appointment = AttendanceTotal;
+            }
+            else
+            {
+                teamMembers.B_Appointment = "0";
+            }
+            db.Entry(teamMembers).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
+        /// <summary>
+        /// 统计球员出场次数
+        /// </summary>
+        /// <param name="pid"></param>
+        private void Appearances(int pid)
+        {
+            string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
+            int SignCount = db.SignUps.Where(s => s.PlayerID == pid&&s.SignUpStatus=="报名中").Count();
+            TeamMembers teamMembers = new TeamMembers();
+            teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
+            if (SignCount != 0)
+            {
+                teamMembers.Appearance = SignCount;
+            }
+            else
+            {
+                teamMembers.Appearance = 0;
+            }
+            db.Entry(teamMembers).State = EntityState.Modified;
+            db.SaveChanges();
         }
 
         public ActionResult ScheduleResult(int id)

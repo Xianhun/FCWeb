@@ -301,13 +301,13 @@
                             <td class="hidden-md hidden-xs hidden-sm">
                                 @Location
                             </td>
-                            <td class="text-danger hidden-md hidden-xs hidden-sm" id="Cost" name="@cid">
+                            <td class="text-danger hidden-md hidden-xs hidden-sm" id="Cost" name="@cid"  title="@Model.ElementAt(0).ID">
                                 &#165;<label>@Cost</label>
                             </td>
-                            <td class="hidden-md hidden-xs hidden-sm" id="Goal" name="@cid">
+                            <td class="hidden-md hidden-xs hidden-sm" id="Goal" name="@cid" title="@Model.ElementAt(0).ID">
                                 @Goal
                             </td>
-                            <td class="hidden-md hidden-xs hidden-sm" id="Assists" name="@cid">
+                            <td class="hidden-md hidden-xs hidden-sm" id="Assists" name="@cid" title="@Model.ElementAt(0).ID">
                                 @Assists
                             </td>
                             <td class="text-right">
@@ -442,13 +442,14 @@
             //当按下回车后 回车键键值等于13
             if (e.keyCode == 13) {
                 var value = ipt.val();
-                var id = td.attr('name');
+                var playerid = td.attr('name');
+                var id = td.attr('title');
                 if ("Cost" == td.attr('id')) {
                     td.text("￥" + ipt.val());
                     $.ajax({
                         type: 'post',
                         url: "/TeamManagement/CostChanges",
-                        data: { C_ID: id, Cost: value },
+                        data: { S_ID: id, Cost: value, P_ID: playerid },
                         dataType: 'json',
                         success: (res) => {
                             let code = res
@@ -465,7 +466,7 @@
                     $.ajax({
                         type: 'post',
                         url: "/TeamManagement/GoalChanges",
-                        data: { G_ID: id, Goal: value },
+                        data: { S_ID: id, Goal: value,P_ID: playerid },
                         dataType: 'json',
                         success: (res) => {
                             let code = res
@@ -482,7 +483,7 @@
                     $.ajax({
                         type: 'post',
                         url: "/TeamManagement/AssistsChanges",
-                        data: { A_ID: id, Assists: value },
+                        data: { S_ID: id, Assists: value, P_ID: playerid },
                         dataType: 'json',
                         success: (res) => {
                             let code = res

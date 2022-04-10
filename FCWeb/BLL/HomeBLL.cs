@@ -44,9 +44,8 @@ namespace FCWeb.BLL
         /// <param name="City">城市</param>
         /// <param name="Account">操作账号</param>
         /// <returns></returns>
-        public static string CreateT(string TeamName, string TeamOpenType, string TeamIntroduce, string City, string Account)
-        {
-            string UserName = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
+        public static void CreateT(string UserName,string TeamName, string TeamOpenType, string TeamIntroduce, string City, string Account)
+        { 
             var result = db.User.Where(s => s.Account == Account).FirstOrDefault();
             if (result.TeamName != null)
             {
@@ -65,7 +64,6 @@ namespace FCWeb.BLL
             };
             db.CreateTeam.Add(createTeam);
             db.SaveChanges();
-            return UserName;
         }
         /// <summary>
         /// 球队信息填写验证
@@ -136,20 +134,21 @@ namespace FCWeb.BLL
         /// </summary>
         /// <param name="Account"></param>
         /// <returns></returns>
-        public static Users UserAccess(string Account)
+        public static int UserAccess(string Account)
         {
             var users = db.User.Where(s => s.Account == Account).FirstOrDefault();
             users.Access = 1;
+            int access = users.Access;
             db.Entry(users).State = EntityState.Modified;
             db.SaveChanges();
-            return users;
+            return access;
         }
         /// <summary>
         /// 球队信息状态异常状态
         /// </summary>
         /// <param name="id"></param>
         /// <param name="teamName"></param>
-        public static void HomeTeamDetail(int id,string teamName)
+        public static void HomeTeamDetail(string teamName)
         {
             if (teamName == null)
             {

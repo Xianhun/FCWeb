@@ -31,19 +31,20 @@ namespace FCWeb.Controllers
                 try
                 {
                     string Account = Session["User"].ToString();
+                    string UserName = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
                     string Sex = db.User.Where(s => s.Account == Account).Select(s => s.Sex).FirstOrDefault();
+                    string Location = db.User.Where(s => s.Account == Account).Select(s => s.Location).FirstOrDefault();
+                    int Age = db.User.Where(s => s.Account == Account).Select(s => s.Age).FirstOrDefault();
                     string Permission = "球队队长";
                     string Permissionid = "1";
                     string Position = "队长";
                     HomeBLL.TeamVerify(TeamName);
-                    string UserName = HomeBLL.CreateT(TeamName, TeamOpenType, TeamIntroduce, City, Account);
-                    string Location = db.User.Where(s => s.Account == Account).Select(s => s.Location).FirstOrDefault();
-                    int Age = db.User.Where(s => s.Account == Account).Select(s => s.Age).FirstOrDefault();
+                    HomeBLL.CreateT(UserName, TeamName, TeamOpenType, TeamIntroduce, City, Account);
                     HomeBLL.TeamChange(TeamName, Account);
-                    Session["TeamName"] = TeamName;
                     HomeBLL.MemberCreate(TeamName, Account, UserName, Location, Age, Sex,Permission, Permissionid, Position);
-                    Users users = HomeBLL.UserAccess(Account);
-                    Session["Access"] = users.Access;
+                    int access = HomeBLL.UserAccess(Account);
+                    Session["TeamName"] = TeamName;
+                    Session["Access"] = access;
                     var script = String.Format("<script>alert('创建成功');location.href='{0}'</script>", Url.Action("Index", "Home/CreateTeam"));
                     return Content(script, "text/html");
                 }
@@ -72,7 +73,7 @@ namespace FCWeb.Controllers
                 List<CreateTeams>  teamCaptain = db.CreateTeam.Where(s => s.ID == id).ToList();
                 int numberCount = db.User.Where(s => s.TeamName == teamName).Count();
                 int matchCount = db.Schedule.Where(s => s.TeamName == teamName && s.Status == "已结束").Count();
-                HomeBLL.HomeTeamDetail(id,teamName);
+                HomeBLL.HomeTeamDetail(teamName);
                 ViewBag.Count = numberCount;
                 ViewBag.M_Count = matchCount;
                 return View(teamCaptain);
@@ -104,10 +105,10 @@ namespace FCWeb.Controllers
                     HomeBLL.TeamChange(TeamName, Account);
                     if (TeamOpenType == "任何人可以加入")
                     {
-                        Session["TeamName"] = TeamName;
                         HomeBLL.MemberCreate(Account, UserName, TeamName, Sex, Age, Location,Permission, Permissionid, Position);
-                        Users users = HomeBLL.UserAccess(Account);
-                        Session["Access"] = users.Access;
+                        int access = HomeBLL.UserAccess(Account);
+                        Session["TeamName"] = TeamName;
+                        Session["Access"] = access;
                         string script = String.Format("<script>alert('成功加入球队');location.href='{0}'</script>", Url.Action("Index", "Home/JoinTeam"));
                         return Content(script, "text/html");
                     }
