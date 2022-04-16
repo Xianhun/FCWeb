@@ -145,6 +145,9 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\TeamManagementController.cs" />
+    <Compile Include="ECharts\ChartOperation.cs" />
+    <Compile Include="ECharts\JsonHelper.cs" />
+    <Compile Include="ECharts\Series.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -355,6 +358,10 @@
     <Content Include="Views\TeamManagement\Statistics.cshtml" />
     <Content Include="Views\TeamManagement\LeaveAbsence.cshtml" />
     <Content Include="Views\TeamManagement\Absence.cshtml" />
+    <Content Include="Views\TeamManagement\ScheduleResult.cshtml" />
+    <Content Include="Scripts\TeamManagement\echarts.min.js" />
+    <Content Include="Views\TeamManagement\PlayerLineChart.cshtml" />
+    <Content Include="Views\TeamManagement\TeamLineChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

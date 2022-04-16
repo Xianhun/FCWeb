@@ -1,4 +1,5 @@
 ﻿using FCWeb.Models;
+using OAWeb.ECharts;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -268,7 +269,7 @@ namespace FCWeb.Controllers
                         SignUpCount(id, pt);
                         //重新统计花费
                         CostTotal(PlayerID);
-                         var script = String.Format("<script>alert('报名成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
+                        var script = String.Format("<script>alert('报名成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
                         return Content(script, "text/html");
                     }
                     else
@@ -294,8 +295,8 @@ namespace FCWeb.Controllers
                 string TeamName = Session["TeamName"].ToString();
                 int total_match = db.Schedule.Where(s => s.TeamName == TeamName).Count();
                 List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
-                var PlayeridCount=teammember.Select(s => s.ID).ToList();
-                for(int i=0;i<PlayeridCount.Count;i++)
+                var PlayeridCount = teammember.Select(s => s.ID).ToList();
+                for (int i = 0; i < PlayeridCount.Count; i++)
                 {
                     int Playerid = PlayeridCount[i];
                     //重新统计花费
@@ -805,9 +806,9 @@ namespace FCWeb.Controllers
             return wbmqy;
         }
 
-        public JsonResult CostChanges(int S_ID,decimal Cost, int P_ID)
+        public JsonResult CostChanges(int S_ID, decimal Cost, int P_ID)
         {
-            var costchange = db.SignUps.Where(s => s.PlayerID == P_ID&&s.SchedulesID== S_ID).FirstOrDefault();
+            var costchange = db.SignUps.Where(s => s.PlayerID == P_ID && s.SchedulesID == S_ID).FirstOrDefault();
             costchange.Cost = Cost;
             db.Entry(costchange).State = EntityState.Modified;
             db.SaveChanges();
@@ -816,7 +817,7 @@ namespace FCWeb.Controllers
             string res = "修改成功";
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GoalChanges(int S_ID, int Goal,int P_ID)
+        public JsonResult GoalChanges(int S_ID, int Goal, int P_ID)
         {
             var goalchange = db.SignUps.Where(s => s.PlayerID == P_ID && s.SchedulesID == S_ID).FirstOrDefault();
             goalchange.Goal = Goal;
@@ -838,7 +839,7 @@ namespace FCWeb.Controllers
             string res = "修改成功";
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult AddToSchedule(int id ,int PlayerID)
+        public ActionResult AddToSchedule(int id, int PlayerID)
         {
             try
             {
@@ -868,14 +869,14 @@ namespace FCWeb.Controllers
                         db.SaveChanges();
                         //重新报名人数统计
                         SignUpCount(id, pt);
-                        var cost = db.SignUps.Where(s => s.SchedulesID == id && s.PlayerID == PlayerID&&s.SignUpStatus=="报名中").Select(s => s.Cost).Sum();
+                        var cost = db.SignUps.Where(s => s.SchedulesID == id && s.PlayerID == PlayerID && s.SignUpStatus == "报名中").Select(s => s.Cost).Sum();
                         TeamMembers teamMembers = new TeamMembers();
                         teamMembers = db.TeamMember.Where(s => s.ID == PlayerID && s.TeamName == TeamName).FirstOrDefault();
                         teamMembers.Cost = cost;
                         db.Entry(teamMembers).State = EntityState.Modified;
                         db.SaveChanges();
 
-                        var script = String.Format("<script>alert('添加成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Statistics/"+id));
+                        var script = String.Format("<script>alert('添加成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Statistics/" + id));
                         return Content(script, "text/html");
                     }
                     else
@@ -971,15 +972,15 @@ namespace FCWeb.Controllers
             var sche = db.Schedule.Where(s => s.ID == id).ToList();
             return View(sche);
         }
-        public JsonResult Record(int sid, int pid,string status)
+        public JsonResult Record(int sid, int pid, string status)
         {
             Schedules pt = db.Schedule.Where(s => s.ID == sid).FirstOrDefault();
             string res = "";
-            if (status=="qj")
+            if (status == "qj")
             {
                 var Record = db.SignUps.Where(s => s.SchedulesID == sid && s.PlayerID == pid).FirstOrDefault();
                 Record.SignUpStatus = "请假";
-                db.Entry(Record).State= EntityState.Modified;
+                db.Entry(Record).State = EntityState.Modified;
                 db.SaveChanges();
                 res = "记录成功";
             }
@@ -1099,9 +1100,9 @@ namespace FCWeb.Controllers
             double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
-            if (SignCount != 0 && matchCount!=0)
+            if (SignCount != 0 && matchCount != 0)
             {
-                var AttendanceTotal = (SignCount / matchCount * 100).ToString(); ;
+                var AttendanceTotal = Math.Round(SignCount / matchCount * 100,1).ToString(); ;
                 teamMembers.Attendance = AttendanceTotal;
             }
             else
@@ -1125,7 +1126,7 @@ namespace FCWeb.Controllers
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0 && LeaveRate != 0)
             {
-                var AttendanceTotal = (LeaveRate / SignCount * 100).ToString(); ;
+                var AttendanceTotal = Math.Round(LeaveRate / SignCount * 100,1).ToString(); ;
                 teamMembers.LeaveRate = AttendanceTotal;
             }
             else
@@ -1149,7 +1150,7 @@ namespace FCWeb.Controllers
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0 && Absent != 0)
             {
-                var AttendanceTotal = ((Absent / SignCount) * 100).ToString(); ;
+                var AttendanceTotal = Math.Round(Absent / SignCount * 100,1).ToString(); ;
                 teamMembers.B_Appointment = AttendanceTotal;
             }
             else
@@ -1167,7 +1168,7 @@ namespace FCWeb.Controllers
         private void Appearances(int pid)
         {
             string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
-            int SignCount = db.SignUps.Where(s => s.PlayerID == pid&&s.SignUpStatus=="报名中").Count();
+            int SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0)
@@ -1184,7 +1185,241 @@ namespace FCWeb.Controllers
 
         public ActionResult ScheduleResult(int id)
         {
+            string TeamName = Session["TeamName"].ToString();
+            Schedules schedule = db.Schedule.Find(id);
+            schedule.MatchType = db.Schedule.Where(s => s.ID == id).Select(s => s.MatchType).FirstOrDefault();
+            schedule.Place = db.Schedule.Where(s => s.ID == id).Select(s => s.Place).FirstOrDefault();
+            schedule.SdulsTime = db.Schedule.Where(s => s.ID == id).Select(s => s.SdulsTime).FirstOrDefault();
+            schedule.Result = db.Schedule.Where(s => s.ID == id).Select(s => s.Result).FirstOrDefault();
+            schedule.Rival = db.Schedule.Where(s => s.ID == id).Select(s => s.Rival).FirstOrDefault();
+            schedule.SduFees = db.Schedule.Where(s => s.ID == id).Select(s => s.SduFees).FirstOrDefault();
+            schedule.PersonFees = db.Schedule.Where(s => s.ID == id).Select(s => s.PersonFees).FirstOrDefault();
+            schedule.LimitNum = db.Schedule.Where(s => s.ID == id).Select(s => s.LimitNum).FirstOrDefault();
+            schedule.Note = db.Schedule.Where(s => s.ID == id).Select(s => s.Note).FirstOrDefault();
+            ViewBag.Date = schedule.SdulsTime.ToLongDateString().Replace("年", "-").Replace("月", "-").Replace("日", "");
+            ViewBag.Time = schedule.SdulsTime.ToLongTimeString();
+            return View(schedule);
+        }
+
+        [HttpPost]
+        public ActionResult ScheduleResult(int id, string MatchType, DateTime Date, DateTime Time, string Place, string Rival, decimal SduFees, decimal PersonFees, int LimitNum, string Result, string Note)
+        {
+            try
+            {
+                string TeamName = db.Schedule.Where(s => s.ID == id).Select(s => s.TeamName).FirstOrDefault();
+                string status = db.Schedule.Where(s => s.ID == id).Select(s => s.Status).FirstOrDefault();
+                string date = Date.ToShortDateString().ToString();//获取日期
+                string time = Time.ToShortTimeString().ToString();//获取时间
+                DateTime datetime = Convert.ToDateTime(date + ' ' + time);//获取日期时间
+                if (datetime > DateTime.Now && status == "报名中")
+                {
+                    Schedules Matchchange = db.Schedule.Find(id);
+                    Matchchange.TeamName = TeamName;
+                    Matchchange.MatchType = MatchType;
+                    Matchchange.SdulsTime = datetime;
+                    Matchchange.Place = Place;
+                    Matchchange.Rival = Rival;
+                    Matchchange.SduFees = SduFees;
+                    Matchchange.PersonFees = PersonFees;
+                    Matchchange.LimitNum = LimitNum;
+                    Matchchange.Note = Note;
+                    Matchchange.Result = Result;
+                    Matchchange.Status = "报名中";
+                    db.Entry(Matchchange).State = EntityState.Modified;
+                    db.SaveChanges();
+                    var script = String.Format("<script>alert('修改成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
+                    return Content(script, "text/html");
+                }
+                else
+                {
+                    var script = String.Format("<script>alert('新增赛程日期必须大于现在的时间');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/ScheduleResult/" + id));
+                    return Content(script, "text/html");
+                }
+            }
+            catch (Exception)
+            {
+                var script = String.Format("<script>alert('请输入正确数据');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/ScheduleResult/" + id));
+                return Content(script, "text/html");
+            }
+        }
+        /// <summary>
+        /// 球员折线图
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult PlayerLineChart(int id)
+        {
+            ViewBag.Playerid = id;
             return View();
+        }
+        public string Reload(string PeriodTime, int Playerid)
+        {
+            //图例数据
+            List<object> legends = new List<object>();
+            //x轴数据
+            List<object> xAxisData = new List<object>();
+            //图表数据
+            var seriesList = new List<object>();
+            //图标标题
+            string headline = db.TeamMember.Where(s => s.ID == Playerid).Select(s => s.UserName).FirstOrDefault();
+            //图表类型
+            string genre = "category";
+            //时间横坐标
+            int[] Time;
+            //7天时间
+            List<DateTime> seventime = new List<DateTime>();
+            decimal sum = 0;
+            if (PeriodTime == "近7天总花费")
+            {
+                Time = new int[7] { 1, 2, 3, 4, 5, 6, 7 };
+                for (int i = 1; i <= Time.Length; i++)
+                {
+                    seventime.Add(DateTime.Now.AddDays(-i)); //当前时间减去天数
+                    xAxisData.Add("第" + Time[i - 1] + "天");
+                }
+                legends.Add(headline + "花费记录");
+                //查找7天赛程id
+                List<int> sech_id = new List<int>();
+                for (int i = seventime.Count - 1; i >= 0; i--)
+                {
+                    var time1 = seventime[i];
+                    var time2 = time1.AddDays(1);
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    //通过赛程id查找对应数据
+                    List<decimal> Cost_list = new List<decimal>();
+                    for (int k = 0; k < sech_id.Count; k++)
+                    {
+                        int s_id = sech_id[k];
+                        Cost_list.Add(db.SignUps.Where(s => s.PlayerID == Playerid && s.SchedulesID == s_id).Select(s => s.Cost).FirstOrDefault());
+                    }
+                    sum += Cost_list.Sum();
+                    var series_C = new { name = headline + "花费记录", type = genre, data = sum };
+                    seriesList.Add(series_C);
+
+                }
+            }
+            else
+            {
+                Time = new int[30];
+                for(int i=0;i<Time.Length;i++)
+                {
+                    Time[i] = i + 1;
+                }
+                for (int i = 1; i <= Time.Length; i++)
+                {
+                    seventime.Add(DateTime.Now.AddDays(-i)); //当前时间减去天数
+                    xAxisData.Add("第" + Time[i - 1] + "天");
+                }
+                legends.Add(headline + "花费记录");
+                //查找30天赛程id
+                List<int> sech_id = new List<int>();
+                for (int i = seventime.Count - 1; i >= 0; i--)
+                {
+                    var time1 = seventime[i];
+                    var time2 = time1.AddDays(1);
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    //通过赛程id查找对应数据
+                    List<decimal> Cost_list = new List<decimal>();
+                    for (int k = 0; k < sech_id.Count; k++)
+                    {
+                        int s_id = sech_id[k];
+                        Cost_list.Add(db.SignUps.Where(s => s.PlayerID == Playerid && s.SchedulesID == s_id).Select(s => s.Cost).FirstOrDefault());
+                    }
+                    sum += Cost_list.Sum();
+                    var series_C = new { name = headline + "花费记录", type = genre, data = sum };
+                    seriesList.Add(series_C);
+
+                }
+            }
+            return ChartOperation.ChartLineDataProcess(legends, xAxisData, seriesList, headline, "时间(天)", "花费(元)");
+        }
+        public ActionResult TeamLineChart()
+        {
+            string TeamName = Session["TeamName"].ToString();
+            ViewBag.TeamName = TeamName;
+            return View();
+        }
+        public string TeamReload(string PeriodTime,string TeamName)
+        {
+            //图例数据
+            List<object> legends = new List<object>();
+            //x轴数据
+            List<object> xAxisData = new List<object>();
+            //图表数据
+            var seriesList = new List<object>();
+            //图标标题
+            string headline = TeamName;
+            //图表类型
+            string genre = "category";
+            //时间横坐标
+            int[] Time;
+            decimal sum = 0;
+            //7天时间
+            List<DateTime> seventime = new List<DateTime>();
+            if (PeriodTime == "近7天总花费")
+            {
+                Time = new int[7] { 1, 2, 3, 4, 5, 6, 7 };
+                for (int i = 1; i <= Time.Length; i++)
+                {
+                    seventime.Add(DateTime.Now.AddDays(-i)); //当前时间减去天数
+                    xAxisData.Add("第" + Time[i - 1] + "天");
+                }
+                legends.Add(headline + "花费记录");
+                //查找7天赛程id
+                List<decimal> sumlist = new List<decimal>();
+                List<int> sech_id = new List<int>();
+                for (int i = seventime.Count - 1; i >= 0; i--)
+                {
+                    var time1 = seventime[i];
+                    var time2 = time1.AddDays(1);
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    //通过赛程id查找对应数据
+                    List<decimal> Cost_list = new List<decimal>();
+                    for (int k = 0; k < sech_id.Count; k++)
+                    {
+                        int s_id = sech_id[k];
+                        Cost_list.Add(db.Schedule.Where(s =>s.ID == s_id).Select(s => s.SduFees).FirstOrDefault());
+                    }
+                    sum += Cost_list.Sum();
+                    sumlist.Add(sum);
+                }
+                var series_C = new { name = headline + "花费记录", type = genre, data = sumlist };
+                seriesList.Add(series_C);
+            }
+            else
+            {
+                Time = new int[30];
+                for (int i = 0; i < Time.Length; i++)
+                {
+                    Time[i] = i + 1;
+                }
+                for (int i = 1; i <= Time.Length; i++)
+                {
+                    seventime.Add(DateTime.Now.AddDays(-i)); //当前时间减去天数
+                    xAxisData.Add("第" + Time[i - 1] + "天");
+                }
+                legends.Add(headline + "花费记录");
+                //查找30天赛程id
+                List<decimal> sumlist = new List<decimal>();
+                List<int> sech_id = new List<int>();
+                for (int i = seventime.Count - 1; i >= 0; i--)
+                {
+                    var time1 = seventime[i];
+                    var time2 = time1.AddDays(1);
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    //通过赛程id查找对应数据
+                    List<decimal> Cost_list = new List<decimal>();
+                    for (int k = 0; k < sech_id.Count; k++)
+                    {
+                        int s_id = sech_id[k];
+                        Cost_list.Add(db.Schedule.Where(s =>s.ID == s_id).Select(s => s.SduFees).FirstOrDefault());
+                    }
+                    sum += Cost_list.Sum();
+                    sumlist.Add(sum);
+                }
+                var series_C = new { name = headline + "花费记录", type = genre, data = sumlist };
+                seriesList.Add(series_C);
+            }
+            return ChartOperation.ChartLineDataProcess(legends, xAxisData, seriesList, headline, "时间(天)", "花费(元)");
         }
     }
 }

@@ -351,12 +351,12 @@
                             平均：<br />
                             @{
                                 string total_Attendance = null;//出勤率
-                                int t_A =0;//计算出勤率
+                                double t_A =0;//计算出勤率
                                 foreach (var item in Model)
                                 {
-                                    t_A += Convert.ToInt32(@item.Attendance);
+                                    t_A += Convert.ToDouble(@item.Attendance);
                                 }
-                                total_Attendance = (t_A/i).ToString();
+                                total_Attendance = Math.Round(t_A/i,1).ToString();
                             }
                             @total_Attendance%
                             &nbsp;&nbsp;
@@ -367,12 +367,12 @@
                             平均：<br />
                             @{
                                 string total_B_Appointment = null;//鸽子率
-                                int t_B = 0;//计算鸽子率
+                                double t_B = 0;//计算鸽子率
                                 foreach (var item in Model)
                                 {
-                                    t_B += Convert.ToInt32(@item.B_Appointment);
+                                    t_B += Convert.ToDouble(@item.B_Appointment);
                                 }
-                                total_B_Appointment = (t_B / i).ToString();
+                                total_B_Appointment = Math.Round(t_B / i,1).ToString();
                             }
                             @total_B_Appointment%
                             &nbsp;&nbsp;
@@ -383,12 +383,12 @@
                             平均：<br />
                             @{
                                 string total_LeaveRate = null;//请假率
-                                int t_L = 0;//计算请假率
+                                double t_L = 0;//计算请假率
                                 foreach (var item in Model)
                                 {
-                                    t_L += Convert.ToInt32(@item.LeaveRate);
+                                    t_L += Convert.ToDouble(@item.LeaveRate);
                                 }
-                                total_LeaveRate = (t_L / i).ToString();
+                                total_LeaveRate = Math.Round(t_L / i,1).ToString();
                             }
                             @total_LeaveRate%
                             &nbsp;&nbsp;

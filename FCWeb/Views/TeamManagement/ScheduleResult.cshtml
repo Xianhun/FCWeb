@@ -1,13 +1,16 @@
-﻿
+﻿@model FCWeb.Models.Schedules
 @{
-    ViewBag.Title = "MatchCreate";
+    ViewBag.Title = "ScheduleResult";
     Layout = null;
 }
 <head>
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    @*<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />*@
+    <link href="~/Content/TeamManagement/font.css" rel="stylesheet" />
+    <link href="~/Content/TeamManagement/xadmin.css" rel="stylesheet" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
-    <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
     <link rel="stylesheet" href="~/Content/bootstrap.css" />
+
     <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
@@ -16,23 +19,23 @@
     <link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    <style>
-        .ui-autocomplete {
-            max-height: 250px;
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        .input-group-addon {
-            width: 50px;
-        }
-
-        .radio {
-            padding-left: 5px;
-            padding-left: 22px;
-        }
-    </style>
 </head>
+<style>
+    .ui-autocomplete {
+        max-height: 250px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .input-group-addon {
+        width: 50px;
+    }
+
+    .radio {
+        padding-left: 5px;
+        padding-left: 22px;
+    }
+</style>
 <div class="panel panel-default">
     <ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
         <li style="margin-left:10px;" title="详细列表">
@@ -56,11 +59,11 @@
     </ul>
 
     <script type="text/javascript">
-        $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '添加赛程'; }).parent().addClass('active');
+        $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '赛程列表'; }).parent().addClass('active');
     </script>
     <div class="page-header" style="text-align: center;">
         <h1>
-            赛程 <small class="hidden-xs">添加一个赛程</small>
+            赛程 <small class="hidden-xs">修改记录</small>
         </h1>
     </div>
     <div class="panel-body">
@@ -74,9 +77,9 @@
                 <label class="col-md-3 col-sm-3 control-label required" for="MatchType">赛程类型</label>
                 <div class="col-md-9 col-sm-9">
                     <ul class="list-inline list-unstyled">
-                        <li><label for="" class="radio inline" title="对内训练赛"><input data-val="true" data-val-required="赛程类型 字段是必需的。" id="" name="MatchType" type="radio" value="训练赛" />训练赛</label></li>
-                        <li><label for="" class="radio inline" title="和其它队的友谊赛"><input id="" name="MatchType" type="radio" value="友谊赛" />友谊赛</label></li>
-                        <li><label for="" class="radio inline" title="正规比赛"><input id="" name="MatchType" type="radio" value="联赛" />联赛</label></li>
+                        <li><label for="" class="radio inline" title="对内训练赛">@Html.RadioButtonFor(model => model.MatchType, "训练赛", new { id = "one" })训练赛</label></li>
+                        <li><label for="" class="radio inline" title="和其它队的友谊赛">@Html.RadioButtonFor(model => model.MatchType, "友谊赛", new { id = "two" })友谊赛</label></li>
+                        <li><label for="" class="radio inline" title="正规比赛">@Html.RadioButtonFor(model => model.MatchType, "联赛", new { id = "three" })联赛</label></li>
                     </ul>
                 </div>
             </div>
@@ -85,7 +88,7 @@
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
                         <span class="input-group-addon"><label for="Date" class="glyphicon glyphicon-calendar"></label></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="yyyy-MM-dd" type="text" value="" />
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="yyyy-MM-dd" type="text" value="@ViewBag.Date" />
                     </div>
                 </div>
             </div>
@@ -94,7 +97,7 @@
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
                         <span class="input-group-addon"><label for="Time" class="glyphicon glyphicon-time"></label></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-regex="时间格式不正确" data-val-regex-pattern="(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?" data-val-required="赛程时间 字段是必需的。" id="Time" name="Time" placeholder="HH:mm" type="text" value="" />
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-regex="时间格式不正确" data-val-regex-pattern="(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?" data-val-required="赛程时间 字段是必需的。" id="Time" name="Time" placeholder="HH:mm" type="text" value="@ViewBag.Time" />
                     </div>
                 </div>
             </div>
@@ -103,7 +106,7 @@
                 <div class="col-md-9 col-sm-9">
                     <div class="input-group">
                         <span class="input-group-addon"><label for="Location" class="glyphicon glyphicon-map-marker cursor-hand "></label></span>
-                        <input class="form-control" id="Location" name="Place" placeholder="赛程举办地点" type="text" value="" />
+                        @Html.EditorFor(model => model.Place, new { htmlAttributes = new { @class = "form-control", @id = "Location" ,@name = "Place" ,@placeholder = "赛程举办地点" } })
                     </div>
                 </div>
             </div>
@@ -112,7 +115,7 @@
                 <div class="col-md-7 col-sm-7">
                     <div class="input-group">
                         <span class="input-group-addon"><label id="labelOpponentTeamName" for="MatchScore_OpponentTeamName" class="glyphicon glyphicon-flag"></label></span>
-                        <input class="form-control" id="MatchScore_OpponentTeamName" name="Rival" placeholder="对手" type="text" value="" />
+                        @Html.EditorFor(model => model.Rival, new { htmlAttributes = new { @class = "form-control", @id = "MatchScore_OpponentTeamName", @name = "Rival", @placeholder = "对手" } })
                     </div>
                 </div>
             </div>
@@ -121,7 +124,7 @@
                 <div class="col-md-5 col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon"> ¥&nbsp;</span>
-                        <input Value="0.00" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 总消费额 must be a number." data-val-required="总消费额不能为空" id="TotalAmount" name="SduFees" placeholder="设置赛事消费总额" type="text" value="" />
+                        @Html.EditorFor(model => model.SduFees, new { htmlAttributes = new { @class = "form-control", @id = "TotalAmount", @name = "SduFees", @placeholder = "设置赛事消费总额" } })
                     </div>
                 </div>
             </div>
@@ -130,7 +133,7 @@
                 <div class="col-md-5 col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon"> ¥&nbsp;</span>
-                        <input Value="" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 每个队员费用 must be a number." id="PerAmount" name="PersonFees" placeholder="每个队员参加比赛所需费用" type="text" value="" />
+                        @Html.EditorFor(model => model.PersonFees, new { htmlAttributes = new { @class = "form-control", @id = "PerAmount", @name = "PersonFees", @placeholder = "每个队员参加比赛所需费用" } })
                     </div>
                 </div>
             </div>
@@ -138,32 +141,39 @@
                 <label class="col-md-3 col-sm-3 control-label" for="MaxAttendCount">参加人数</label>
                 <div class="col-md-5 col-sm-6">
                     <div class="input-group">
-                        <input class="form-control" id="MaxAttendCount" name="LimitNum" placeholder="最多参加人数" type="text" value="" />
+                        @Html.EditorFor(model => model.LimitNum, new { htmlAttributes = new { @class = "form-control", @id = "MaxAttendCount", @name = "LimitNum", @placeholder = "最多参加人数" } })
                         <span class="input-group-addon">人</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 col-sm-3 control-label" for="MaxAttendCount">比赛结果</label>
+                <div class="col-md-5 col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon"><label class="glyphicon glyphicon-bookmark"></label></span>
+                        <input class="form-control" id="Result" name="Result" placeholder="0:0 胜平负" type="text" value="" />
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 col-sm-3 control-label" for="Note">备注</label>
                 <div class="col-md-9 col-sm-9">
-                    <textarea class="form-control" cols="20" id="Note" name="Note" rows="5">
-</textarea>
+                    @Html.TextAreaFor(model => model.Note, 5, 150, new { @class = "form-control", @id = "Note", @name = "Note", @placeholder = "填写备注" } )
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-md-3 col-sm-3 control-label" for="">
                 </label>
                 <div class="col-md-9 col-sm-9">
-                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span>&nbsp;添加&nbsp;&nbsp;</button>
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span>&nbsp;修改&nbsp;&nbsp;</button>
                     <button type="button" class="btn btn-default" id="back"><span class="glyphicon glyphicon-remove"></span>&nbsp;取消&nbsp;&nbsp;</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
-    <script>
-        $("#back").click(function () {
-            history.back(-1);
-        });
-    </script>
-
+<script>
+    $("#back").click(function () {
+        history.back(-1);
+    });
+</script>
