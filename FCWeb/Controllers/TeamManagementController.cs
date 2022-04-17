@@ -17,6 +17,7 @@ namespace FCWeb.Controllers
         {
             var Account = Session["User"].ToString();
             var UserName = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
+            var UserID = db.TeamMember.Where(s => s.Account == Account).Select(s => s.ID).FirstOrDefault();
             string per_id = db.TeamMember.Where(s => s.Account == Account).Select(s => s.Permissionid).FirstOrDefault();
             if (per_id == "1")
             {
@@ -27,6 +28,7 @@ namespace FCWeb.Controllers
                 ViewBag.Per = "普通队员";
             }
             ViewBag.US = UserName;
+            ViewBag.ID = UserID;
             return View();
         }
         /// <summary>
@@ -69,7 +71,7 @@ namespace FCWeb.Controllers
                         db.SaveChanges();
                     }
                     List<DateTime> dateTimes = db.Schedule.Where(s => s.SdulsTime > Now && s.TeamName == TeamName).Select(s => s.SdulsTime).ToList();
-                    List<Schedules> schedules = db.Schedule.Where(s => s.SdulsTime < Now && s.TeamName == TeamName).ToList();
+                    List<Schedules> schedules = db.Schedule.Where(s => s.SdulsTime < Now && s.TeamName == TeamName && s.Status!="已结算").ToList();
                     if (schedules != null)
                     {
                         Dictionary<int, List<string>> bm = new Dictionary<int, List<string>>();//<赛程id，List<报名球员用户名>>报名
@@ -288,12 +290,16 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 球员列表
+        /// </summary>
+        /// <returns></returns>
         public ActionResult TeamMember()
         {
             try
             {
                 string TeamName = Session["TeamName"].ToString();
-                int total_match = db.Schedule.Where(s => s.TeamName == TeamName).Count();
+                int total_match = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结算").Count();
                 List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
                 var PlayeridCount = teammember.Select(s => s.ID).ToList();
                 for (int i = 0; i < PlayeridCount.Count; i++)
@@ -324,13 +330,21 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
-
+        /// <summary>
+        /// 球员详细信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult MemberDetailed(int id)
         {
             string TeamName = Session["TeamName"].ToString();
             List<TeamMembers> teammember = db.TeamMember.Where(s => s.TeamName == TeamName && s.ID == id).ToList();
             return View(teammember);
         }
+        /// <summary>
+        /// 申请列表
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Application()
         {
             string TeamName = Session["TeamName"].ToString();
@@ -467,7 +481,7 @@ namespace FCWeb.Controllers
             var TeamInformation = db.CreateTeam.Where(s => s.TeamName == TeamName).ToList();
             var numberCount = db.User.Where(s => s.TeamName == TeamName).Count();
             //出场统计
-            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName).Count();
+            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结算").Count();
             ViewBag.Count = numberCount;
             ViewBag.M_Count = matchCount;
             return View(TeamInformation);
@@ -479,7 +493,7 @@ namespace FCWeb.Controllers
             var team_Id = db.CreateTeam.Where(s => s.TeamName == TeamName).Select(s => s.ID).FirstOrDefault();
             CreateTeams TeamInformation = db.CreateTeam.Find(team_Id);
             var numberCount = db.User.Where(s => s.TeamName == TeamName).Count();
-            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结束").Count();
+            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结算").Count();
             ViewBag.Count = numberCount;
             ViewBag.M_Count = matchCount;
             if (Access_permissions(7) == "管理权限")
@@ -779,6 +793,16 @@ namespace FCWeb.Controllers
 
         }
 
+        public JsonResult Settlement(int S_ID)
+        {
+            var Status = db.Schedule.Find(S_ID);
+            Status.Status = "已结算";
+            db.Entry(Status).State = EntityState.Modified;
+            db.SaveChanges();
+            string res = "结算成功";
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
         private List<TeamMembers> UnSignUp(int id, string TeamName, List<string> teamMember)
         {
             bool t = true;
@@ -1018,7 +1042,11 @@ namespace FCWeb.Controllers
             CostTotal(pid);
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-
+        /// <summary>
+        /// 重新报名人数统计
+        /// </summary>
+        /// <param name="sid"></param>
+        /// <param name="pt"></param>
         private void SignUpCount(int sid, Schedules pt)
         {
             pt.Participate = db.SignUps.Where(s => s.SignUpStatus == "报名中" && s.SchedulesID == sid).Count();
@@ -1031,12 +1059,12 @@ namespace FCWeb.Controllers
         /// <param name="pid"></param>
         private void CostTotal(int pid)
         {
-            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            double SignCount = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0)
             {
-                var costs = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Select(s => s.Cost).Sum();
+                var costs = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Select(s => s.a.Cost).Sum();
                 teamMembers.Cost = costs;
             }
             else
@@ -1052,12 +1080,12 @@ namespace FCWeb.Controllers
         /// <param name="pid"></param>
         private void GoalTotal(int pid)
         {
-            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            double SignCount = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0)
             {
-                var goal = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Select(s => s.Goal).Sum();
+                var goal = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Select(s => s.a.Goal).Sum();
                 teamMembers.Goal = goal;
             }
             else
@@ -1073,12 +1101,12 @@ namespace FCWeb.Controllers
         /// <param name="pid"></param>
         private void AssistsTotal(int pid)
         {
-            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            double SignCount = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0)
             {
-                var assists = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Select(s => s.Assists).Sum();
+                var assists = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Select(s => s.a.Assists).Sum();
                 teamMembers.Assists = assists;
             }
             else
@@ -1096,13 +1124,13 @@ namespace FCWeb.Controllers
         private void AttendanceTotal(int pid)
         {
             string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
-            double matchCount = db.Schedule.Where(s => s.TeamName == TeamName).Count();
-            double SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            double matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结算").Count();
+            double SignCount = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0 && matchCount != 0)
             {
-                var AttendanceTotal = Math.Round(SignCount / matchCount * 100,1).ToString(); ;
+                var AttendanceTotal = Math.Round(SignCount / matchCount * 100, 1).ToString(); ;
                 teamMembers.Attendance = AttendanceTotal;
             }
             else
@@ -1120,13 +1148,13 @@ namespace FCWeb.Controllers
         private void LeaveRateTotal(int pid)
         {
             string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
-            double SignCount = db.SignUps.Where(s => s.PlayerID == pid).Count();
-            double LeaveRate = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "请假").Count();
+            double SignCount = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.b.Status == "已结算").Count();
+            double LeaveRate = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "请假" && s.b.Status == "已结算").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0 && LeaveRate != 0)
             {
-                var AttendanceTotal = Math.Round(LeaveRate / SignCount * 100,1).ToString(); ;
+                var AttendanceTotal = Math.Round(LeaveRate / SignCount * 100, 1).ToString(); ;
                 teamMembers.LeaveRate = AttendanceTotal;
             }
             else
@@ -1144,13 +1172,13 @@ namespace FCWeb.Controllers
         private void AbsentTotal(int pid)
         {
             string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
-            double SignCount = db.SignUps.Where(s => s.PlayerID == pid).Count();
-            double Absent = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "鸽子").Count();
+            double SignCount = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.b.Status == "已结算").Count();
+            double Absent = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "鸽子" && s.b.Status == "已结算").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0 && Absent != 0)
             {
-                var AttendanceTotal = Math.Round(Absent / SignCount * 100,1).ToString(); ;
+                var AttendanceTotal = Math.Round(Absent / SignCount * 100, 1).ToString(); ;
                 teamMembers.B_Appointment = AttendanceTotal;
             }
             else
@@ -1168,7 +1196,7 @@ namespace FCWeb.Controllers
         private void Appearances(int pid)
         {
             string TeamName = db.TeamMember.Where(s => s.ID == pid).Select(s => s.TeamName).FirstOrDefault();
-            int SignCount = db.SignUps.Where(s => s.PlayerID == pid && s.SignUpStatus == "报名中").Count();
+            int SignCount = db.SignUps.Join(db.Schedule, a => a.SchedulesID, b => b.ID, (a, b) => new { a, b }).Where(s => s.a.PlayerID == pid && s.a.SignUpStatus == "报名中" && s.b.Status == "已结算").Count();
             TeamMembers teamMembers = new TeamMembers();
             teamMembers = db.TeamMember.Where(s => s.ID == pid).FirstOrDefault();
             if (SignCount != 0)
@@ -1283,7 +1311,7 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)
@@ -1300,7 +1328,7 @@ namespace FCWeb.Controllers
             else
             {
                 Time = new int[30];
-                for(int i=0;i<Time.Length;i++)
+                for (int i = 0; i < Time.Length; i++)
                 {
                     Time[i] = i + 1;
                 }
@@ -1316,7 +1344,7 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)
@@ -1338,7 +1366,7 @@ namespace FCWeb.Controllers
             ViewBag.TeamName = TeamName;
             return View();
         }
-        public string TeamReload(string PeriodTime,string TeamName)
+        public string TeamReload(string PeriodTime, string TeamName)
         {
             //图例数据
             List<object> legends = new List<object>();
@@ -1371,13 +1399,13 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)
                     {
                         int s_id = sech_id[k];
-                        Cost_list.Add(db.Schedule.Where(s =>s.ID == s_id).Select(s => s.SduFees).FirstOrDefault());
+                        Cost_list.Add(db.Schedule.Where(s => s.ID == s_id).Select(s => s.SduFees).FirstOrDefault());
                     }
                     sum += Cost_list.Sum();
                     sumlist.Add(sum);
@@ -1405,13 +1433,13 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2).Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)
                     {
                         int s_id = sech_id[k];
-                        Cost_list.Add(db.Schedule.Where(s =>s.ID == s_id).Select(s => s.SduFees).FirstOrDefault());
+                        Cost_list.Add(db.Schedule.Where(s => s.ID == s_id).Select(s => s.SduFees).FirstOrDefault());
                     }
                     sum += Cost_list.Sum();
                     sumlist.Add(sum);

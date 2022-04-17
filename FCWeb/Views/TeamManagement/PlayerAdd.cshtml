@@ -81,59 +81,64 @@
                 @{
                     foreach (var item in Model)
                     {
-                                <tr class="">
-                                    <td>
-                                        @{
-                                            if (item.Status.ToString() == "报名中")
-                                            {
-                                                <span class="glyphicon glyphicon-flag text-warning" data-toggle="tooltip" title="报名中"></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="glyphicon glyphicon-flag" data-toggle="tooltip" title="已结束"></span>
-                                            }
-                                        }
-                                    </td>
-                                    <td>
-                                        <a href="MatchInformation/@item.ID">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                            @item.SdulsTime.ToShortDateString()
-                                            @{
-                                                string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
-                                            }
-                                            @strWeek
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @item.SdulsTime.ToShortTimeString()
-                                    </td>
-                                    <td class="hidden-xs">
-                                        @item.Place
-                                    </td>
-                                    <td class="hidden-xs">
-                                        @item.Participate/@item.LimitNum
-                                    </td>
-                                    <td class="hidden-md hidden-xs hidden-sm">
-                                    </td>
-                                    <td class="hidden-sm hidden-xs">
-                                        &#165;@item.SduFees
-                                    </td>
-                                    <td class="hidden-sm hidden-xs">
-                                        <span>@item.Status</span>
-                                    </td>
-                                    @{
-                                        if (item.Status != "已结束" && item.Participate < item.LimitNum)
-                                        {
-                                            <td class="hidden-md hidden-sm hidden-xs">
-                                                <a href="#" onclick="x_admin_show('批量添加', 'BatchCreate/@item.ID',600,400)">批量添加</a>
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td class="hidden-md hidden-sm hidden-xs"></td>
-                                        }
+                        <tr class="">
+                            <td>
+                                @{
+                                    if (item.Status.ToString() == "报名中")
+                                    {
+                                        <span class="glyphicon glyphicon-flag text-warning" data-toggle="tooltip" title="报名中"></span>
                                     }
-                                </tr>
+                                    else
+                                    {
+                                        <span class="glyphicon glyphicon-flag" data-toggle="tooltip" title="已结束"></span>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                <a href="MatchInformation/@item.ID">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                    @item.SdulsTime.ToShortDateString()
+                                    @{
+                                        string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
+                                    }
+                                    @strWeek
+                                </a>
+                            </td>
+                            <td>
+                                @item.SdulsTime.ToShortTimeString()
+                            </td>
+                            <td class="hidden-xs">
+                                @item.Place
+                            </td>
+                            <td class="hidden-xs">
+                                @item.Participate/@item.LimitNum
+                            </td>
+                            <td class="hidden-md hidden-xs hidden-sm">
+                            </td>
+                            <td class="hidden-sm hidden-xs">
+                                &#165;@item.SduFees
+                            </td>
+                            <td class="hidden-sm hidden-xs">
+                                <span>@item.Status</span>
+                            </td>
+                            @{
+                                if (item.Status == "已结束" && item.Participate < item.LimitNum)
+                                {
+                                    <td class="hidden-md hidden-sm hidden-xs"></td>
+
+                                }
+                                else if (item.Status == "已结算")
+                                {
+                                    <td class="hidden-md hidden-sm hidden-xs"></td>
+                                }
+                                else
+                                {
+                                    <td class="hidden-md hidden-sm hidden-xs">
+                                        <a href="#" onclick="x_admin_show('批量添加', 'BatchCreate/@item.ID',600,400)">批量添加</a>
+                                    </td>
+                                }
+                            }
+                        </tr>
                     }
                 }
                 <tr class="text-muted hidden-xs">

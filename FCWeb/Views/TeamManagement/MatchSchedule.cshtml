@@ -74,69 +74,75 @@
                         金额(元)
                     </th>
                     <th style="width: 4.5em;" class="hidden-sm hidden-xs"></th>
-                    <th style="width: 3.5em;" class="hidden-md hidden-sm hidden-xs"></th>
+                    <th style="width: 4.5em;" class="hidden-md hidden-sm hidden-xs"></th>
                 </tr>
             </thead>
             <tbody>
                 @{
                     foreach (var item in Model)
                     {
-                        <tr class="">
-                            <td>
-                                @{
-                                    if (item.Status.ToString() == "报名中")
-                                    {
-                                        <span class="glyphicon glyphicon-flag text-warning" data-toggle="tooltip" title="报名中"></span>
-                                    }
-                                    else
-                                    {
-                                        <span class="glyphicon glyphicon-flag" data-toggle="tooltip" title="已结束"></span>
-                                    }
-                                }
-                            </td>
-                            <td>
-                                <a href="MatchInformation/@item.ID">
-                                    <span class="glyphicon glyphicon-calendar"></span>
-                                    @item.SdulsTime.ToShortDateString()
+                                <tr class="">
+                                    <td>
+                                        @{
+                                            if (item.Status.ToString() == "报名中")
+                                            {
+                                                <span class="glyphicon glyphicon-flag text-warning" data-toggle="tooltip" title="报名中"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="glyphicon glyphicon-flag" data-toggle="tooltip" title="已结束"></span>
+                                            }
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="MatchInformation/@item.ID">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                            @item.SdulsTime.ToShortDateString()
+                                            @{
+                                                string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
+                                            }
+                                            @strWeek
+                                        </a>
+                                    </td>
+                                    <td>
+                                        @item.SdulsTime.ToShortTimeString()
+                                    </td>
+                                    <td class="hidden-xs">
+                                        @item.Place
+                                    </td>
+                                    <td class="hidden-xs">
+                                        @item.Participate/@item.LimitNum
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                    </td>
+                                    <td class="hidden-sm hidden-xs">
+                                        &#165;@item.SduFees
+                                    </td>
+                                    <td class="hidden-sm hidden-xs">
+                                        <span>@item.Status</span>
+                                    </td>
                                     @{
-                                        string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
-                                    }
-                                    @strWeek
-                                </a>
-                            </td>
-                            <td>
-                                @item.SdulsTime.ToShortTimeString()
-                            </td>
-                            <td class="hidden-xs">
-                                @item.Place
-                            </td>
-                            <td class="hidden-xs">
-                                @item.Participate/@item.LimitNum
-                            </td>
-                            <td class="hidden-md hidden-xs hidden-sm">
-                            </td>
-                            <td class="hidden-sm hidden-xs">
-                                &#165;@item.SduFees
-                            </td>
-                            <td class="hidden-sm hidden-xs">
-                                <span>@item.Status</span>
-                            </td>
-                            @{
-                                if (item.Status == "报名中")
-                                {
-                                    <td class="hidden-md hidden-sm hidden-xs">
-                                        @Html.ActionLink("详情", "MatchInformation", new { id = item.ID })
-                                    </td>
-                                }
-                                else if (item.Status == "已结束")
-                                {
-                                    <td class="hidden-md hidden-sm hidden-xs">
-                                        @Html.ActionLink("结算", "Statistics", new { id = item.ID })
-                                    </td>
-                                }
+                                        if (item.Status == "报名中")
+                                        {
+                                            <td class="hidden-md hidden-sm hidden-xs">
+                                                @Html.ActionLink("详情", "MatchInformation", new { id = item.ID })
+                                            </td>
+                                        }
+                                        else if (item.Status == "已结束")
+                                        {
+                                            <td class="hidden-md hidden-sm hidden-xs">
+                                                @Html.ActionLink("结算", "Statistics", new { id = item.ID })
+                                            </td>
+                                        }
+                                        else if (item.Status == "已结算")
+                                        {
+                                            <td class="hidden-md hidden-sm hidden-xs">
+                                                @Html.ActionLink("已结算", "Statistics",new { id = item.ID })
+                                            </td>
+                                        }
 
-                            }
-                        </tr>
+                                    }
+                                </tr>
                     }
                 }
 

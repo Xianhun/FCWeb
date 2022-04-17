@@ -32,6 +32,30 @@
 </head>
 <body>
     <div class="panel panel-default">
+        <ul id="calendarIndex1" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
+            <li style="margin-left:10px;" title="详细列表">
+                <a href="../MatchSchedule">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                    <span class="hidden-xs">赛程<span class="hidden-sm">列表</span></span>
+                </a>
+            </li>
+            <li class="" title="添加赛程">
+                <a href="../MatchCreate">
+                    <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
+                    <span class="hidden-xs">添加<span class="hidden-sm">赛程</span></span>
+                </a>
+            </li>
+            <li class="" title="赛事添加球员">
+                <a href="../PlayerAdd">
+                    <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
+                    <span class="hidden-xs">赛事<span class="hidden-sm">添加球员</span></span>
+                </a>
+            </li>
+        </ul>
+
+        <script type="text/javascript">
+            $('#calendarIndex1').find('a').filter(function () { return $(this).text().trim() == '赛程列表'; }).parent().addClass('active');
+        </script>
 
         <div class="panel-body">
             <div class="row">

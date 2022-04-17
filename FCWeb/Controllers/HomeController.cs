@@ -72,7 +72,7 @@ namespace FCWeb.Controllers
                 var teamName = db.CreateTeam.Where(s => s.ID == id).Select(s => s.TeamName).FirstOrDefault();
                 List<CreateTeams>  teamCaptain = db.CreateTeam.Where(s => s.ID == id).ToList();
                 int numberCount = db.User.Where(s => s.TeamName == teamName).Count();
-                int matchCount = db.Schedule.Where(s => s.TeamName == teamName && s.Status == "已结束").Count();
+                int matchCount = db.Schedule.Where(s => s.TeamName == teamName && s.Status == "已结算").Count();
                 HomeBLL.HomeTeamDetail(teamName);
                 ViewBag.Count = numberCount;
                 ViewBag.M_Count = matchCount;
