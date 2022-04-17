@@ -22,37 +22,14 @@
             font-family: FontAwesome;
         }
     </style>
-    @*<script src="http://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
-    <script type="text/javascript">
-        // QQ登录
-        var qqWindow;
-        var wxWindow;
-        function toQzoneLogin() {
-            qqWindow = window.location.href = "QQ登录地址";
-        }
-
-        function closeqqWindow() {
-            qqWindow.close();
-            window.location.reload()    //刷新页面
-        }
-        function toweChat() {
-            wxWindow = window.location.href = "微信登录地址";
-        }
-
-        function closewxWindow() {
-            wxWindow.close();
-            window.location.reload()    //刷新页面
-        }
-
-    </script>*@
 
 </head>
 
 <body>
     <div class="shadow mb-5 bg-light rounded login-top">
         <div class="head">
-            <img src="~/img/Logins/logo.png"><span>
-                <h1>·</h1>登录
+            <span>
+                登录
             </span>
         </div>
     </div>
@@ -68,14 +45,9 @@
         </div>
         <!-- 登录 -->
         <div class="login">
-            <div class="login-logo">
-                <img src="~/img/Logins/logo.png" class="img-fluid">
+            <div class="login-logo text-center" style=" padding-top:15px">
+                <h2>登录</h2>
             </div>
-            @*<div class="login-other">
-                <div onclick='toQzoneLogin()'><img src="~/img/Logins/icon/QQ-line.png"></div>
-                <div onclick='toweChat()'><img src="~/img/Logins/icon/wx-line.png"></div>
-                <div><img src="~/img/Logins/icon/sina-line.png"></div>
-            </div>*@
             <div class="hr"></div>
             <div class="login-form">
                 <form method="POST">
@@ -107,7 +79,7 @@
         <!-- 注册 -->
         <div class="regist">
             <div class="regist-title">
-                手机注册<span><img src="~/img/Logins/logo.png" height="40"></span>
+                手机注册
             </div>
             <div class="regist-form">
                 <form method="POST" action="">
@@ -139,25 +111,12 @@
                         <input type="password" class="form-control" id="regcheckpwd" placeholder="确认密码">
                     </div>
                     <code class="check_reg_code"></code>
-                    @*<div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="手机验证码" id="code" name="code">
-                        <div class="input-group-append">
-                            <button type="button" class="input-group-text text-success getcode">获取验证码</button>
-                        </div>
-                    </div>*@
+
                     <button type="button" id="regist" class="btn btn-success btn-block">注册</button>
                 </form>
             </div>
-            @*<div class="otherLogin">
-                <div class="qq">
-                    <img src="~/img/Logins/icon/QQ.png" onclick='toQzoneLogin()' class="img-fluid">
-                </div>
-                <div class="wx">
-                    <img src="~/img/Logins/icon/wx.png" onclick='toweChat()' class="img-fluid">
-                </div>
-            </div>*@
+
             <div class="login-login">
-                @*<span id="otherLogin">快捷登录</span>*@
                 <span id="phoneLogin">注册</span>
                 <span id="ToLogin">返回登录</span>
             </div>
@@ -377,100 +336,6 @@
                 }
  
             })
-
-            ////获取验证码
-            //$('.getcode').click(function () {
-            //    // console.log(123)
-            //    let phone = $('#regphone').val()
-            //    //启用按钮
-            //    $('.getcode').prop('disabled', false)
-
-            //    var time = 60
-            //    if (phoneFlag) {
-            //        $.ajax({
-            //            type: 'get',
-            //            url: '',
-            //            data: { phone },
-            //            dataType: 'json',
-            //            success: (res) => {
-            //                console.log(res)
-            //                let code = res.code
-            //                let content = res.msg
-            //                // 倒计时
-            //                if (code == "OK") {
-            //                    var interval = setInterval(function () {
-            //                        time--;
-            //                        if (time <= 0) {
-            //                            clearInterval(interval);
-            //                            var html = '获取验证码';
-            //                            $('.getcode').prop('disabled', false);
-            //                        } else {
-            //                            var html = time + ' 秒后再次获取';
-            //                            $('.getcode').prop('disabled', true);
-            //                        }
-            //                        $('.getcode').text(html);
-            //                    }, 1000);
-
-            //                    message({
-            //                        icon: 'success',
-            //                        content: '短信发送成功'
-            //                    })
-
-            //                } else {
-
-            //                    message({
-            //                        icon: 'error',
-            //                        content
-            //                    })
-
-            //                }
-
-            //            },
-            //        })
-            //    } else {
-            //        alert('请输入手机号码！')
-            //    }
-            //})
-
-            ////短信验证码验证
-            //$('#code').blur(function () {
-            //    let code = $('#code').val();
-            //    let phone = $('#regphone').val();
-            //    if (code == '') {
-            //        $('.check_reg_code').html('验证码不能为空')
-            //        regist.prop('disabled', true);
-            //    } else {
-            //        $('.check_reg_code').html('')
-            //        $.ajax({
-            //            type: 'post',
-            //            url: '',
-            //            data: { code, phone },
-            //            dataType: 'json',
-            //            success: (res) => {
-            //                let flag = res.code
-            //                let content = res.msg
-            //                // console.log(res)
-            //                if (flag == 200) {
-            //                    //验证成功，弹窗提醒
-            //                    regist.prop('disabled', false);
-            //                    message({
-            //                        icon: 'success',
-            //                        content
-            //                    })
-
-            //                } else {
-            //                    //验证失败，弹窗提醒
-            //                    message({
-            //                        icon: 'error',
-            //                        content
-            //                    })
-
-            //                }
-            //            }
-            //        })
-            //    }
-            //})
-
 
             //点击注册
             regist.click(function () {

@@ -1295,6 +1295,7 @@ namespace FCWeb.Controllers
             int[] Time;
             //7天时间
             List<DateTime> seventime = new List<DateTime>();
+            string TeamName = db.TeamMember.Where(s => s.ID == Playerid).Select(s => s.TeamName).FirstOrDefault();
             decimal sum = 0;
             if (PeriodTime == "近7天总花费")
             {
@@ -1311,7 +1312,7 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算" && s.TeamName == TeamName).Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)
@@ -1344,7 +1345,7 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算" && s.TeamName == TeamName).Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)
@@ -1399,7 +1400,7 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算" && s.TeamName == TeamName).Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)
@@ -1433,7 +1434,7 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算").Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算"&&s.TeamName== TeamName).Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)

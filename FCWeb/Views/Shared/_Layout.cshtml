@@ -31,11 +31,11 @@
             <a class="logo mr-3" href="~/Home/Index">
                 @if (Session["User"] != null)
                 {
-                    <img src="~/img/Home/logo-dark.png" alt="" class="" height="26" style="padding-left:205px">
+                    <img src="~/img/Home/足球.jpg" alt="" class="" height="50" style="padding-left:205px">
                 }
                 else
                 {
-                    <img src="~/img/Home/logo-dark.png" alt="" class="" height="26" style="padding-left:190px">
+                    <img src="~/img/Home/足球.jpg" alt="" class="" height="50" style="padding-left:190px">
                 }
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><i class="" data-feather="menu"></i></button>
@@ -44,7 +44,6 @@
                     <li class="nav-item" id="Home">@Html.ActionLink("球队网", "Index", "Home")</li>
                     <li class="nav-item" id="Create">@Html.ActionLink("创建一支球队", "CreateTeam", "Home")</li>
                     <li class="nav-item" id="Join">@Html.ActionLink("加入一支球队", "JoinTeam", "Home")</li>
-                    <li class="nav-item" id="Help">@Html.ActionLink("帮助", "Contact", "Home")</li>
                 </ul>
                 <ul class="list-inline ml-auto menu-social-icon mb-0 py-2 py-lg-0">
                     <li class="list-inline-item ml-0"><a href="#" class="menu-social-link"><i class="icon-xs sw_1-5" data-feather="facebook"></i></a></li>
@@ -96,7 +95,7 @@
             @*<p>&copy; @DateTime.Now.Year - 我的 ASP.NET 应用程序</p>*@
             <div style="height:35px;margin-top: 28px;margin-bottom: 12px;">
                 <div style="float:left;margin-top:-5px;">
-                    &copy; @DateTime.Now.Year - 球队管理系统 @*<img class="logo" src="~/img/Logins/登录足球场.jpg" style="height:30px;width:30px;" />*@
+                    &copy; @DateTime.Now.Year - 球队管理系统 
                 </div>
                 <div style="float:right;margin-right:30px;">
                     <span id="clock" style="margin-top:18px;"></span>
