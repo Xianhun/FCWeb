@@ -143,6 +143,19 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 添加比赛post
+        /// </summary>
+        /// <param name="MatchType"></param>
+        /// <param name="Date"></param>
+        /// <param name="Time"></param>
+        /// <param name="Place"></param>
+        /// <param name="Rival"></param>
+        /// <param name="SduFees"></param>
+        /// <param name="PersonFees"></param>
+        /// <param name="LimitNum"></param>
+        /// <param name="Note"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult MatchCreate(string MatchType, DateTime Date, DateTime Time, string Place, string Rival, decimal SduFees, decimal PersonFees, int LimitNum, string Note)
         {
@@ -189,6 +202,10 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 赛程列表
+        /// </summary>
+        /// <returns></returns>
         public ActionResult MatchSchedule()
         {
             string TeamName = Session["TeamName"].ToString();
@@ -199,6 +216,11 @@ namespace FCWeb.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// 赛程报名
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult MatchInformation(int id)
         {
             try
@@ -235,7 +257,12 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
-
+        /// <summary>
+        /// 赛程报名post
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult MatchInformation(int id, EventArgs e)
         {
@@ -290,6 +317,53 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 赛程删除
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ScheduleDelete()
+        {
+            string TeamName = Session["TeamName"].ToString();
+            List<Schedules> schedules = db.Schedule.Where(s => s.TeamName == TeamName).OrderByDescending(s => s.ID).ToList();
+            if (Access_permissions(3) == "管理权限")
+            {
+                if (schedules != null)
+                {
+                    return View(schedules);
+                }
+                else
+                {
+                    return View();
+                }
+            }
+            else
+            {
+                var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                return Content(script, "text/html");
+            }
+        }
+        /// <summary>
+        /// 赛程删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DeleteSchedule(int id)
+        {
+            try
+            {
+                Schedules schedules = db.Schedule.Find(id);
+                db.Schedule.Remove(schedules);
+                db.SaveChanges();
+                var script = String.Format("<script>alert('删除成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/ScheduleDelete"));
+                return Content(script, "text/html");
+            }
+            catch (Exception ee)
+            {
+                var script = String.Format("<script>alert('删除失败" + ee.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/ScheduleDelete"));
+                return Content(script, "text/html");
+            }
+        }
+
         /// <summary>
         /// 球员列表
         /// </summary>
@@ -366,6 +440,11 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 申请详细页
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult ApplicationDetailed(int id)
         {
             string TeamName = Session["TeamName"].ToString();
@@ -373,6 +452,13 @@ namespace FCWeb.Controllers
             ViewBag.ID = id;
             return View(userinFormation);
         }
+
+        /// <summary>
+        /// 申请详细post
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ApplicationDetailed(int id, EventArgs e)
         {
@@ -416,6 +502,11 @@ namespace FCWeb.Controllers
             var script = String.Format("<script>alert('申请通过');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
             return Content(script, "text/html");
         }
+        /// <summary>
+        /// 拒绝申请post
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -428,7 +519,10 @@ namespace FCWeb.Controllers
             var script = String.Format("<script>alert('已拒绝');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
             return Content(script, "text/html");
         }
-
+        /// <summary>
+        /// 添加本地球员
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Createplayers()
         {
             if (Access_permissions(4) == "管理权限")
@@ -441,6 +535,14 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 添加本地球员post
+        /// </summary>
+        /// <param name="Name"></param>
+        /// <param name="Location"></param>
+        /// <param name="Age"></param>
+        /// <param name="Sex"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Createplayers(string Name, string Location, int Age, string Sex)
         {
@@ -475,6 +577,10 @@ namespace FCWeb.Controllers
             var script = String.Format("<script>alert('添加成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
             return Content(script, "text/html");
         }
+        /// <summary>
+        /// 球队信息页
+        /// </summary>
+        /// <returns></returns>
         public ActionResult TeamInformation()
         {
             string TeamName = Session["TeamName"].ToString();
@@ -486,7 +592,10 @@ namespace FCWeb.Controllers
             ViewBag.M_Count = matchCount;
             return View(TeamInformation);
         }
-
+        /// <summary>
+        /// 球队信息页面修改
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ModifyInformation()
         {
             string TeamName = Session["TeamName"].ToString();
@@ -506,6 +615,15 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 球队信息修改post
+        /// </summary>
+        /// <param name="Open"></param>
+        /// <param name="City"></param>
+        /// <param name="Sponsors"></param>
+        /// <param name="TeamIntroduce"></param>
+        /// <param name="Rule"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult ModifyInformation(string Open, string City, string Sponsors, string TeamIntroduce, string Rule)
         {
@@ -521,7 +639,10 @@ namespace FCWeb.Controllers
             var script = String.Format("<script>alert('修改成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/TeamInformation"));
             return Content(script, "text/html");
         }
-
+        /// <summary>
+        /// 删除队员列表
+        /// </summary>
+        /// <returns></returns>
         public ActionResult MemberDelete()
         {
             try
@@ -544,6 +665,11 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 删除队员方法
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult DeleteMember(int? id)
         {
             if (id == null)
@@ -567,12 +693,13 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+        /// <summary>
+        /// 撤销删除队员方法
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Undo(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             try
             {
                 var TeamName = Session["TeamName"].ToString();
@@ -589,7 +716,10 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
-
+        /// <summary>
+        /// 赛程批量添加球员
+        /// </summary>
+        /// <returns></returns>
         public ActionResult PlayerAdd()
         {
             string TeamName = Session["TeamName"].ToString();
@@ -611,7 +741,11 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
-
+        /// <summary>
+        /// 赛程批量添加页
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult BatchCreate(int id)
         {
             string TeamName = Session["TeamName"].ToString();
@@ -648,6 +782,12 @@ namespace FCWeb.Controllers
             ViewBag.bm = bm;
             return View(schedules);
         }
+        /// <summary>
+        /// 批量添加方法
+        /// </summary>
+        /// <param name="sel_memberInfo"></param>
+        /// <param name="sche_id"></param>
+        /// <returns></returns>
         public JsonResult BatchAdd(string sel_memberInfo, int sche_id)
         {
             var signup = new SignUp();

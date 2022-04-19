@@ -9,6 +9,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
     <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
@@ -52,210 +53,147 @@
                     <span class="hidden-xs">赛事<span class="hidden-sm">添加球员</span></span>
                 </a>
             </li>
+            <li class="" title="删除赛程">
+                <a href="ScheduleDelete">
+                    <span class="glyphicon hidden-sm"><i class="layui-icon layui-icon-delete"></i></span>
+                    <span class="hidden-xs">删除赛程</span>
+                </a>
+            </li>
         </ul>
-
-        <script type="text/javascript">
-            $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '赛程列表'; }).parent().addClass('active');
-        </script>
-
-
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th style="width: 20px;"></th>
-                    <th class="date-length">
-                    </th>
-                    <th style="width: 5em;">时间</th>
-                    <th style="width: 10em;" class="hidden-xs">地点</th>
-                    <th style="width: 7em;" class="hidden-xs">参与/总人数</th>
-                    <td class="hidden-md hidden-xs hidden-sm">报名</td>
-
-                    <th class="money-length hidden-sm hidden-xs">
-                        金额(元)
-                    </th>
-                    <th style="width: 4.5em;" class="hidden-sm hidden-xs"></th>
-                    <th style="width: 4.5em;" class="hidden-md hidden-sm hidden-xs"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    foreach (var item in Model)
-                    {
-                                <tr class="">
-                                    <td>
-                                        @{
-                                            if (item.Status.ToString() == "报名中")
-                                            {
-                                                <span class="glyphicon glyphicon-flag text-warning" data-toggle="tooltip" title="报名中"></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="glyphicon glyphicon-flag" data-toggle="tooltip" title="已结束"></span>
-                                            }
-                                        }
-                                    </td>
-                                    <td>
-                                        <a href="MatchInformation/@item.ID">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                            @item.SdulsTime.ToShortDateString()
-                                            @{
-                                                string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
-                                            }
-                                            @strWeek
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @item.SdulsTime.ToShortTimeString()
-                                    </td>
-                                    <td class="hidden-xs">
-                                        @item.Place
-                                    </td>
-                                    <td class="hidden-xs">
-                                        @item.Participate/@item.LimitNum
-                                    </td>
-                                    <td class="hidden-md hidden-xs hidden-sm">
-                                    </td>
-                                    <td class="hidden-sm hidden-xs">
-                                        &#165;@item.SduFees
-                                    </td>
-                                    <td class="hidden-sm hidden-xs">
-                                        <span>@item.Status</span>
-                                    </td>
-                                    @{
-                                        if (item.Status == "报名中")
-                                        {
-                                            <td class="hidden-md hidden-sm hidden-xs">
-                                                @Html.ActionLink("详情", "MatchInformation", new { id = item.ID })
-                                            </td>
-                                        }
-                                        else if (item.Status == "已结束")
-                                        {
-                                            <td class="hidden-md hidden-sm hidden-xs">
-                                                @Html.ActionLink("结算", "Statistics", new { id = item.ID })
-                                            </td>
-                                        }
-                                        else if (item.Status == "已结算")
-                                        {
-                                            <td class="hidden-md hidden-sm hidden-xs">
-                                                @Html.ActionLink("已结算", "Statistics",new { id = item.ID })
-                                            </td>
-                                        }
-
-                                    }
-                                </tr>
-                    }
-                }
+    <script type="text/javascript">
+        $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '赛程列表'; }).parent().addClass('active');
+    </script>
 
 
-                @*<tr class="">
-                        <td>
-                        </td>
-                        <td>
-                            <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42498">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                                2022/2/9
-                                星期三
-                            </a>
-                        </td>
-                        <td>
-                            23:00
-                        </td>
-                        <td class="hidden-xs">
-                            西村
-                        </td>
-                        <td class="hidden-xs">
-                            0/不限
-                        </td>
-                        <td class="hidden-md hidden-xs hidden-sm">
-                        </td>
-                        <td class="hidden-sm hidden-xs">
-                            &#165;80.00
-                        </td>
-                        <td class="hidden-sm hidden-xs">
-                            <span>已结束</span>
-                        </td>
-                        <td class="hidden-md hidden-sm hidden-xs">
-                            <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42498 ">
-                                详情
-                            </a>
-                        </td>
-                    </tr>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 20px;"></th>
+                <th class="date-length">
+                </th>
+                <th style="width: 5em;">时间</th>
+                <th style="width: 10em;" class="hidden-xs">地点</th>
+                <th style="width: 7em;" class="hidden-xs">参与/总人数</th>
+                <td class="hidden-md hidden-xs hidden-sm">报名</td>
+
+                <th class="money-length hidden-sm hidden-xs">
+                    金额(元)
+                </th>
+                <th style="width: 4.5em;" class="hidden-sm hidden-xs"></th>
+                <th style="width: 4.5em;" class="hidden-md hidden-sm hidden-xs"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var item in Model)
+                {
                     <tr class="">
                         <td>
+                            @{
+                                if (item.Status.ToString() == "报名中")
+                                {
+                                    <span class="glyphicon glyphicon-flag text-warning" data-toggle="tooltip" title="报名中"></span>
+                                }
+                                else
+                                {
+                                    <span class="glyphicon glyphicon-flag" data-toggle="tooltip" title="已结束"></span>
+                                }
+                            }
                         </td>
                         <td>
-                            <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497">
+                            <a href="MatchInformation/@item.ID">
                                 <span class="glyphicon glyphicon-calendar"></span>
-                                2022/2/8
-                                星期二
+                                @item.SdulsTime.ToShortDateString()
+                                @{
+                                    string strWeek = "星期" + "日一二三四五六".Substring((int)Model.ElementAt(0).SdulsTime.DayOfWeek, 1);
+                                }
+                                @strWeek
                             </a>
                         </td>
                         <td>
-                            20:00
+                            @item.SdulsTime.ToShortTimeString()
                         </td>
                         <td class="hidden-xs">
-                            西村
+                            @item.Place
                         </td>
                         <td class="hidden-xs">
-                            0/不限
+                            @item.Participate/@item.LimitNum
                         </td>
                         <td class="hidden-md hidden-xs hidden-sm">
                         </td>
                         <td class="hidden-sm hidden-xs">
-                            &#165;80.00
+                            &#165;@item.SduFees
                         </td>
                         <td class="hidden-sm hidden-xs">
-                            <span>已结束</span>
+                            <span>@item.Status</span>
                         </td>
-                        <td class="hidden-md hidden-sm hidden-xs">
-                            <a href="/Team/%E8%8A%AC%E8%8A%B3GD/Match/Index/42497 ">
-                                详情
-                            </a>
-                        </td>
-                    </tr>*@
-
-                <tr class="text-muted hidden-xs">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="hidden-sm"></td>
-                    <td class="text-right hidden-sm">
-                        <small>
-                            当前页消费总额：
-                        </small>
-                    </td>
-                    <td class="hidden-sm">
-                        <small>
-                            &#165;@{
-                                decimal totalfees = 0;
-                                foreach (var item in Model)
-                                {
-                                    totalfees += item.SduFees;
-                                }
+                        @{
+                            if (item.Status == "报名中")
+                            {
+                                <td class="hidden-md hidden-sm hidden-xs">
+                                    @Html.ActionLink("详情", "MatchInformation", new { id = item.ID })
+                                </td>
                             }
-                            @totalfees
-                        </small>
-                    </td>
-                    <td class="text-right hidden-md" colspan="2">
-                        <small>
-                            共 @{
-                                int i = 0;
-                                foreach (var item in Model)
-                                {
-                                    i = Model.Count();
-                                }
+                            else if (item.Status == "已结束")
+                            {
+                                <td class="hidden-md hidden-sm hidden-xs">
+                                    @Html.ActionLink("结算", "Statistics", new { id = item.ID })
+                                </td>
                             }
-                            @i 场
-                        </small>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="text-center">
+                            else if (item.Status == "已结算")
+                            {
+                                <td class="hidden-md hidden-sm hidden-xs">
+                                    @Html.ActionLink("已结算", "Statistics", new { id = item.ID })
+                                </td>
+                            }
+
+                        }
+                    </tr>
+                }
+            }
+
+            <tr class="text-muted hidden-xs">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="hidden-sm"></td>
+                <td class="text-right hidden-sm">
+                    <small>
+                        当前页消费总额：
+                    </small>
+                </td>
+                <td class="hidden-sm">
+                    <small>
+                        &#165;@{
+                            decimal totalfees = 0;
+                            foreach (var item in Model)
+                            {
+                                totalfees += item.SduFees;
+                            }
+                        }
+                        @totalfees
+                    </small>
+                </td>
+                <td class="text-right hidden-md" colspan="2">
+                    <small>
+                        共 @{
+                            int i = 0;
+                            foreach (var item in Model)
+                            {
+                                i = Model.Count();
+                            }
+                        }
+                        @i 场
+                    </small>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="text-center">
 
 
-        </div>
+    </div>
     </div>
 </body>
 

@@ -9,6 +9,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
     <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
@@ -49,6 +50,12 @@
                     <a href="../PlayerAdd">
                         <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
                         <span class="hidden-xs">赛事<span class="hidden-sm">添加球员</span></span>
+                    </a>
+                </li>
+                <li class="" title="删除赛程">
+                    <a href="ScheduleDelete">
+                        <span class="glyphicon hidden-sm"><i class="layui-icon layui-icon-delete"></i></span>
+                        <span class="hidden-xs">删除赛程</span>
                     </a>
                 </li>
             </ul>
@@ -187,21 +194,6 @@
                         </a>
                         |
                     </span>
-
-                    @*<span class="hidden">
-                        <a href="MatchInformation/@Model.ElementAt(0).ID" title="取消报名">
-                            <span class="glyphicon glyphicon-remove-circle"></span>
-                            取消<span class="hidden-xs">报名</span>
-                        </a>
-                        |
-                    </span>
-                    <span class="hidden">
-                        <a href="MatchInformation/@Model.ElementAt(0).ID" title="我要请假">
-                            <span class="glyphicon glyphicon-remove-circle"></span>
-                            <span class="hidden-xs">我要</span>请假
-                        </a>
-                        |
-                    </span>*@
                     <span class="hidden-xs">
                         <a href="">
                             <span class="glyphicon glyphicon-eye-open text-info"></span>&nbsp;查看详情

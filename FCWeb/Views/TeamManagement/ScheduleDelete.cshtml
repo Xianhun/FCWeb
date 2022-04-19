@@ -1,35 +1,35 @@
 ﻿@model IEnumerable<FCWeb.Models.Schedules>
 @{
-    ViewBag.Title = "PlayerAdd";
+    ViewBag.Title = "ScheduleDelete";
     Layout = null;
 }
 <head>
-    <meta charset="UTF-8">
-    <title>欢迎页面-X-admin2.0</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
-    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="~/Content/TeamManagement/font.css">
-    <link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
-    <link rel="stylesheet" href="~/Content/bootstrap.css" />
-    <link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-    <script src="~/Scripts/TeamManagement/lib/layui/layui.js" charset="utf-8"></script>
-    <script type="text/javascript" src="~/Scripts/TeamManagement/xadmin.js"></script>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    <style type="text/css">
-        .attend-item {
-            margin: 5px 5px;
-            padding: 5px;
-            width: 7em;
-            display: block;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>欢迎页面-X-admin2.0</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+<link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
+<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+<link rel="stylesheet" href="~/Content/TeamManagement/font.css">
+<link rel="stylesheet" href="~/Content/TeamManagement/xadmin.css">
+<link rel="stylesheet" href="~/Content/bootstrap.css" />
+<link href="~/Content/Home/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/Home/style.min.css" rel="stylesheet" type="text/css" />
+<link href="~/Content/Home/pe-icon-7.css" rel="stylesheet" type="text/css" />
+<!--Slider-->
+<link rel="stylesheet" href="~/Content/Home/owl.carousel.min.css" />
+<link rel="stylesheet" href="~/Content/Home/owl.theme.default.min.css" />
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+<style type="text/css">
+    .attend-item {
+        margin: 5px 5px;
+        padding: 5px;
+        width: 7em;
+        display: block;
+    }
+</style>
 </head>
 <body>
     <div class="panel panel-default">
@@ -47,7 +47,7 @@
                     <span class="hidden-xs">添加<span class="hidden-sm">赛程</span></span>
                 </a>
             </li>
-            <li class="" title="添加赛程">
+            <li class="" title="赛事添加球员">
                 <a href="PlayerAdd">
                     <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
                     <span class="hidden-xs">赛事<span class="hidden-sm">添加球员</span></span>
@@ -60,17 +60,15 @@
                 </a>
             </li>
         </ul>
-
         <script type="text/javascript">
-            $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '赛事添加球员'; }).parent().addClass('active');
+            $('#calendarIndex').find('a').filter(function () { return $(this).text().trim() == '删除赛程'; }).parent().addClass('active');
         </script>
-
-
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th style="width: 20px;"></th>
                     <th class="date-length">
+                        (点击赛程修改)
                     </th>
                     <th style="width: 5em;">时间</th>
                     <th style="width: 10em;" class="hidden-xs">地点</th>
@@ -102,7 +100,7 @@
                                 }
                             </td>
                             <td>
-                                <a href="MatchInformation/@item.ID">
+                                <a href="ScheduleResult/@item.ID">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                     @item.SdulsTime.ToShortDateString()
                                     @{
@@ -129,19 +127,17 @@
                                 <span>@item.Status</span>
                             </td>
                             @{
-                                if (item.Status == "已结束" && item.Participate < item.LimitNum)
+                                if (item.Status != "删除中")
                                 {
-                                    <td class="hidden-md hidden-sm hidden-xs"></td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @Html.ActionLink("删除", "DeleteSchedule", new { id = item.ID }, new { onclick = "return confirm('你确认删除吗？')" })
+                                    </td>
 
-                                }
-                                else if (item.Status == "已结算")
-                                {
-                                    <td class="hidden-md hidden-sm hidden-xs"></td>
                                 }
                                 else
                                 {
-                                    <td class="hidden-md hidden-sm hidden-xs">
-                                        <a href="#" onclick="x_admin_show('批量添加', 'BatchCreate/@item.ID',600,400)">批量添加</a>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @Html.ActionLink("撤销", "UndoSchedule", new { id = item.ID }, new { onclick = "return confirm('你确认撤销吗？')" })
                                     </td>
                                 }
                             }
@@ -186,10 +182,11 @@
                 </tr>
             </tbody>
         </table>
-        <div class="text-center">
-
-
+        <div class="panel-body text-right">
+            共：<b>@i</b> 场
         </div>
+
+        <div class="clearfix"></div>
     </div>
 </body>
 

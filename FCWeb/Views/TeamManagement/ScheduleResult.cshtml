@@ -5,6 +5,7 @@
 }
 <head>
     <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui-v2.5.6/css/layui.css" />
     @*<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />*@
     <link href="~/Content/TeamManagement/font.css" rel="stylesheet" />
     <link href="~/Content/TeamManagement/xadmin.css" rel="stylesheet" />
@@ -39,21 +40,27 @@
 <div class="panel panel-default">
     <ul id="calendarIndex" class="nav nav-tabs" style="margin-top:10px;margin-bottom:20px;">
         <li style="margin-left:10px;" title="详细列表">
-            <a href="MatchSchedule">
+            <a href="../MatchSchedule">
                 <span class="glyphicon glyphicon-th-list"></span>
                 <span class="hidden-xs">赛程列表</span>
             </a>
         </li>
         <li class="" title="添加赛程">
-            <a href="MatchCreate">
+            <a href="../MatchCreate">
                 <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
                 <span class="hidden-xs">添加<span class="hidden-sm">赛程</span></span>
             </a>
         </li>
         <li class="" title="赛事添加球员">
-            <a href="PlayerAdd">
+            <a href="../PlayerAdd">
                 <span class="glyphicon glyphicon-plus-sign hidden-sm"></span>
                 <span class="hidden-xs">赛事<span class="hidden-sm">添加球员</span></span>
+            </a>
+        </li>
+        <li class="" title="删除赛程">
+            <a href="../ScheduleDelete">
+                <span class="glyphicon hidden-sm"><i class="layui-icon layui-icon-delete"></i></span>
+                <span class="hidden-xs">删除赛程</span>
             </a>
         </li>
     </ul>
