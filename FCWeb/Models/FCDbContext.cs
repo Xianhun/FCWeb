@@ -28,6 +28,7 @@ namespace FCWeb.Models
         public virtual DbSet<TeamMembers> TeamMember { get; set; }
         public virtual DbSet<ApplicationForm> ApplicationForms { get; set; }
         public virtual DbSet<Permissions> Permission { get; set; }
+        public virtual DbSet<Announcements> Announcement { get; set; }
     }
 
     //public class MyEntity

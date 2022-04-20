@@ -15,21 +15,37 @@ namespace FCWeb.Controllers
         FCDbContext db = new FCDbContext();
         public ActionResult Home()
         {
-            var Account = Session["User"].ToString();
-            var UserName = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
-            var UserID = db.TeamMember.Where(s => s.Account == Account).Select(s => s.ID).FirstOrDefault();
-            string per_id = db.TeamMember.Where(s => s.Account == Account).Select(s => s.Permissionid).FirstOrDefault();
-            if (per_id == "1")
+            try
             {
-                ViewBag.Per = "管理权限";
+                if (Session["TeamName"].ToString() == null)
+                {
+                    throw new Exception("您还未加入球队");
+                }
+                else if (Session["User"].ToString() == null)
+                {
+                    throw new Exception("请登录");
+                }
+                var Account = Session["User"].ToString();
+                var UserName = db.User.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
+                var UserID = db.TeamMember.Where(s => s.Account == Account).Select(s => s.ID).FirstOrDefault();
+                string per_id = db.TeamMember.Where(s => s.Account == Account).Select(s => s.Permissionid).FirstOrDefault();
+                if (per_id == "1")
+                {
+                    ViewBag.Per = "管理权限";
+                }
+                else
+                {
+                    ViewBag.Per = "普通队员";
+                }
+                ViewBag.US = UserName;
+                ViewBag.ID = UserID;
+                return View();
             }
-            else
+            catch (Exception ex)
             {
-                ViewBag.Per = "普通队员";
+                var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
+                return Content(script, "text/html");
             }
-            ViewBag.US = UserName;
-            ViewBag.ID = UserID;
-            return View();
         }
         /// <summary>
         /// 管理首页
@@ -71,7 +87,7 @@ namespace FCWeb.Controllers
                         db.SaveChanges();
                     }
                     List<DateTime> dateTimes = db.Schedule.Where(s => s.SdulsTime > Now && s.TeamName == TeamName).Select(s => s.SdulsTime).ToList();
-                    List<Schedules> schedules = db.Schedule.Where(s => s.SdulsTime < Now && s.TeamName == TeamName && s.Status!="已结算").ToList();
+                    List<Schedules> schedules = db.Schedule.Where(s => s.SdulsTime < Now && s.TeamName == TeamName && s.Status != "已结算").ToList();
                     if (schedules != null)
                     {
                         Dictionary<int, List<string>> bm = new Dictionary<int, List<string>>();//<赛程id，List<报名球员用户名>>报名
@@ -118,12 +134,18 @@ namespace FCWeb.Controllers
                     }
                     var Near_Sedul = db.Schedule.Where(s => s.SdulsTime == NearTime && s.TeamName == TeamName).ToList();
                     ViewBag.Check = result;//判断最近是否有赛程
+                    var announcements = db.Announcement.OrderByDescending(s => s.CreateTime).Take(5).ToList();
+                    ViewBag.Announcememt = announcements;
+                    var Goallist = db.TeamMember.OrderByDescending(s => s.Goal).Take(5).ToList();
+                    ViewBag.Goal = Goallist;
+                    var Assists = db.TeamMember.OrderByDescending(s => s.Assists).Take(5).ToList();
+                    ViewBag.Assists = Assists;
                     return View(Near_Sedul);
                 }
             }
             catch (Exception ex)
             {
-                var script = String.Format("<script>alert('" + ex.Message.ToString() + "');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
+                var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
                 return Content(script, "text/html");
             }
         }
@@ -144,7 +166,7 @@ namespace FCWeb.Controllers
             }
         }
         /// <summary>
-        /// 添加比赛post
+        /// 添加赛程post
         /// </summary>
         /// <param name="MatchType"></param>
         /// <param name="Date"></param>
@@ -166,6 +188,7 @@ namespace FCWeb.Controllers
                     var script = String.Format("<script>alert('请重新登录');location.href='{0}'</script>", Url.Action("Index", "Account/Login"));
                     return Content(script, "text/html");
                 }
+                string Account = Session["User"].ToString();
                 string TeamName = Session["TeamName"].ToString();
                 string date = Date.ToShortDateString().ToString();//获取日期
                 string time = Time.ToShortTimeString().ToString();//获取时间
@@ -187,6 +210,8 @@ namespace FCWeb.Controllers
                     };
                     db.Schedule.Add(createMatch);
                     db.SaveChanges();
+                    var sid = db.Schedule.OrderByDescending(s => s.ID).Select(s => s.ID).FirstOrDefault();
+                    Announcement(sid, Account, datetime, Place, "新增");
                     var script = String.Format("<script>alert('添加成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
                     return Content(script, "text/html");
                 }
@@ -202,19 +227,46 @@ namespace FCWeb.Controllers
                 return Content(script, "text/html");
             }
         }
+
+        private void Announcement(int sid, string Account, DateTime datetime, string place, string status)
+        {
+            DateTime TimeNow = DateTime.Now;
+            string url = "MatchInformation/" + sid;
+            string Player = db.TeamMember.Where(s => s.Account == Account).Select(s => s.UserName).FirstOrDefault();
+            string title = Player + status + "了赛程：" + datetime.ToString("M").Replace("月", "/").Replace("日", "") + " " + datetime.ToString("t") + " " + place;
+            Announcements announcements = new Announcements
+            {
+                Title = title,
+                Url = url,
+                CreateBy = Player,
+                CreateTime = TimeNow
+            };
+            db.Announcement.Add(announcements);
+            db.SaveChanges();
+        }
+
         /// <summary>
         /// 赛程列表
         /// </summary>
         /// <returns></returns>
         public ActionResult MatchSchedule()
         {
-            string TeamName = Session["TeamName"].ToString();
-            List<Schedules> schedules = db.Schedule.Where(s => s.TeamName == TeamName).OrderByDescending(s => s.ID).ToList();
-            if (schedules != null)
+            try
             {
-                return View(schedules);
+                string TeamName = Session["TeamName"].ToString();
+                List<Schedules> schedules = db.Schedule.Where(s => s.TeamName == TeamName).OrderByDescending(s => s.ID).ToList();
+                if (schedules != null)
+                {
+                    return View(schedules);
+                }
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
+                return Content(script, "text/html");
+            }
+
         }
         /// <summary>
         /// 赛程报名
@@ -421,24 +473,33 @@ namespace FCWeb.Controllers
         /// <returns></returns>
         public ActionResult Application()
         {
-            string TeamName = Session["TeamName"].ToString();
-            List<ApplicationForm> applicationForms = db.ApplicationForms.Where(s => s.TeamName == TeamName && s.ApplicationStatus == "申请中").ToList();
-            List<Users> userinFormation = new List<Users>();
-            for (int i = 0; i < applicationForms.Count; i++)
+            try
             {
-                string UserName = applicationForms[i].UserName;
-                var Account = db.User.Where(s => s.UserName == UserName).Select(s => s.Account).FirstOrDefault();
-                userinFormation.Add(db.User.Where(s => s.Account == Account).FirstOrDefault());
+                string TeamName = Session["TeamName"].ToString();
+                List<ApplicationForm> applicationForms = db.ApplicationForms.Where(s => s.TeamName == TeamName && s.ApplicationStatus == "申请中").ToList();
+                List<Users> userinFormation = new List<Users>();
+                for (int i = 0; i < applicationForms.Count; i++)
+                {
+                    string UserName = applicationForms[i].UserName;
+                    var Account = db.User.Where(s => s.UserName == UserName).Select(s => s.Account).FirstOrDefault();
+                    userinFormation.Add(db.User.Where(s => s.Account == Account).FirstOrDefault());
+                }
+                if (Access_permissions(5) == "管理权限")
+                {
+                    return View(userinFormation);
+                }
+                else
+                {
+                    var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                    return Content(script, "text/html");
+                }
             }
-            if (Access_permissions(5) == "管理权限")
+            catch (Exception ex)
             {
-                return View(userinFormation);
-            }
-            else
-            {
-                var script = String.Format("<script>alert('你未被管理员赋予此权限');history.back(-1);</script>");
+                var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
                 return Content(script, "text/html");
             }
+
         }
         /// <summary>
         /// 申请详细页
@@ -583,14 +644,23 @@ namespace FCWeb.Controllers
         /// <returns></returns>
         public ActionResult TeamInformation()
         {
-            string TeamName = Session["TeamName"].ToString();
-            var TeamInformation = db.CreateTeam.Where(s => s.TeamName == TeamName).ToList();
-            var numberCount = db.User.Where(s => s.TeamName == TeamName).Count();
-            //出场统计
-            var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结算").Count();
-            ViewBag.Count = numberCount;
-            ViewBag.M_Count = matchCount;
-            return View(TeamInformation);
+            try
+            {
+                string TeamName = Session["TeamName"].ToString();
+                var TeamInformation = db.CreateTeam.Where(s => s.TeamName == TeamName).ToList();
+                var numberCount = db.User.Where(s => s.TeamName == TeamName).Count();
+                //出场统计
+                var matchCount = db.Schedule.Where(s => s.TeamName == TeamName && s.Status == "已结算").Count();
+                ViewBag.Count = numberCount;
+                ViewBag.M_Count = matchCount;
+                return View(TeamInformation);
+            }
+            catch (Exception ex)
+            {
+                var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
+                return Content(script, "text/html");
+            }
+
         }
         /// <summary>
         /// 球队信息页面修改
@@ -816,9 +886,18 @@ namespace FCWeb.Controllers
 
         public ActionResult Permission()
         {
-            string TeamName = Session["TeamName"].ToString();
-            List<TeamMembers> teammembers = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
-            return View(teammembers);
+            try
+            {
+                string TeamName = Session["TeamName"].ToString();
+                List<TeamMembers> teammembers = db.TeamMember.Where(s => s.TeamName == TeamName).ToList();
+                return View(teammembers);
+            }
+            catch (Exception ex)
+            {
+                var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
+                return Content(script, "text/html");
+            }
+
         }
 
         public ActionResult RoleAdd(int id)
@@ -1374,6 +1453,7 @@ namespace FCWeb.Controllers
         {
             try
             {
+                string Account = Session["User"].ToString();
                 string TeamName = db.Schedule.Where(s => s.ID == id).Select(s => s.TeamName).FirstOrDefault();
                 string status = db.Schedule.Where(s => s.ID == id).Select(s => s.Status).FirstOrDefault();
                 string date = Date.ToShortDateString().ToString();//获取日期
@@ -1395,6 +1475,7 @@ namespace FCWeb.Controllers
                     Matchchange.Status = "报名中";
                     db.Entry(Matchchange).State = EntityState.Modified;
                     db.SaveChanges();
+                    Announcement(id, Account, datetime, Place, "修改");
                     var script = String.Format("<script>alert('修改成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
                     return Content(script, "text/html");
                 }
@@ -1503,9 +1584,18 @@ namespace FCWeb.Controllers
         }
         public ActionResult TeamLineChart()
         {
-            string TeamName = Session["TeamName"].ToString();
-            ViewBag.TeamName = TeamName;
-            return View();
+            try
+            {
+                string TeamName = Session["TeamName"].ToString();
+                ViewBag.TeamName = TeamName;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
+                return Content(script, "text/html");
+            }
+
         }
         public string TeamReload(string PeriodTime, string TeamName)
         {
@@ -1574,7 +1664,7 @@ namespace FCWeb.Controllers
                 {
                     var time1 = seventime[i];
                     var time2 = time1.AddDays(1);
-                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算"&&s.TeamName== TeamName).Select(s => s.ID).ToList();
+                    sech_id = db.Schedule.Where(s => s.SdulsTime > time1 && s.SdulsTime < time2 && s.Status == "已结算" && s.TeamName == TeamName).Select(s => s.ID).ToList();
                     //通过赛程id查找对应数据
                     List<decimal> Cost_list = new List<decimal>();
                     for (int k = 0; k < sech_id.Count; k++)

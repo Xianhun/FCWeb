@@ -140,7 +140,7 @@
                                         空
                                     </span>
                                 </li>
-                                if (i+ Model.ElementAt(0).Participate == 10)
+                                if (i + Model.ElementAt(0).Participate == 10)
                                 {
                                     <li>
                                         <span class="attend-item label label-default" title="还有很多空余位置" data-toggle="tooltip">
@@ -151,62 +151,6 @@
                                 }
                             }
                         }
-
-                        @*<li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label label-default" title="还有空余位置" data-toggle="tooltip">
-                                    空
-                                </span>
-                            </li>
-                            <li>
-                                <span class="attend-item label text-help" title="还有很多空余位置" data-toggle="tooltip">
-                                    ……
-                                </span>
-                            </li>*@
                     </ul>
                     <script type="text/javascript">
                         $('#ulAttendUsers').find('[data-toggle]').tooltip();
@@ -224,7 +168,7 @@
                     </span>
 
                     <span class="hidden">
-                        <a href="MatchInformation/@Model.ElementAt(0).ID" title="取消报名" >
+                        <a href="MatchInformation/@Model.ElementAt(0).ID" title="取消报名">
                             <span class="glyphicon glyphicon-remove-circle"></span>
                             取消<span class="hidden-xs">报名</span>
                         </a>
@@ -245,9 +189,9 @@
                 </div>
             </div>
         </div>
-    }
-    else
-    {
+                            }
+                            else
+                            {
         <div class="panel panel-default">
 
             <div class="panel-body">
@@ -260,7 +204,7 @@
 
             </div>
         </div>
-    }
+                            }
 
 
 
@@ -282,12 +226,20 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;公告
-                    <a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">
+                    @*<a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">*@
                     </a>
                 </div>
-                <div id="myModalLabel" class="panel-body text-center" style="min-height:170px;">
+                <div id="myModalLabel" class="panel-body" style="min-height:170px;">
                     <pre class="no-style">
-无
+@{ 
+    foreach(var d in ViewBag.Announcememt)
+    {
+        string title = d.Title;
+        DateTime t = d.CreateTime;
+        string url = d.Url;
+<label class="text-left" style="width:70%;margin:0px"><a href="@url">@title</a></label><label class="text-right" style="width:30%;margin:0px">@t.ToShortDateString()</label>
+    }
+}
 </pre>
                 </div>
             </div>
@@ -298,14 +250,47 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;公告
-                    <a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">
-                    </a>
+                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;射手榜
+                    @*<a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">
+                    </a>*@
                 </div>
                 <div id="myModalLabel" class="panel-body text-center" style="min-height:170px;">
-                    <pre class="no-style">
-无
-</pre>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="realname-length">
+                                    <a>姓名</a>
+                                </th>
+                                <th class="hidden-md hidden-xs hidden-sm">
+                                    <a>位置</a>
+                                </th>
+                                <th style="width: 5em;" class="hidden-md hidden-xs hidden-sm">
+                                    <a>总进球</a>
+                                </th>
+                            </tr>
+                        </thead>
+                        @{
+                            for (int d = 0; d < ViewBag.Goal.Count; d++)
+                            {
+                                string Name = ViewBag.Goal[d].UserName;
+                                string Location = ViewBag.Goal[d].Location;
+                                int Goal = ViewBag.Goal[d].Goal;
+                                <tr>
+                                    <td>
+                                        <a href="" data-toggle="popover" data-placement="right" data-value="46953">
+                                            @Name
+                                        </a>
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @Location
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @Goal
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
                 </div>
             </div>
 
@@ -315,36 +300,49 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;公告
-                    <a href="javascript:void(0)" onclick="remoteModal('/Team/%E8%8A%AC%E8%8A%B3GD/Announcement/Edit')" class="glyphicon glyphicon-edit pull-right" title="编辑">
-                    </a>
+                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;助攻榜
                 </div>
                 <div id="myModalLabel" class="panel-body text-center" style="min-height:170px;">
-                    <pre class="no-style">
-无
-</pre>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th class="realname-length">
+                                    <a>姓名</a>
+                                </th>
+                                <th class="hidden-md hidden-xs hidden-sm">
+                                    <a>位置</a>
+                                </th>
+                                <th style="width: 5em;" class="hidden-md hidden-xs hidden-sm">
+                                    <a>总助攻</a>
+                                </th>
+                            </tr>
+                        </thead>
+                        @{
+                            for (int d = 0; d < ViewBag.Assists.Count; d++)
+                            {
+                                string Name = ViewBag.Assists[d].UserName;
+                                string Location = ViewBag.Assists[d].Location;
+                                int Assists = ViewBag.Assists[d].Assists;
+                                <tr>
+                                    <td>
+                                        <a href="" data-toggle="popover" data-placement="right" data-value="46953">
+                                            @Name
+                                        </a>
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @Location
+                                    </td>
+                                    <td class="hidden-md hidden-xs hidden-sm">
+                                        @Assists
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
                 </div>
             </div>
 
         </div>
-        @*<div id="divMVPPlayers" class="col-md-6 col-sm-6 col-lg-4">
-                <div class="panel panel-default">
-                    <div class="panel-body text-center">
-                        <img src="//oss.qiulianwang.com/Content/images/Loading.gif" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-12 col-sm-12 hidden-xs">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <i class="glyphicon glyphicon-phone"></i> 扫描二维码绑定微信
-                    </div>
-                    <div id="divBindImg" class="panel-body text-center">
-                        <img src="//oss.qiulianwang.com/Content/images/Loading.gif" />
-                    </div>
-                </div>
-            </div>*@
-
     </div>
 </body>
 </html>
