@@ -190,7 +190,7 @@ namespace FCWeb.Controllers
                 }
                 string Account = Session["User"].ToString();
                 string TeamName = Session["TeamName"].ToString();
-                string date = Date.ToShortDateString().ToString();//获取日期
+                string date = Date.ToString("yyyy-MM-dd");//获取日期
                 string time = Time.ToShortTimeString().ToString();//获取时间
                 DateTime datetime = Convert.ToDateTime(date + ' ' + time);//获取日期时间
                 if (datetime > DateTime.Now)
@@ -1176,6 +1176,11 @@ namespace FCWeb.Controllers
             var sche = db.Schedule.Where(s => s.ID == id).ToList();
             return View(sche);
         }
+        /// <summary>
+        /// 鸽子球员
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Absence(int id)
         {
             Dictionary<int, List<string>> qj = new Dictionary<int, List<string>>();//<赛程id，List<请假球员用户名>>报名
@@ -1443,7 +1448,7 @@ namespace FCWeb.Controllers
             schedule.PersonFees = db.Schedule.Where(s => s.ID == id).Select(s => s.PersonFees).FirstOrDefault();
             schedule.LimitNum = db.Schedule.Where(s => s.ID == id).Select(s => s.LimitNum).FirstOrDefault();
             schedule.Note = db.Schedule.Where(s => s.ID == id).Select(s => s.Note).FirstOrDefault();
-            ViewBag.Date = schedule.SdulsTime.ToLongDateString().Replace("年", "-").Replace("月", "-").Replace("日", "");
+            ViewBag.Date = schedule.SdulsTime.ToString("yyyy-MM-dd");
             ViewBag.Time = schedule.SdulsTime.ToLongTimeString();
             return View(schedule);
         }
@@ -1590,7 +1595,7 @@ namespace FCWeb.Controllers
                 ViewBag.TeamName = TeamName;
                 return View();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 var script = String.Format("<script>alert('账户已过期请重新登录');location.href='{0}'</script>", Url.Action("Index", "Home/Index"));
                 return Content(script, "text/html");

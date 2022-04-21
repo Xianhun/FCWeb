@@ -253,6 +253,7 @@
                 </thead>
                 <tbody>
                     @{
+                        decimal costsum = 0;
                         for (int i = 0; i < ViewBag.sp.Count; i++)
                         {
                             string Name = ViewBag.qy_Name[i];
@@ -261,6 +262,8 @@
                             int Goal = ViewBag.sp[i].Goal;
                             int Assists = ViewBag.sp[i].Assists;
                             int cid = ViewBag.sp[i].PlayerID;
+                            costsum += Cost;
+
 
 
                             <tr>
@@ -332,7 +335,7 @@
                             <td class="text-danger hidden-md hidden-xs hidden-sm text-muted">
                                 <small>
                                     赛程总花费：<br />
-                                    &#165; @Model.ElementAt(0).SduFees
+                                    &#165; @costsum/@Model.ElementAt(0).SduFees
                                     &nbsp;&nbsp;
                                 </small>
                             </td>
@@ -349,7 +352,7 @@
                                             int Assists = ViewBag.sp[i].Assists;
                                             total_Goal += Goal;
                                             total_Assists += Assists;
-                                            l = i+1;
+                                            l = i + 1;
                                         }
                                     }
                                     @total_Goal
@@ -433,16 +436,22 @@
 </body>
 <script type="text/javascript">
     $("#Settlement").click(function () {
-        var id = $("#Settlement").attr('title');
-        $.ajax({
-            type: 'post',
-            url: "/TeamManagement/Settlement",
-            data: { S_ID: id },
-            dataType: 'json',
-            success: (res) => {
+        if (@costsum > @Model.ElementAt(0).SduFees) {
+            var id = $("#Settlement").attr('title');
+            $.ajax({
+                type: 'post',
+                url: "/TeamManagement/Settlement",
+                data: { S_ID: id },
+                dataType: 'json',
+                success: (res) => {
                     alert(res);
-            }
-        })
+                }
+            })
+        }
+        else {
+            alert("结算金额不足支付赛程费用！");
+        }
+
     })
     $("#qj,#gz,#cx").click(function () {
         var sid = $(this).attr("name");
@@ -507,6 +516,7 @@
                             let code = res
                             if (code == "修改成功") {
                                 alert(code);
+                                location.reload();
                             } else {
                                 alert(code);
                             }
@@ -524,6 +534,7 @@
                             let code = res
                             if (code == "修改成功") {
                                 alert(code);
+                                location.reload();
                             } else {
                                 alert(code);
                             }
@@ -541,6 +552,7 @@
                             let code = res
                             if (code == "修改成功") {
                                 alert(code);
+                                location.reload();
                             } else {
                                 alert(code);
                             }

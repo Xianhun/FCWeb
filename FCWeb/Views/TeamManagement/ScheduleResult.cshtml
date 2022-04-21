@@ -95,7 +95,7 @@
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
                         <span class="input-group-addon"><label for="Date" class="glyphicon glyphicon-calendar"></label></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="yyyy-MM-dd" type="text" value="@ViewBag.Date" />
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="yyyy-MM-dd" type="date" value="@ViewBag.Date" />
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
                         <span class="input-group-addon"><label for="Time" class="glyphicon glyphicon-time"></label></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-regex="时间格式不正确" data-val-regex-pattern="(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?" data-val-required="赛程时间 字段是必需的。" id="Time" name="Time" placeholder="HH:mm" type="text" value="@ViewBag.Time" />
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-regex="时间格式不正确" data-val-regex-pattern="(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?" data-val-required="赛程时间 字段是必需的。" id="Time" name="Time" placeholder="HH:mm" type="time" value="@ViewBag.Time" />
                     </div>
                 </div>
             </div>

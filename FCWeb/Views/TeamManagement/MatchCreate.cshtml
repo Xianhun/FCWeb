@@ -81,8 +81,8 @@
                 <label class="col-md-3 col-sm-3 control-label required" for="MatchType">赛程类型</label>
                 <div class="col-md-9 col-sm-9">
                     <ul class="list-inline list-unstyled">
-                        <li><label for="" class="radio inline" title="对内训练赛"><input data-val="true" data-val-required="赛程类型 字段是必需的。" id="" name="MatchType" type="radio" value="训练赛" />训练赛</label></li>
-                        <li><label for="" class="radio inline" title="和其它队的友谊赛"><input id="" name="MatchType" type="radio" value="友谊赛" />友谊赛</label></li>
+                        <li><label for="" class="radio inline" title="对内训练赛"><input data-val="true" data-val-required="赛程类型 字段是必需的。" id="" name="MatchType" type="radio" value="训练赛"checked />训练赛</label></li>
+                        <li><label for="" class="radio inline" title="和其它队的友谊赛"><input id="" name="MatchType" type="radio" value="友谊赛"/>友谊赛</label></li>
                         <li><label for="" class="radio inline" title="正规比赛"><input id="" name="MatchType" type="radio" value="联赛" />联赛</label></li>
                     </ul>
                 </div>
@@ -92,7 +92,7 @@
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
                         <span class="input-group-addon"><label for="Date" class="glyphicon glyphicon-calendar"></label></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="yyyy-MM-dd" type="text" value="" />
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-required="赛程日期 字段是必需的。" id="Date" name="Date" placeholder="yyyy-MM-dd" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                     </div>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                 <div class="col-md-3 col-sm-4">
                     <div class="input-group">
                         <span class="input-group-addon"><label for="Time" class="glyphicon glyphicon-time"></label></span>
-                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-regex="时间格式不正确" data-val-regex-pattern="(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?" data-val-required="赛程时间 字段是必需的。" id="Time" name="Time" placeholder="HH:mm" type="text" value="" />
+                        <input class="form-control" data-format="dbc2sbc" data-val="true" data-val-regex="时间格式不正确" data-val-regex-pattern="(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?" data-val-required="赛程时间 字段是必需的。" id="Time" name="Time" placeholder="HH:mm" type="time" value="@DateTime.Now.ToString("t")" />
                     </div>
                 </div>
             </div>
@@ -128,7 +128,7 @@
                 <div class="col-md-5 col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon"> ¥&nbsp;</span>
-                        <input Value="0.00" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 总消费额 must be a number." data-val-required="总消费额不能为空" id="TotalAmount" name="SduFees" placeholder="设置赛事消费总额" type="text" value="" />
+                        <input Value="0.00" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 总消费额 must be a number." data-val-required="总消费额不能为空" id="TotalAmount" name="SduFees" placeholder="设置赛事消费总额" type="text" value="" /><code id="Fees" ></code>
                     </div>
                 </div>
             </div>
@@ -137,7 +137,7 @@
                 <div class="col-md-5 col-sm-6">
                     <div class="input-group">
                         <span class="input-group-addon"> ¥&nbsp;</span>
-                        <input Value="" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 每个队员费用 must be a number." id="PerAmount" name="PersonFees" placeholder="每个队员参加比赛所需费用" type="text" value="" />
+                        <input Value="0.00" class="form-control" data-format="dbc2sbc" data-val="true" data-val-number="The field 每个队员费用 must be a number." id="PerAmount" name="PersonFees" placeholder="每个队员参加比赛所需费用" type="text" value="" /><code id="Fee"></code>
                     </div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                 <label class="col-md-3 col-sm-3 control-label" for="MaxAttendCount">参加人数</label>
                 <div class="col-md-5 col-sm-6">
                     <div class="input-group">
-                        <input class="form-control" id="MaxAttendCount" name="LimitNum" placeholder="最多参加人数" type="text" value="" />
+                        <input class="form-control" id="MaxAttendCount" name="LimitNum" placeholder="最多参加人数" type="text" value="0" />
                         <span class="input-group-addon">人</span>
                     </div>
                 </div>
@@ -172,5 +172,37 @@
         $("#back").click(function () {
             history.back(-1);
         });
+        $("#TotalAmount").blur(function checkMoney(Amount) {
+            var Amount = $("#TotalAmount")
+            var reg = /^[0-9]+(.[0-9]{1,2})?$/;
+            if (Amount.val() == "") {
+                $('#Fees').html("金额不能为空！");
+                Amount.focus();
+                return false;
+            } else if (!reg.test(Amount.val())) {
+                $('#Fees').html("金额只能为两位小数的正数！");
+                Amount.focus();
+                return false;
+            } else {
+                $('#Fees').html("");
+                return true;
+            }
+        })
+        $("#PerAmount").blur(function checkMoney(Amount) {
+            var Amount = $("#PerAmount")
+            var reg = /^[0-9]+(.[0-9]{1,2})?$/;
+            if (Amount.val() == "") {
+                $('#Fee').html("金额不能为空！");
+                Amount.focus();
+                return false;
+            } else if (!reg.test(Amount.val())) {
+                $('#Fee').html("金额只能为两位小数的正数！");
+                Amount.focus();
+                return false;
+            } else {
+                $('#Fee').html("");
+                return true;
+            }
+        })
     </script>
 
