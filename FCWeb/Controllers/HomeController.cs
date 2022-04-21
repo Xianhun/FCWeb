@@ -105,7 +105,7 @@ namespace FCWeb.Controllers
                     HomeBLL.TeamChange(TeamName, Account);
                     if (TeamOpenType == "任何人可以加入")
                     {
-                        HomeBLL.MemberCreate(Account, UserName, TeamName, Sex, Age, Location,Permission, Permissionid, Position);
+                        HomeBLL.MemberCreate(TeamName, Account, UserName, Location, Age, Sex,Permission, Permissionid, Position);
                         int access = HomeBLL.UserAccess(Account);
                         Session["TeamName"] = TeamName;
                         Session["Access"] = access;

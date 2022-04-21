@@ -129,10 +129,14 @@
                                 <span>@item.Status</span>
                             </td>
                             @{
-                                if (item.Status == "已结束" && item.Participate < item.LimitNum)
+                                if (item.Status == "已结束")
                                 {
                                     <td class="hidden-md hidden-sm hidden-xs"></td>
 
+                                }
+                                else if (item.Participate > item.LimitNum)
+                                {
+                                    <td class="hidden-md hidden-sm hidden-xs"></td>
                                 }
                                 else if (item.Status == "已结算")
                                 {

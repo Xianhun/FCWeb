@@ -436,7 +436,7 @@
 </body>
 <script type="text/javascript">
     $("#Settlement").click(function () {
-        if (@costsum > @Model.ElementAt(0).SduFees) {
+        if (@costsum >= @Model.ElementAt(0).SduFees) {
             var id = $("#Settlement").attr('title');
             $.ajax({
                 type: 'post',

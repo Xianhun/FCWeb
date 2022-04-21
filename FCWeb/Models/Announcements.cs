@@ -13,5 +13,6 @@ namespace FCWeb.Models
         public string Url { get; set; }
         public string CreateBy { get; set; }
         public DateTime CreateTime { get; set; }
+        public string TeamName { get; set; }
     }
 }

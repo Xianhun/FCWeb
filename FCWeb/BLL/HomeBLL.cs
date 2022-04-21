@@ -25,7 +25,7 @@ namespace FCWeb.BLL
                 for (int i = 0; i < teamMembers.Count; i++)
                 {
                     Difference = Now - teamMembers[i].LeaveTimes;
-                    if (Difference.TotalSeconds >= 3600)
+                    if (Difference.TotalSeconds >= 60)
                     {
                         int id = teamMembers[i].ID;
                         D_members = db.TeamMember.Find(id);

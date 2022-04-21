@@ -200,6 +200,7 @@
                     $("#oldPassword").val("");
                     $("#newPassword").val("");
                     $("#confirmPassword").val("");
+                    location.reload();
                 } else {
                     alert(code);
                     $("#oldPassword").val("");
@@ -223,6 +224,7 @@
                 let code = res
                 if (code == "保存成功") {
                     alert(code);
+                    location.reload();
                 } else {
                     alert(code);
                 }

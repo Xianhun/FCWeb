@@ -77,7 +77,7 @@ namespace FCWeb.Controllers
                         for (int i = 0; i < teamMembers.Count; i++)
                         {
                             Difference = Now - teamMembers[i].LeaveTimes;
-                            if (Difference.TotalSeconds >= 3600)
+                            if (Difference.TotalSeconds >= 60)
                             {
                                 int id = teamMembers[i].ID;
                                 D_members = db.TeamMember.Find(id);
@@ -134,11 +134,11 @@ namespace FCWeb.Controllers
                     }
                     var Near_Sedul = db.Schedule.Where(s => s.SdulsTime == NearTime && s.TeamName == TeamName).ToList();
                     ViewBag.Check = result;//判断最近是否有赛程
-                    var announcements = db.Announcement.OrderByDescending(s => s.CreateTime).Take(5).ToList();
+                    var announcements = db.Announcement.OrderByDescending(s => s.CreateTime).Where(s => s.TeamName == TeamName).Take(5).ToList();
                     ViewBag.Announcememt = announcements;
-                    var Goallist = db.TeamMember.OrderByDescending(s => s.Goal).Take(5).ToList();
+                    var Goallist = db.TeamMember.OrderByDescending(s => s.Goal).Where(s => s.TeamName == TeamName).Take(5).ToList();
                     ViewBag.Goal = Goallist;
-                    var Assists = db.TeamMember.OrderByDescending(s => s.Assists).Take(5).ToList();
+                    var Assists = db.TeamMember.OrderByDescending(s => s.Assists).Where(s=>s.TeamName==TeamName).Take(5).ToList();
                     ViewBag.Assists = Assists;
                     return View(Near_Sedul);
                 }
@@ -211,7 +211,7 @@ namespace FCWeb.Controllers
                     db.Schedule.Add(createMatch);
                     db.SaveChanges();
                     var sid = db.Schedule.OrderByDescending(s => s.ID).Select(s => s.ID).FirstOrDefault();
-                    Announcement(sid, Account, datetime, Place, "新增");
+                    Announcement(sid, Account, datetime, Place, "新增",TeamName);
                     var script = String.Format("<script>alert('添加成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
                     return Content(script, "text/html");
                 }
@@ -228,7 +228,7 @@ namespace FCWeb.Controllers
             }
         }
 
-        private void Announcement(int sid, string Account, DateTime datetime, string place, string status)
+        private void Announcement(int sid, string Account, DateTime datetime, string place, string status ,string teamname)
         {
             DateTime TimeNow = DateTime.Now;
             string url = "MatchInformation/" + sid;
@@ -239,7 +239,8 @@ namespace FCWeb.Controllers
                 Title = title,
                 Url = url,
                 CreateBy = Player,
-                CreateTime = TimeNow
+                CreateTime = TimeNow,
+                TeamName= teamname
             };
             db.Announcement.Add(announcements);
             db.SaveChanges();
@@ -635,7 +636,7 @@ namespace FCWeb.Controllers
             };
             db.TeamMember.Add(teamMembers);
             db.SaveChanges();
-            var script = String.Format("<script>alert('添加成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/Application"));
+            var script = String.Format("<script>alert('添加成功！');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/TeamMember"));
             return Content(script, "text/html");
         }
         /// <summary>
@@ -754,7 +755,7 @@ namespace FCWeb.Controllers
                 members.LeaveTimes = DateTime.Now;
                 db.Entry(members).State = EntityState.Modified;
                 db.SaveChanges();
-                var script = String.Format("<script>alert('一个小时内自动删除，期间可撤销删除');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MemberDelete"));
+                var script = String.Format("<script>alert('一分钟内自动删除，期间可撤销删除');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MemberDelete"));
                 return Content(script, "text/html");
             }
             catch (Exception ee)
@@ -864,23 +865,32 @@ namespace FCWeb.Controllers
             Schedules pt = db.Schedule.Where(s => s.ID == sche_id).FirstOrDefault();
             string[] memberinfo = sel_memberInfo.Split(',');
             string res = "";
-            for (int i = 0; i < memberinfo.Length - 1; i++)
+            var limit = db.Schedule.Where(s => s.ID == sche_id).Select(s => s.LimitNum).FirstOrDefault();
+            var membercount = db.Schedule.Where(s => s.ID == sche_id).Select(s => s.Participate).FirstOrDefault();
+            if(membercount+ memberinfo.Length-1<=limit)
             {
-                string[] member = memberinfo[i].Split('+');
-                string m = member[0];
-                int p_id = db.TeamMember.Where(s => s.UserName == m).Select(s => s.ID).FirstOrDefault();
-                decimal Cost = db.Schedule.Where(s => s.ID == sche_id).Select(s => s.PersonFees).FirstOrDefault();
-                signup.SchedulesID = sche_id;
-                signup.PlayerID = p_id;
-                signup.Cost = Cost;
-                signup.Goal = 0;
-                signup.Assists = 0;
-                signup.SignUpStatus = "报名中";
-                db.SignUps.Add(signup);
-                db.SaveChanges();
+                for (int i = 0; i < memberinfo.Length - 1; i++)
+                {
+                    string[] member = memberinfo[i].Split('+');
+                    string m = member[0];
+                    int p_id = db.TeamMember.Where(s => s.UserName == m).Select(s => s.ID).FirstOrDefault();
+                    decimal Cost = db.Schedule.Where(s => s.ID == sche_id).Select(s => s.PersonFees).FirstOrDefault();
+                    signup.SchedulesID = sche_id;
+                    signup.PlayerID = p_id;
+                    signup.Cost = Cost;
+                    signup.Goal = 0;
+                    signup.Assists = 0;
+                    signup.SignUpStatus = "报名中";
+                    db.SignUps.Add(signup);
+                    db.SaveChanges();
+                }
+                SignUpCount(sche_id, pt);
+                res += "添加成功";
             }
-            SignUpCount(sche_id, pt);
-            res += "添加成功";
+            else
+            {
+                res = "添加人数超过上限";
+            }
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
@@ -1448,6 +1458,7 @@ namespace FCWeb.Controllers
             schedule.PersonFees = db.Schedule.Where(s => s.ID == id).Select(s => s.PersonFees).FirstOrDefault();
             schedule.LimitNum = db.Schedule.Where(s => s.ID == id).Select(s => s.LimitNum).FirstOrDefault();
             schedule.Note = db.Schedule.Where(s => s.ID == id).Select(s => s.Note).FirstOrDefault();
+            schedule.Result= db.Schedule.Where(s => s.ID == id).Select(s => s.Result).FirstOrDefault();
             ViewBag.Date = schedule.SdulsTime.ToString("yyyy-MM-dd");
             ViewBag.Time = schedule.SdulsTime.ToLongTimeString();
             return View(schedule);
@@ -1464,7 +1475,12 @@ namespace FCWeb.Controllers
                 string date = Date.ToShortDateString().ToString();//获取日期
                 string time = Time.ToShortTimeString().ToString();//获取时间
                 DateTime datetime = Convert.ToDateTime(date + ' ' + time);//获取日期时间
-                if (datetime > DateTime.Now && status == "报名中")
+                if (datetime < DateTime.Now && status == "报名中")
+                {
+                    var script = String.Format("<script>alert('新增赛程日期必须大于现在的时间');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/ScheduleResult/" + id));
+                    return Content(script, "text/html");
+                }
+                else
                 {
                     Schedules Matchchange = db.Schedule.Find(id);
                     Matchchange.TeamName = TeamName;
@@ -1477,16 +1493,11 @@ namespace FCWeb.Controllers
                     Matchchange.LimitNum = LimitNum;
                     Matchchange.Note = Note;
                     Matchchange.Result = Result;
-                    Matchchange.Status = "报名中";
+                    Matchchange.Status = status;
                     db.Entry(Matchchange).State = EntityState.Modified;
                     db.SaveChanges();
-                    Announcement(id, Account, datetime, Place, "修改");
+                    Announcement(id, Account, datetime, Place, "修改",TeamName);
                     var script = String.Format("<script>alert('修改成功');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/MatchSchedule"));
-                    return Content(script, "text/html");
-                }
-                else
-                {
-                    var script = String.Format("<script>alert('新增赛程日期必须大于现在的时间');location.href='{0}'</script>", Url.Action("Index", "TeamManagement/ScheduleResult/" + id));
                     return Content(script, "text/html");
                 }
             }
